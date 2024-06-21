@@ -1,0 +1,1262 @@
+---
+title: "Descriptions - fonctions "
+author: "SMH"
+output:
+  html_document: 
+      code_folding: show
+      df_print: paged
+      warning : FALSE
+      message : FALSE
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(dplyr.summarise.inform = FALSE)
+```
+
+<br/>
+ 
+
+```{r packages, echo= FALSE,message=FALSE, avis=FALSE, warning=FALSE}
+source("programme_code.R", encoding = "UTF-8")
+```
+
+
+# R Markdown explicatif des fonctions développées au sein de l'USMR {.tabset .tabset-pills}
+
+ Ce document RMarkDown décrit les fonctions développées en interne à l’USMR et explique les options et la manière de les utiliser
+
+## Packages : Listes de packages de l'USMR
+
+\
+
+La liste des packages que nous utiliserons à l'USMR et qui ont été validés au sein du groupe de réflexion "Validation de R".
+Elle sera mise à jour si des packages sont ajoutés ou retirés.
+
+\
+
+
+```{r message=FALSE, avis=FALSE, warning=FALSE}
+library(tidyverse)
+library(tinytex)
+library(gtsummary)
+library(labelled)
+library(lubridate)
+library(rlang)
+library(sjlabelled)
+library(survival)
+library(survminer, quietly = TRUE)
+library(KMunicate)
+library(kableExtra)
+library(gtreg)
+library(gt)
+library(readxl)
+library(haven)
+library(openxlsx)
+```
+
+
+
+
+<br/><br/>
+
+
+##  Fonction 1 : Fonction de description des variables 
+
+
+
+La fonction `desc_var_6` permet de générer des tableaux descriptifs comprenant des statistiques adaptées aux différents types de variables. Pour une variable quantitative, Nous aurons la moyenne, l'écart type, le minimum, le maximum et les intervalles interquartiles. Pour une variable qualitative, la fonction affiche l'effectif et la proportion de chaque modalité. 
+De plus, des statistiques sur les données manquantes ainsi que leurs pourcentages sont affichées.
+
+
+<br/>
+
+
+#### Fonctions externes qui sont utilisées dans la fonction finale.
+
+
+Il est nécessaire de charger ces fonctions externes afin de pouvoir les utiliser dans la fonction `desc_var_6`.
+
+
+- add_by_n est une fonction pour regrouper le nombre de données manquantes et le pourcentage par rapport à l'effectif total.
+
+- add_by_n_2 est une fonction pour regrouper le nombre de données manquantes et le pourcentage par rapport à l'effectif total de la modalité.   
+
+- La fonction ordonner_variables_qualitatives permet de classer les fréquences d'une variable qualitative dans un ordre spécifié.
+
+- remove_zero_levels est une fonction qui permet de supprimer les modalités présentant un effectif de zéro.
+
+- ajouter_label_ndm est une fonction qui permet de renommer les variables en ajoutant le suffixe (dm;%dm) aux libellés des variables.
+
+
+
+
+Cliquer sur "Show" si vous souhaitez afficher le code de la fonction.
+
+
+```{r,class.source = 'fold-hide'}
+
+### Fonction pour degrouper le nbre de NA et pourcentage par rapport aux total 
+
+add_by_n <- function(data, variable, by, tbl, ...) {
+  n_all = nrow(data)
+  data %>%
+    select(all_of(c(variable, by))) %>%
+    dplyr::group_by(.data[[by]]) %>%
+    dplyr::summarise_all(list(nb = ~ sum(!is.na(.)),
+                              nb_NA =  ~ sum(is.na(.)),
+                              nb_percent = ~ round(sum(is.na(.))/n_all*100)),1) %>%
+    rlang::set_names(c("by", "variable", "nb_NA","nb_percent")) %>% 
+    dplyr::left_join(
+      tbl$df_by %>% select(by, by_col),
+      by = "by") %>% 
+    mutate(
+      by_col = paste0("add_n_",by_col),
+      variable = style_number(variable),
+      variable = paste0(variable, "(", nb_NA ," ; ", nb_percent, "%",  ")")
+    )  %>% 
+    select(-c(by,nb_NA,nb_percent)) %>% 
+    tidyr::pivot_wider(names_from = by_col, 
+                       values_from = variable)
+}
+
+
+
+### Fonction pour degrouper le nbre de NA et pourcentage par rapport aux nbre total par modalité. 
+
+add_by_n_2 <- function(data, variable, by, tbl, ...) {
+  col_by = ensym(by)
+  n_all = nrow(data)
+  n_by_tot_1 = data %>% filter(!!col_by== levels(factor(!!col_by))[1]) %>% summarise(nb = n()) 
+  n_by_tot_2 = data %>% filter(!!col_by== levels(factor(!!col_by))[2]) %>% summarise(nb = n()) 
+  data_test <- data %>% 
+    select(variable,by) %>% 
+    dplyr::group_by(.data[[by]]) %>%
+    dplyr::summarise_all(list(nb = ~ sum(!is.na(.)),
+                              nb_NA =  ~ sum(is.na(.)))) 
+ 
+  data_test %>% dplyr::mutate(nb_percent = case_when(
+    !!col_by== levels(as.factor(!!col_by))[1] ~ round(data_test$nb_NA[1]/ n_by_tot_1 * 100, 1),
+    !!col_by== levels(as.factor(!!col_by))[2] ~ round(data_test$nb_NA[2]/ n_by_tot_2 * 100, 1))) %>% 
+    rlang::set_names(c("by", "variable", "nb_NA","nb_percent")) %>%
+    dplyr::left_join(
+      tbl$df_by %>% select(by, by_col),
+      by = "by") %>%
+    mutate(
+      by_col = paste0("add_n_",by_col),
+      variable = style_number(variable),
+      variable = paste0(variable, "(", nb_NA ,";", nb_percent$nb, "%",  ")")
+    )  %>%
+    select(-c(by,nb_NA,nb_percent)) %>%
+    tidyr::pivot_wider(names_from = by_col,
+                       values_from = variable)
+}
+
+
+### Ordonner les variables quali ~tatives en amont pour que gtsummary puisse les reconnaitre -----
+### l'ordre des frequences des modalités.  
+
+ordonner_variables_qualitatives <- function(data) {
+  data %>% mutate(across(where(is.factor), ~ fct_infreq(.)))
+} 
+
+### Fonction pour enveler les modalités avec zéro effectif ----- 
+
+remove_zero_levels <- function(var) {fct_drop(var)} 
+
+
+#### Rélabelliser ------ 
+
+ajouter_label_ndm <- function(data) {
+  for (i in seq_along(data)) {
+    label_actuel <- var_label(data[[i]])
+    nouveau_label <- paste0(label_actuel, " ", "n( dm; %dm)")
+    data[[i]] <- set_variable_labels(data[[i]], nouveau_label)
+  }
+  return(data)
+}
+```
+
+
+
+#### Explication des paramètres de la fonction
+
+
+[**desc_var_6 <- 
+  function(data1,
+           table_title = "",
+           quali = NULL,
+           quanti = NULL,
+           group,
+           var_group = NULL, ## Variable de groupe (dégroupée les tables)
+           group_title = "",
+           DM = "NULL")**]{style="color: green;"}
+
+<br/> 
+
+**Options** :
+
+-   **data1** : Jeu de données avec les variables à decrire --\> [Assurez-vous que la table soit en dataframe class(data.frame), sinon as.dataframe() pour le convertir en dataframe]{style="color: purple;"}
+
+-   **table_title** : Titre du tableau --\> [Le titre du tableau doit être obligatoirement mis entre guillemets et, si l'on souhaite qu'il soit en gras, il doit être placé entre guillemets doubles *. ]{style="color: purple;"}
+
+-   **quali** : Certaines variables qualitatives d'une table sont parfois décrites comme des variables quantitatives par gtsummary. Pour les décrire correctement, il est nécessaire de préciser ce paramètre en indiquant le nom ou les noms des variables concernées --\> [Les variables concernées doivent être placées entre guillemets. Si nous avons plusieurs variables, nous devons les regrouper dans un vecteur. Voici un exemple : quali = c("var1", "var2", "var3")".]{style="color: purple;"} 
+
+-   **quanti** : "Certaines variables quantitatives d'une table sont parfois décrites comme des variables qualitatives par gtsummary. Pour les décrire correctement, il est nécessaire de préciser ce paramètre en indiquant le nom ou les noms des variables concernées.--\>[Les variables concernées doivent être placées entre guillemets. Si nous avons plusieurs variables, nous devons les regrouper dans un vecteur. Voici un exemple : quanti = c("var1", "var2", "var3")".]{style="color: purple;"}
+
+- **group** : TRUE/FALSE/"ALL" Cette option permet de personnaliser le type de description. Avec group = FALSE, une description globale sera faite sur le total de la base de données sans utilisation d’une variable de groupe, avec group = TRUE une description par groupe selon la variable var_group sera réalisée, et avec group =  "ALL" les deux types de descriptions seront affichées (gloable et par groupe).
+
+- **var_group** :  Il faut renseigner la variable de groupe dans le cas d'une description dégroupée. --\>[par défaut NULL]{style="color: purple;"}
+
+- **group_title** :  c’est l’intitulé de la variable de groupe,comme par exemple : "le traitement de l'étude" ou "La procédure chirurgicale de l'étude".  --\> [par défaut une chaine de caractère vide]{style="color: purple;"}
+
+- **DM** : On peut au sein de la fonction réaliser un certain nombre de tâches de management des données. 
+DM : « Avec DM = “tri”, on ordonne les modalités de la variable décrite par ordre croissant. Avec DM = “remove”, on enlève les modalités avec un effectif à 0. Et avec DM = “tout”, on réalise les deux tâches en même temps --\> [par défaut NULL]{style="color: purple;"}
+
+<hr/>
+
+<br/>
+
+
+
+#### Quelques exemples d'application de la fonction 
+
+\
+ 
+**Exemple 1** : C'est le cas le plus simple : on sélectionne les variables qui nous intéressent, puis nous donnons un titre à notre tableau en lui spécifiant une description groupée comme paramètres dans la fonction desc_var_6.
+
+\
+
+```{r, message=FALSE, warning=FALSE}
+hm %>% select(hmirm, hmade, hmirmvol) %>% desc_var_6(table_title = "**Histoire de la maladie**", group = FALSE)
+```
+
+\
+
+**Exemple 2** : Nous voyons bien que la variable volume( cm3) est décrite comme une variable qualitative alors qu'elle est quantitative.
+                Pour résoudre cela, il faut spécifier cette variable dans l'argument "quanti" de la fonction.
+                
+    
+              
+```{r}
+hm %>% select(hmirm, hmade, hmirmvol) %>% desc_var_6(table_title = "**Histoire de la maladie**",
+                                                     group = FALSE,
+                                                     quanti = "hmirmvol") 
+```
+
+\
+
+**Exemple 3** : Avec une variable de groupe pour cet exemple, pour obtenir une description dégroupée en lui attribuant un titre avec la variable de groupe.
+
+
+```{r}
+hm_1 %>% select(hmirm, hmade, hmirmvol, rdgrp) %>% desc_var_6(table_title = "**Histoire de la maladie**",
+                                                     group = TRUE,
+                                                     var_group = rdgrp,
+                                                     group_title = "**Traitement chirurgical**",
+                                                     quanti = "hmirmvol")
+```
+
+\
+
+**Exemple 4** : Avec une variable de groupe pour cet exemple, pour obtenir une description à la fois dégroupée et groupée en lui attribuant un titre avec la variable de groupe.
+
+
+
+```{r}
+hm_1 %>% select(hmirm, hmade, hmirmvol, rdgrp) %>% desc_var_6(table_title = "**Histoire de la maladie**",
+                                                     group = "ALL",
+                                                     var_group = rdgrp,
+                                                     group_title = "**Traitement chirurgical**",
+                                                     quanti = "hmirmvol")
+```
+
+
+\
+
+ - Dans le tableau ci dessous, les modalités ne sont pas triés.
+
+
+
+```{r}
+hm_1 %>% select(hmirmta,hmirmtp,rdgrp) %>% desc_var_6(table_title = "**Histoire de la maladie**",
+                                                     group = "ALL",
+                                                     var_group = rdgrp,
+                                                     group_title = "**Traitement chirurgical**")
+```
+
+\
+
+**Exemple 5** : L'argument "DM = tri" nous permet de trier les modalités d'une variable qualitative.
+
+
+ 
+```{r}
+hm_1 %>% select(hmirmta,hmirmtp,rdgrp) %>% desc_var_6(table_title = "**Histoire de la maladie**",
+                                                     group = "ALL",
+                                                     var_group = rdgrp,
+                                                     group_title = "**Traitement chirurgical**", 
+                                                     DM = "tri")
+```
+ 
+\
+ 
+ - Parfois, des variables présentent une modalité avec un effectif nul, comme dans l'exemple ci-dessous.
+
+
+```{r}
+ic_1 %>% select(rdgrp,icily) %>% desc_var_6(table_title = "**Histoire de la maladie**",
+                                                     group = "ALL",
+                                                     var_group = rdgrp,
+                                                     group_title = "**Traitement chirurgical**") 
+```
+
+\
+
+**Exemple 6** :  Avec l'argument "DM = remove", on résout le problème.
+
+
+```{r}
+ic_1 %>% select(rdgrp,icily) %>% desc_var_6(table_title = "**Histoire de la maladie**",
+                                                     group = "ALL",
+                                                     var_group = rdgrp,
+                                                     group_title = "**Traitement chirurgical**", 
+                                                     DM = "remove") 
+```
+
+\
+
+**Exemple 7** :  Nous allons introduire la fonction **tbl_stack**. Cette fonction permet d'enchainer plusieurs descriptions de variables avec les filtres pour chaque table.                   Ces enchainements seront placés à l'intérieur d'une fonction list().
+                 Nous créons un objet `group = "ALL"` pour faciliter le passage d'une description groupée pour une revue de données ou dégroupée pour un rapport.
+                 Il suffira simplement de mettre à jour cet objet. 
+                 Lorsque nous utilisons la fonction **tbl_stack**, nous devrons préciser le titre du tableau et de la variable de groupe une seule fois dans la fonction                       `desc_var_6`. Cela nous évitera de les répéter.
+                 
+
+
+
+```{r}
+
+group = "ALL"
+
+his_mal <- tbl_stack(
+  list(
+
+## Filtre sur l'IRM réalisée à la pré-inclusion 
+
+hm_1 %>% filter(hmirmbr == "Oui") %>% select(rdgrp,19:22) %>% 
+  desc_var_6(table_title = "**Histoire de la maladie**",group = group,var_group =  rdgrp, group_title = "**Traitement**"),
+
+
+hm_1 %>% filter(hmirm == "Oui") %>% select(rdgrp,24:28) %>% 
+  desc_var_6(group = group,var_group =  rdgrp),
+
+
+
+hm_1 %>% filter(hmirm == "Oui") %>% select(rdgrp,hmirmn) %>% 
+  desc_var_6(group = group,var_group =  rdgrp),
+
+
+
+hm_1 %>% filter(hmirm == "Oui") %>% select(rdgrp,hmirmga) %>% 
+  desc_var_6(group = group,var_group =  rdgrp)), quiet = TRUE)
+
+
+his_mal
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Fonction descriptive avec le Reporting pour afficher les tableaux. 
+
+
+```{r, class.source = 'fold-hide'}
+#### Fonction  descriptive (Reporting) Version 5.0 --------
+
+desc_var_6 <- ## Les arugments de la fonction
+  function(data1,
+           ##  Jeux de données numéro 1.
+           table_title = "",
+           ## Titre de la table
+           quali = NULL,
+           ## Vecteur des variables quali ~tatives mal decrites
+           quanti = NULL,
+           ## Vecteur des variables quantitatives mal decrites
+           group,
+           ## booléen pour préciser s'il faut degroupé ou pas les tables.
+           var_group = NULL, ## Variable de groupe (dégroupée les tables)
+           group_title = "",
+           DM = "NULL") {
+    
+    data1 <- data1 %>% ajouter_label_ndm() 
+  
+    if(DM == "tout") { 
+      data1 <- ordonner_variables_qualitatives(data1) %>% 
+        mutate(across(where(is.factor), remove_zero_levels)) 
+      if (group == "ALL") {
+        data1  <- data1 %>% mutate({{ var_group }} := as.character({{ var_group }}))
+        col_1 <- ensym(var_group) ## Préciser la variable pour degrouper.
+        desc_degrou <- data1 %>% 
+          tbl_summary(
+            type = list(
+              where(is.factor) ~ "categorical",
+              ## type des var (qualitatives)
+              all_continuous() ~ "continuous2",
+              ## type des var (continus)
+              quali ~ "categorical",
+              quanti ~ "continuous2"
+            ),
+            by = !!col_1,
+            ## Pour degrouper les tables
+            missing = "no",
+            ## Ne pas afficher les NA
+            statistic = list(
+              all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+              ## Stat à afficher pour les VAR (quantitatives)
+              all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
+            ),
+            digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## le nbre de décimale pour les variables.
+          ) %>%
+          bold_labels() %>%  ## Variables en gras.
+          italicize_levels() %>%  ## Variables en labels.
+          add_overall(col_label = "**Total**") %>%
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          add_stat(fns = everything() ~ add_by_n) %>% ## Stat en colonnes (Total et données manquantes)
+          modify_header(
+            list(
+              label ~ "**Variable**",
+              ## Titre des variables du tableau.
+              starts_with("add_n_stat") ~ "",
+              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              ## labels Stat des colonnes.
+              n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+            )
+          )  %>% modify_table_body ( ~ {
+            add_n_stat_cols <- grep("^add_n_stat_", colnames(.x), value = TRUE)
+            
+            if (all(add_n_stat_cols %in% colnames(.x))) {
+              .x <-  .x  %>% rename("add_n_stat_0" = n) %>% 
+                mutate(across(
+                  starts_with("stat_"),
+                  ~ ifelse(is.na(.), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .)
+                )) %>% select(-starts_with("add_n_stat_")) 
+            } else {
+              .x <- .x %>% select(-starts_with("add_n_stat"))
+            }
+            return(.x)
+          }
+          ) %>%
+          modify_footnote(everything() ~ NA) %>% ## Note de page.
+          modify_spanning_header(c(all_stat_cols(F) ~ paste0(group_title))) %>% ## Titre pour la variable de groupe.
+          modify_caption(paste0(table_title)) %>% bold_labels() ## Titre pour la table.
+        return(desc_degrou)
+      }  else if(group == TRUE) { 
+        data1  <- data1 %>% mutate({{ var_group }} := as.character({{ var_group }}))
+        col_1 <- ensym(var_group) ## Préciser la variable pour degrouper.
+        desc_degrou <-
+          data1 %>% 
+          tbl_summary(
+            type = list(
+              where(is.factor) ~ "categorical",
+              ## type des var (qualitatives)
+              all_continuous() ~ "continuous2",
+              ## type des var (continus)
+              quali ~ "categorical",
+              quanti ~ "continuous2"
+            ),
+            by = !!col_1,
+            ## Pour degrouper les tables
+            missing = "no",
+            ## Ne pas afficher les NA
+            statistic = list(
+              all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+              ## Stat à afficher pour les VAR (quantitatives)
+              all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
+            ),
+            digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## le nbre de décimale pour les variables.
+          ) %>%
+          bold_labels() %>%  ## Variables en gras.
+          italicize_levels() %>%  ## Variables en labels.
+          # add_overall(col_label = "") %>%
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          add_stat(fns = everything() ~ add_by_n) %>% 
+          modify_header(
+            list(
+              label ~ "**Variable**",
+              ## Titre des variables du tableau.
+              starts_with("add_n_stat") ~ "",
+              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              ## labels Stat des colonnes.
+              n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+            )
+          )  %>% modify_table_body ( ~ {
+            add_n_stat_cols <- grep("^add_n_stat_", colnames(.x), value = TRUE)
+            
+            if (all(add_n_stat_cols %in% colnames(.x))) {
+              .x <-  .x  %>% rename("add_n_stat_0" = n) %>% 
+                mutate(across(
+                  starts_with("stat_"),
+                  ~ ifelse(is.na(.), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .)
+                )) %>% select(-starts_with("add_n_stat_")) 
+            } else {
+              .x <- .x %>% select(-starts_with("add_n_stat"))
+            }
+            return(.x)
+          }
+          ) %>%
+          modify_footnote(everything() ~ NA) %>% ## Note de page.
+          modify_spanning_header(c(all_stat_cols(F) ~ paste0(group_title))) %>% ## Titre pour la variable de groupe.
+          modify_caption(paste0(table_title)) %>% bold_labels()## Titre pour la table.
+        return(desc_degrou)
+      } else if(group == FALSE) {
+        desc_degrou <- data1 %>% tbl_summary(
+          type = list(
+            ## Traitement des variables par type.
+            where(is.factor) ~ "categorical",
+            ## type des var (qualitatives)
+            all_continuous() ~ "continuous2",
+            ## type des var (continues)
+            quali ~ "categorical",
+            quanti ~ "continuous2"
+          ),
+          missing = "no",
+          ## Ne pas afficher les NA
+          statistic = list(
+            all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+            ## Stat à afficher pour les VAR (quantitatives)
+            all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (qualitatives)
+          ),
+          digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## Nbre de décimales pour les variables.
+        ) %>%
+          bold_labels() %>%  ## Variables en gras
+          italicize_levels() %>%  ## modalités en italique
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          modify_header(list(
+            label  ~ "**Variable**",
+            ## Titre des variables du tableaux.
+            stat_0 ~ "**TOTAL** (n={N})",
+            ## label des Totals.
+            n      ~  "**Total** (**dm** ; **%dm**)"  ## labels des stats des NA.
+          )) %>% modify_footnote(everything() ~ NA) %>% 
+          modify_caption(paste0(table_title)) %>% bold_labels()
+        
+        return(desc_degrou)
+      }
+      return(desc_degrou)
+    }
+    else if(DM == "tri") {
+      data1 <- ordonner_variables_qualitatives(data1) 
+      if (group == "ALL") {
+        data1  <- data1 %>% mutate({{ var_group }} := as.character({{ var_group }}))
+        col_1 <- ensym(var_group) ## Préciser la variable pour degrouper.
+        desc_degrou <-
+          data1 %>% 
+          tbl_summary(
+            type = list(
+              where(is.factor) ~ "categorical",
+              ## type des var (qualitatives)
+              all_continuous() ~ "continuous2",
+              ## type des var (continus)
+              quali ~ "categorical",
+              quanti ~ "continuous2"
+            ),
+            by = !!col_1,
+            ## Pour degrouper les tables
+            missing = "no",
+            ## Ne pas afficher les NA
+            statistic = list(
+              all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+              ## Stat à afficher pour les VAR (quantitatives)
+              all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
+            ),
+            digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## le nbre de décimale pour les variables.
+          ) %>%
+          bold_labels() %>%  ## Variables en gras.
+          italicize_levels() %>%  ## Variables en labels.
+          add_overall(col_label = "") %>%
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          add_stat(fns = everything() ~ add_by_n) %>% ## Stat en colonnes (Total et données manquantes)
+          modify_header(
+            list(
+              label ~ "**Variable**",
+              ## Titre des variables du tableau.
+              starts_with("add_n_stat") ~ "",
+              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              ## labels Stat des colonnes.
+              n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+            )
+          )  %>% modify_table_body ( ~ {
+            add_n_stat_cols <- grep("^add_n_stat_", colnames(.x), value = TRUE)
+            
+            if (all(add_n_stat_cols %in% colnames(.x))) {
+              .x <-  .x  %>% rename("add_n_stat_0" = n) %>% 
+                mutate(across(
+                  starts_with("stat_"),
+                  ~ ifelse(is.na(.), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .)
+                )) %>% select(-starts_with("add_n_stat_")) 
+            } else {
+              .x <- .x %>% select(-starts_with("add_n_stat"))
+            }
+            return(.x)
+          }
+          ) %>%
+          modify_footnote(everything() ~ NA) %>% ## Note de page.
+          modify_spanning_header(c(all_stat_cols(F) ~ paste0(group_title))) %>% ## Titre pour la variable de groupe.
+          modify_caption(paste0(table_title)) %>% bold_labels()
+        return(desc_degrou)
+      }  else if(group == TRUE) { 
+        data1  <- data1 %>% mutate({{ var_group }} := as.character({{ var_group }}))
+        col_1 <- ensym(var_group) ## Préciser la variable pour degrouper.
+        desc_degrou <-
+          data1 %>% 
+          tbl_summary(
+            type = list(
+              where(is.factor) ~ "categorical",
+              ## type des var (qualitatives)
+              all_continuous() ~ "continuous2",
+              ## type des var (continus)
+              quali ~ "categorical",
+              quanti ~ "continuous2"
+            ),
+            by = !!col_1,
+            ## Pour degrouper les tables
+            missing = "no",
+            ## Ne pas afficher les NA
+            statistic = list(
+              all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+              ## Stat à afficher pour les VAR (quantitatives)
+              all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
+            ),
+            digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## le nbre de décimale pour les variables.
+          ) %>%
+          bold_labels() %>%  ## Variables en gras.
+          italicize_levels() %>%  ## Variables en labels.
+          # add_overall(col_label = "") %>%
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          add_stat(fns = everything() ~ add_by_n) %>% ## Stat en colonnes (Total et données manquantes)
+          modify_header(
+            list(
+              label ~ "**Variable**",
+              ## Titre des variables du tableau.
+              starts_with("add_n_stat") ~ "",
+              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              ## labels Stat des colonnes.
+              n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+            )
+          ) %>%modify_header(
+            list(
+              label ~ "**Variable**",
+              ## Titre des variables du tableau.
+              starts_with("add_n_stat") ~ "",
+              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              ## labels Stat des colonnes.
+              n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+            )
+          )  %>% modify_table_body ( ~ {
+            add_n_stat_cols <- grep("^add_n_stat_", colnames(.x), value = TRUE)
+            
+            if (all(add_n_stat_cols %in% colnames(.x))) {
+              .x <-  .x  %>% rename("add_n_stat_0" = n) %>% 
+                mutate(across(
+                  starts_with("stat_"),
+                  ~ ifelse(is.na(.), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .)
+                )) %>% select(-starts_with("add_n_stat_")) 
+            } else {
+              .x <- .x %>% select(-starts_with("add_n_stat"))
+            }
+            return(.x)
+          }
+          ) %>%
+          modify_footnote(everything() ~ NA) %>% ## Note de page.
+          modify_spanning_header(c(all_stat_cols(F) ~ paste0(group_title))) %>% ## Titre pour la variable de groupe.
+          modify_caption(paste0(table_title)) %>% bold_labels()
+        return(desc_degrou)
+        
+      } else if(group == FALSE) {
+        desc_degrou <- data1 %>% tbl_summary(
+          type = list(
+            ## Traitement des variables par type.
+            where(is.factor) ~ "categorical",
+            ## type des var (qualitatives)
+            all_continuous() ~ "continuous2",
+            ## type des var (continues)
+            quali ~ "categorical",
+            quanti ~ "continuous2"
+          ),
+          missing = "no",
+          ## Ne pas afficher les NA
+          statistic = list(
+            all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+            ## Stat à afficher pour les VAR (quantitatives)
+            all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (qualitatives)
+          ),
+          digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## Nbre de décimales pour les variables.
+        ) %>%
+          bold_labels() %>%  ## Variables en gras
+          italicize_levels() %>%  ## modalités en italique
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          modify_header(list(
+            label  ~ "**Variable**",
+            ## Titre des variables du tableaux.
+            stat_0 ~ "**TOTAL** (n={N})",
+            ## label des Totals.
+            n      ~  "**Total** (**dm** ; **%dm**)"  ## labels des stats des NA.
+          )) %>% modify_footnote(everything() ~ NA) %>% 
+          modify_caption(paste0(table_title)) %>% 
+          bold_labels()
+        return(desc_degrou)
+      }
+      return(desc_degrou)
+    }
+    else if (DM == "remove") {
+      data1 <- data1 %>% mutate(across(where(is.factor), remove_zero_levels)) 
+      if (group == "ALL") {
+        data1  <- data1 %>% mutate({{ var_group }} := as.character({{ var_group }}))
+        col_1 <- ensym(var_group) ## Préciser la variable pour degrouper.
+        desc_degrou <-
+          data1 %>% 
+          tbl_summary(
+            type = list(
+              where(is.factor) ~ "categorical",
+              ## type des var (qualitatives)
+              all_continuous() ~ "continuous2",
+              ## type des var (continus)
+              quali ~ "categorical",
+              quanti ~ "continuous2"
+            ),
+            by = !!col_1,
+            ## Pour degrouper les tables
+            missing = "no",
+            ## Ne pas afficher les NA
+            statistic = list(
+              all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+              ## Stat à afficher pour les VAR (quantitatives)
+              all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
+            ),
+            digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## le nbre de décimale pour les variables.
+          ) %>%
+          bold_labels() %>%  ## Variables en gras.
+          italicize_levels() %>%  ## Variables en labels.
+          add_overall(col_label = "") %>%
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          add_stat(fns = everything() ~ add_by_n) %>% ## Stat en colonnes (Total et données manquantes)
+          modify_header(
+            list(
+              label ~ "**Variable**",
+              ## Titre des variables du tableau.
+              starts_with("add_n_stat") ~ "",
+              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              ## labels Stat des colonnes.
+              n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+            )
+          )  %>% modify_table_body ( ~ {
+            add_n_stat_cols <- grep("^add_n_stat_", colnames(.x), value = TRUE)
+            
+            if (all(add_n_stat_cols %in% colnames(.x))) {
+              .x <-  .x  %>% rename("add_n_stat_0" = n) %>% 
+                mutate(across(
+                  starts_with("stat_"),
+                  ~ ifelse(is.na(.), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .)
+                )) %>% select(-starts_with("add_n_stat_")) 
+            } else {
+              .x <- .x %>% select(-starts_with("add_n_stat"))
+            }
+            return(.x)
+          }
+          ) %>%
+          modify_footnote(everything() ~ NA) %>% ## Note de page.
+          modify_spanning_header(c(all_stat_cols(F) ~ paste0(group_title))) %>% ## Titre pour la variable de groupe.
+          modify_caption(paste0(table_title)) %>% bold_labels()
+        return(desc_degrou)
+      }  else if(group == TRUE) { 
+        data1  <- data1 %>% mutate({{ var_group }} := as.character({{ var_group }}))
+        col_1 <- ensym(var_group) ## Préciser la variable pour degrouper.
+        desc_degrou <-
+          data1 %>% 
+          tbl_summary(
+            type = list(
+              where(is.factor) ~ "categorical",
+              ## type des var (qualitatives)
+              all_continuous() ~ "continuous2",
+              ## type des var (continus)
+              quali ~ "categorical",
+              quanti ~ "continuous2"
+            ),
+            by = !!col_1,
+            ## Pour degrouper les tables
+            missing = "no",
+            ## Ne pas afficher les NA
+            statistic = list(
+              all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+              ## Stat à afficher pour les VAR (quantitatives)
+              all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
+            ),
+            digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## le nbre de décimale pour les variables.
+          ) %>%
+          bold_labels() %>%  ## Variables en gras.
+          italicize_levels() %>%  ## Variables en labels.
+          # add_overall(col_label = "") %>%
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          add_stat(fns = everything() ~ add_by_n) %>% ## Stat en colonnes (Total et données manquantes)
+          modify_header(
+            list(
+              label ~ "**Variable**",
+              ## Titre des variables du tableau.
+              starts_with("add_n_stat") ~ "",
+              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              ## labels Stat des colonnes.
+              n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+            )
+          )  %>% modify_table_body ( ~ {
+            add_n_stat_cols <- grep("^add_n_stat_", colnames(.x), value = TRUE)
+            
+            if (all(add_n_stat_cols %in% colnames(.x))) {
+              .x <-  .x  %>% rename("add_n_stat_0" = n) %>% 
+                mutate(across(
+                  starts_with("stat_"),
+                  ~ ifelse(is.na(.), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .)
+                )) %>% select(-starts_with("add_n_stat_")) 
+            } else {
+              .x <- .x %>% select(-starts_with("add_n_stat"))
+            }
+            return(.x)
+          }
+          ) %>%
+          modify_footnote(everything() ~ NA) %>% ## Note de page.
+          modify_spanning_header(c(all_stat_cols(F) ~ paste0(group_title))) %>% ## Titre pour la variable de groupe.
+          modify_caption(paste0(table_title)) %>% bold_labels()
+        return(desc_degrou)
+        
+      } else if(group == FALSE) {
+        desc_degrou <- data1 %>% tbl_summary(
+          type = list(
+            ## Traitement des variables par type.
+            where(is.factor) ~ "categorical",
+            ## type des var (qualitatives)
+            all_continuous() ~ "continuous2",
+            ## type des var (continues)
+            quali ~  "categorical",
+            quanti ~ "continuous2"
+          ),
+          missing = "no",
+          ## Ne pas afficher les NA
+          statistic = list(
+            all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+            ## Stat à afficher pour les VAR (quantitatives)
+            all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (qualitatives)
+          ),
+          digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## Nbre de décimales pour les variables.
+        ) %>%
+          bold_labels() %>%  ## Variables en gras
+          italicize_levels() %>%  ## modalités en italique
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          modify_header(list(
+            label  ~ "**Variable**",
+            ## Titre des variables du tableaux.
+            stat_0 ~ "**TOTAL** (n={N})",
+            ## label des Totals.
+            n      ~  "**Total** (**dm** ; **%dm**)"  ## labels des stats des NA.
+          )) %>% modify_footnote(everything() ~ NA) %>% 
+          modify_caption(paste0(table_title)) %>% 
+          bold_labels()
+        return(desc_degrou)
+      }
+      return(desc_degrou)
+    }
+    else if (DM== "NULL") {
+      if (group == "ALL") {
+        data1  <- data1 %>% mutate({{ var_group }} := as.character({{ var_group }}))
+        col_1 <- ensym(var_group) ## Préciser la variable pour degrouper.
+        desc_degrou <-
+          data1 %>% 
+          tbl_summary(
+            type = list(
+              where(is.factor) ~ "categorical",
+              ## type des var (qualitatives)
+              all_continuous() ~ "continuous2",
+              ## type des var (continus)
+              quali ~  "categorical",
+              quanti ~ "continuous2"
+            ),
+            by = !!col_1,
+            ## Pour degrouper les tables
+            missing = "no",
+            ## Ne pas afficher les NA
+            statistic = list(
+              all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+              ## Stat à afficher pour les VAR (quantitatives)
+              all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
+            ),
+            digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## le nbre de décimale pour les variables.
+          ) %>%
+          bold_labels() %>%  ## Variables en gras.
+          italicize_levels() %>%  ## Variables en labels.
+          add_overall(col_label = "**Total**") %>%
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          add_stat(fns = everything() ~ add_by_n) %>% ## Stat en colonnes (Total et données manquantes)
+          modify_header(
+            list(
+              label ~ "**Variable**",
+              ## Titre des variables du tableau.
+              starts_with("add_n_stat") ~ "",
+              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              ## labels Stat des colonnes.
+              n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+            )
+          )  %>% modify_table_body ( ~ {
+            add_n_stat_cols <- grep("^add_n_stat_", colnames(.x), value = TRUE)
+            
+            if (all(add_n_stat_cols %in% colnames(.x))) {
+              .x <-  .x  %>% rename("add_n_stat_0" = n) %>% 
+                mutate(across(
+                  starts_with("stat_"),
+                  ~ ifelse(is.na(.), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .)
+                )) %>% select(-starts_with("add_n_stat_")) 
+            } else {
+              .x <- .x %>% select(-starts_with("add_n_stat"))
+            }
+            return(.x)
+          }
+          ) %>%
+          modify_footnote(everything() ~ NA) %>% ## Note de page.
+          modify_spanning_header(c(all_stat_cols(F) ~ paste0(group_title))) %>% ## Titre pour la variable de groupe.
+          modify_caption(paste0(table_title)) %>% bold_labels()
+        return(desc_degrou)
+      }  else if(group == TRUE) { 
+        data1  <- data1 %>% mutate({{ var_group }} := as.character({{ var_group }}))
+        col_1 <- ensym(var_group) ## Préciser la variable pour degrouper.
+        desc_degrou <-
+          data1 %>% 
+          tbl_summary(
+            type = list(
+              where(is.factor) ~ "categorical",
+              ## type des var (qualitatives)
+              all_continuous() ~ "continuous2",
+              ## type des var (continus)
+              quali ~ "categorical",
+              quanti ~ "continuous2"
+            ),
+            by = !!col_1,
+            ## Pour degrouper les tables
+            missing = "no",
+            ## Ne pas afficher les NA
+            statistic = list(
+              all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+              ## Stat à afficher pour les VAR (quantitatives)
+              all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
+            ),
+            digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## le nbre de décimale pour les variables.
+          ) %>%
+          bold_labels() %>%  ## Variables en gras.
+          italicize_levels() %>%  ## Variables en labels.# add_overall(col_label = "") %>%
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          add_stat(fns = everything() ~ add_by_n) %>% ## Stat en colonnes (Total et données manquantes)
+          modify_header(
+            list(
+              label ~ "**Variable**",
+              ## Titre des variables du tableau.
+              starts_with("add_n_stat") ~ "",
+              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              ## labels Stat des colonnes.
+              n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+            )
+          )  %>% modify_table_body ( ~ {
+            add_n_stat_cols <- grep("^add_n_stat_", colnames(.x), value = TRUE)
+            
+            if (all(add_n_stat_cols %in% colnames(.x))) {
+              .x <-  .x  %>% rename("add_n_stat_0" = n) %>% 
+                mutate(across(
+                  starts_with("stat_"),
+                  ~ ifelse(is.na(.), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .)
+                )) %>% select(-starts_with("add_n_stat_")) 
+            } else {
+              .x <- .x %>% select(-starts_with("add_n_stat"))
+            }
+            return(.x)
+          }
+          ) %>%
+          modify_footnote(everything() ~ NA) %>% ## Note de page.
+          modify_spanning_header(c(all_stat_cols(F) ~ paste0(group_title))) %>% ## Titre pour la variable de groupe.
+          modify_caption(paste0(table_title)) %>% bold_labels()
+        return(desc_degrou)
+        
+      } else if(group == FALSE) {
+        desc_degrou <- data1 %>% tbl_summary(
+          type = list(
+            ## Traitement des variables par type.
+            where(is.factor) ~ "categorical",
+            ## type des var (qualitatives)
+            all_continuous() ~ "continuous2",
+            ## type des var (continues)
+            quali ~ "categorical",
+            quanti ~ "continuous2"
+          ),
+          missing = "no",
+          ## Ne pas afficher les NA
+          statistic = list(
+            all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+            ## Stat à afficher pour les VAR (quantitatives)
+            all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (quali ~tatives)
+          ),
+          digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## Nbre de décimales pour les variables.
+        ) %>%
+          bold_labels() %>%  ## Variables en gras
+          italicize_levels() %>%  ## modalités en italique
+          add_n("{n} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          modify_header(list(
+            label  ~ "**Variable**",
+            ## Titre des variables du tableaux.
+            stat_0 ~ "**TOTAL** (n={N})",
+            ## label des Totals.
+            n      ~  "**Total** (**dm** ; **%dm**)"  ## labels des stats des NA.
+          )) %>% modify_footnote(everything() ~ NA) %>% 
+          modify_caption(paste0(table_title)) %>% 
+          bold_labels()
+        return(desc_degrou)
+      }
+      return(desc_degrou)
+    }  
+  }
+```
+
+
+
+
+##  Fonction 2 : Fonction de description des EI 
+
+
+
+##  Entête HTML :  Page de garde dans nos rapports.
+
+\
+
+
+La page de garde que nous insérons dans nos rapports Rmarkdown est constituée de code HTML. Ce code doit être adapté pour chaque étude afin de modifier les noms et adresses e-mail de l'équipe projet, le titre et l'acronyme de l'étude, le type de rapport (CIS, RDD, rapport final), ainsi que l'indice, la date et le motif du rapport.
+Tous les parties en couleur seront à adapter par le statisticien de l'étude. 
+
+\
+\
+
+ <!DOCTYPE html> 
+<html lang="fr"> 
+<table style="border-collapse: collapse; width: 100%; height: 88px;" border="1">
+<tbody>
+<tr style="height: 44px;">
+<td style="width: 20%; height: 66px;" rowspan="2"><img style="display: block; margin-left: auto; margin-right: auto;" src="./logo2020.svg" height="70" /></td>
+<td style="width: 60%; height: 44px; text-align: center;">Entité d'application : USMR<br />Emetteur : USMR  <br />Date:
+<script>
+date = new Date().toLocaleDateString();
+document.write(date);
+</script>
+
+ </td>
+<td style="width: 20%; height: 44px; text-align: center;">EN-USM-508</td>
+</tr>
+<tr style="height: 22px;">
+<td style="width: 60%; height: 22px; text-align: center;">DOCUMENT D'ENREGISTREMENT</td>
+<td style="width: 20%; height: 22px; text-align: center;">Ind : 09<br />Page : 1/1</td>
+</tr>
+<tr style="height: 22px;">
+<td style="width: 100%; height: 22px; text-align: center; text-transform: uppercase; font-weight: bolder;" colspan="3">[**rapport d'analyse statistique**]{style="color: purple;"}</td>
+</tr>
+</tbody>
+</table>
+<br />
+<p style="text-align: center;text-transform: uppercase; font-weight: bolder;font-size:20px;">[**rapport d'analyse statistique intermediaire CIS**]{style="color: purple;"}</p><br />
+<HR COLOR="black" ALIGN=CENTER WIDTH="70%">
+<p style="text-align: center;text-transform: uppercase; font-weight: bolder;font-size:15px;">[**CHUBX2021/10**]{style="color: purple;"}</p><br />
+<p style="text-align: center; font-size:15px;text-transform: uppercase;">[**Essai randomisé de phase III évaluant l’utilisation sélective versus systématique de la stomie de dérivation après exérèse totale du mésorectum pour cancer du rectum** ]{style="color: purple;"}</p><br />
+<p style="text-align: center;text-transform: uppercase; font-weight: bolder;font-size:15px;"> [**GRECCAR 17**]{style="color: purple;"}</p>
+<HR COLOR="black" ALIGN=CENTER WIDTH="70%" ><br/>
+  <p style="padding-left: 1%;">
+    <u style="text-decoration: underline"> Investigateur coordonnateur : </u><br/>
+    <u style="text-decoration: none">[**Pr Christophe LAURENT**]{style="color: purple;"} </u><br/>
+
+  </p><br/>
+ 
+  <p style="padding-left: 1%;">
+    <u style="text-decoration: underline"> Centre de Méthodologique et de Gestion des données : </u><br/>
+    <u style="text-decoration: none">Unité de soutien Méthodologique à la Recherche Clinique et Epidémiologique du CHU de Bordeaux (USMR) </u><br/>
+    <u style="text-decoration: none">Université de Bordeaux </u><br/>
+    <u style="text-decoration: none"> 146 rue léo Sagnat</u><br/>
+     <u style="text-decoration: none">  CS61292 - Case 75 </u><br/>
+     <u style="text-decoration: none"> 33076 Bordeaux cedex – France </u><br/>
+     <u style="text-decoration: none"> Tél : 33 (0)5 57 57 11 29, Fax : 33 (0)5 57 57 15 78 </u><br/>
+  </p><br/>
+<p>
+  
+</p> 
+  <p style="float: left;padding-left: 1%;margin: 0;">
+    <u style="text-decoration: none"> Méthodologiste : [**Dr Antoine Benard**]{style="color: purple;"} </u><br/>
+    <u style="text-decoration: none"> Biostatisticien : [**Sahardid Mohamed Houssein**]{style="color: purple;"}</u><br/>
+    <u style="text-decoration: none"> Data Manager : [**Jérôme GALET**]{style="color: purple;"}	</u><br/>
+    <br/>
+  </p>
+  
+  <p style="margin: 0;margin-left: 300px;padding-left: 4%;">
+    <u style="text-decoration: none"> mail: [**antoine.benard@chu-bordeaux.fr**]{style="color: purple;"} </u><br/>
+    <u style="text-decoration: none"> mail: [**sahardid.mohamed-houssein@chu-bordeaux.fr**]{style="color: purple;"} </u><br/>
+    <u style="text-decoration: none"> mail: [**jerome.galet@chu-bordeaux.fr**]{style="color: purple;"} </u><br/>
+    <br/>
+  </p> 
+<br />  
+<table style="border-collapse: collapse; width: 100%; height: 88px;" border="1">
+<tbody>
+<tr style="height: 22px;">
+<td style="width: 100%; height: 22px; text-align: center; text-transform: uppercase; font-weight: bolder;" colspan="3"> [**Rapport d'analyse statistique**]{style="color: purple;"}</td>
+</tr>
+ <tr>
+    <th>INDICE</th>
+    <th>Date</th>
+    <th>MOTIF</th>
+  </tr>
+  <tr>
+   <td>01</td>
+   <td>[**12/03/2024**]{style="color: purple;"}</td>
+   <td>Création du rapport</td>
+  </tr>
+    <tr>
+   <td>[**02**]{style="color: purple;"}</td>
+   <td>[**17/04/2024**]{style="color: purple;"}</td>
+   <td>[**Analyse complémentaire suite à la réunion de discussion du rapport avec les membres du CIS.**]{style="color: purple;"}</td>
+  </tr>
+</tbody>
+</table>
+<br />
+
+</html>    
+
+
+\
+\
+
+
+ + Code HTML à adapter pour chaque étude. Les parties à adapter se trouvent en commentaire après le dièse. 
+ 
+\
+\
+
+``` 
+<!-- <!DOCTYPE html> 
+<html lang="fr"> 
+<table style="border-collapse: collapse; width: 100%; height: 88px;" border="1">
+<tbody>
+<tr style="height: 44px;">
+<td style="width: 20%; height: 66px;" rowspan="2"><img style="display: block; margin-left: auto; margin-right: auto;" src="./02 - Rapport/02 - Autres documents/logo2020.svg" height="70" /></td> # Chemin du logo 
+<td style="width: 60%; height: 44px; text-align: center;">Entité d'application : USMR<br />Emetteur : USMR  <br />Date:
+<script>
+date = new Date().toLocaleDateString();
+document.write(date);
+</script>
+
+ </td>
+<td style="width: 20%; height: 44px; text-align: center;">EN-USM-508</td>
+</tr>
+<tr style="height: 22px;">
+<td style="width: 60%; height: 22px; text-align: center;">DOCUMENT D'ENREGISTREMENT</td>
+<td style="width: 20%; height: 22px; text-align: center;">Ind : 09<br />Page : 1/1</td>
+</tr>
+<tr style="height: 22px;">
+<td style="width: 100%; height: 22px; text-align: center; text-transform: uppercase; font-weight: bolder;" colspan="3">**rapport d'analyse statistique**</td> # Type de rapport
+</tr>
+</tbody>
+</table>
+<br />
+<p style="text-align: center;text-transform: uppercase; font-weight: bolder;font-size:20px;">rapport d'analyse statistique intermediaire CIS</p><br /> # Type d'analyse
+<HR COLOR="black" ALIGN=CENTER WIDTH="70%">
+<p style="text-align: center;text-transform: uppercase; font-weight: bolder;font-size:15px;">CHUBX2021/10 </p><br /> # Le code l'étude 
+<p style="text-align: center; font-size:15px;text-transform: uppercase;">Essai randomisé de phase III évaluant l’utilisation sélective versus systématique de la stomie de dérivation après exérèse totale du mésorectum pour cancer du rectum</p><br /> # Titre de l'étude 
+<p style="text-align: center;text-transform: uppercase; font-weight: bolder;font-size:15px;"> GRECCAR 17</p> # L'acronyme de l'étude 
+<HR COLOR="black" ALIGN=CENTER WIDTH="70%" ><br/>
+  <p style="padding-left: 1%;">
+    <u style="text-decoration: underline"> Investigateur coordonnateur : </u><br/>
+    <u style="text-decoration: none">Pr Christophe LAURENT </u><br/> # le nom de l'investigateur 
+
+  </p><br/>
+ 
+  <p style="padding-left: 1%;">
+    <u style="text-decoration: underline"> Centre de Méthodologique et de Gestion des données : </u><br/>
+    <u style="text-decoration: none">Unité de soutien Méthodologique à la Recherche Clinique et Epidémiologique du CHU de Bordeaux (USMR) </u><br/>
+    <u style="text-decoration: none">Université de Bordeaux </u><br/>
+    <u style="text-decoration: none"> 146 rue léo Sagnat</u><br/>
+     <u style="text-decoration: none">  CS61292 - Case 75 </u><br/>
+     <u style="text-decoration: none"> 33076 Bordeaux cedex – France </u><br/>
+     <u style="text-decoration: none"> Tél : 33 (0)5 57 57 11 29, Fax : 33 (0)5 57 57 15 78 </u><br/>
+  </p><br/>
+<p>
+  
+</p> 
+  <p style="float: left;padding-left: 1%;margin: 0;">
+    <u style="text-decoration: none"> Méthodologiste : Dr Antoine Benard </u><br/> # Nom du méthodologiste
+    <u style="text-decoration: none"> Biostatisticien : Sahardid Mohamed Houssein</u><br/> # Nom du biostatisticien
+    <u style="text-decoration: none"> Data Manager : Jérôme GALET	</u><br/> # Nom du DataManager
+    <br/>
+  </p>
+  
+  <p style="margin: 0;margin-left: 300px;padding-left: 4%;">
+    <u style="text-decoration: none"> mail: antoine.benard@chu-bordeaux.fr </u><br/> # mail du méthodologiste
+    <u style="text-decoration: none"> mail: sahardid.mohamed-houssein@chu-bordeaux.fr </u><br/> # mail du statisticien
+    <u style="text-decoration: none"> mail: jerome.galet@chu-bordeaux.fr </u><br/> # mail du DataManager 
+    <br/>
+  </p> 
+<br />  
+<table style="border-collapse: collapse; width: 100%; height: 88px;" border="1">
+<tbody>
+<tr style="height: 22px;">
+<td style="width: 100%; height: 22px; text-align: center; text-transform: uppercase; font-weight: bolder;" colspan="3">Rapport d'analyse statistique </td> 
+</tr>
+ <tr>
+    <th>INDICE</th>
+    <th>Date</th>
+    <th>MOTIF</th>
+  </tr>
+  <tr>
+   <td>01</td>
+   <td>12/03/2024</td> # Date de l'édition de la version final du rapport 
+   <td>Création du rapport</td>
+  </tr>
+    <tr>
+   <td>02</td> # La verion du rapport 
+   <td>17/04/2024</td> # la date de la nouvelle version 
+   <td>Analyse complémentaire suite à la réunion de discussion du rapport avec les membres du CIS.</td> # Un commentaire pour la nouvelle version 
+  </tr>
+</tbody>
+</table>
+<br />
+
+</html> --> 
+
+```
+
+\
+
++ Si on veut ajouter une nouvelle version, il faut incorporer ce bout de code en le complétant avec les éléments en commentaire.
+
+\
+
+
+
+```
+<!-- <tr>
+   <td>02</td> # La verion du rapport 
+   <td>17/04/2024</td> # la date de la nouvelle version 
+   <td>Analyse complémentaire suite à la réunion de discussion du rapport avec les membres du CIS.</td> # Un commentaire pour la nouvelle version 
+  </tr> --> 
+```
+
