@@ -39,7 +39,7 @@ add_by_n <- function(data, variable, by, tbl, ...) {
     dplyr::mutate(
       by_col = paste0("add_n_stat_",dplyr::row_number()),
       variable = style_number(variable),
-      variable = paste0(variable, "(", nb_NA ," ; ", nb_percent, "%",  ")")
+      variable = paste0(variable, " ", "(", nb_NA ," ; ", nb_percent, "%",  ")")
     )  %>% 
     dplyr::select(-c(by,nb_NA,nb_percent)) %>% 
     tidyr::pivot_wider(names_from = by_col, 
@@ -102,7 +102,7 @@ ordonner_variables_qualitatives <- function(data) {
 
 remove_zero_levels <- function(var) {forcats::fct_drop(var)} 
 
-
+ 
 
 #### Rélabelliser ------ 
 
@@ -110,7 +110,7 @@ ajouter_label_ndm <- function(data) {
   # Boucle pour changer les labels de toutes les variables
   for (i in seq_along(data)) {
     label_actuel <- labelled::var_label(data[[i]])
-    nouveau_label <- paste0(label_actuel, " ", "n( dm; %dm)")
+    nouveau_label <- paste0(label_actuel, " ", "n (dm ; %dm)")
     data[[i]] <- labelled::set_variable_labels(data[[i]], nouveau_label)
   }
   return(data)
@@ -121,7 +121,7 @@ ajouter_label_ndm <- function(data) {
 
 #### Fonction  descriptive (Reporting) Version 5.0 --------
 
-desc_var_6 <- ## Les arugments de la fonction
+desc_var_7 <- ## Les arugments de la fonction
   function(data1,
            ##  Jeux de données numéro 1.
            table_title = "",
@@ -131,6 +131,7 @@ desc_var_6 <- ## Les arugments de la fonction
            quanti = NULL,
            ## Vecteur des variables quantitatives mal decrites
            group,
+           var_title = "Variable",
            ## booléen pour préciser s'il faut degroupé ou pas les tables.
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
            group_title = "",
@@ -161,23 +162,22 @@ desc_var_6 <- ## Les arugments de la fonction
             missing = "no",
             ## Ne pas afficher les NA
             statistic = list(
-              all_continuous2() ~ c("{mean} ({sd})", "{min} ; {max}", "{median} ({p25};{p75})"),
+              all_continuous2() ~ c("{mean} ({sd})", "{median} ({p25} ; {p75})","{min} ; {max}"),
               ## Stat à afficher pour les VAR (quantitatives)
               all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
             ),
             digits = list(all_continuous() ~ 1, all_categorical() ~ c(0, 0, 1)) ## le nbre de décimale pour les variables.
           ) %>%
           gtsummary::bold_labels() %>%  ## Variables en gras.
-          gtsummary::italicize_levels() %>%  ## Variables en labels.
-          gtsummary::add_overall(col_label = "**Total**") %>%
-          gtsummary::add_n("{N_nonmiss} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)") %>%
+          gtsummary::add_overall(col_label = "**Total**", last = TRUE) %>%
+          gtsummary::add_n("{N_nonmiss} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)", last = TRUE) %>%
           gtsummary::add_stat(fns = everything() ~ add_by_n) %>% ## Stat en colonnes (Total et données manquantes)
           gtsummary::modify_header(
             list(
-              label ~ "**Variable**",
+              label ~ paste0("**",var_title,"**"),
               ## Titre des variables du tableau.
               starts_with("add_n_stat") ~ "",
-              all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
+              all_stat_cols(stat_0 = FALSE) ~ "**{level}**",
               ## labels Stat des colonnes.
               n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
             )
@@ -199,8 +199,8 @@ desc_var_6 <- ## Les arugments de la fonction
             return(.x)
           }) %>%
           gtsummary::modify_footnote(everything() ~ NA) %>% ## Note de page.
-          gtsummary::modify_spanning_header(c(all_stat_cols(F) ~ paste0(group_title))) %>% ## Titre pour la variable de groupe.
-          gtsummary::modify_caption(paste0(table_title)) %>% 
+          gtsummary::modify_spanning_header(c(all_stat_cols(F) ~ paste0("**",group_title,"**"))) %>% ## Titre pour la variable de groupe.
+          gtsummary::modify_caption(paste0("**",table_title,"**")) %>% 
           gtsummary::bold_labels() ## Titre pour la table.
         return(desc_degrou)
       }  else if(group == TRUE) { 
@@ -235,7 +235,7 @@ desc_var_6 <- ## Les arugments de la fonction
           gtsummary::add_stat(fns = everything() ~ add_by_n) %>% 
           gtsummary::modify_header(
             list(
-              label ~ "**Variable**",
+              label ~ paste0("**",var_title,"**"),
               ## Titre des variables du tableau.
               starts_with("add_n_stat") ~ "",
               all_stat_cols(stat_0 = FALSE) ~ "**_{level}_ (n={n}, {style_percent(p)}%**)",
@@ -839,7 +839,7 @@ desc_var_6 <- ## Les arugments de la fonction
           gtsummary::bold_labels()
         return(desc_degrou)
       }
+    }
+    
   }
-
-}
 
