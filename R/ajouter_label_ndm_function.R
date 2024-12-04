@@ -1,0 +1,63 @@
+
+#' Add "n (dm ; %dm)" to Variable Labels
+#'
+#' This function appends the text "n (dm ; %dm)" to the labels of all variables in a dataset.
+#' It uses the `labelled` package to modify and update variable labels in-place.
+#'
+#' @param data A data frame containing the dataset whose variable labels need to be updated.
+#'
+#' @details
+#' The function iterates over all columns in the dataset and performs the following steps:
+#' 1. Retrieves the current label of each variable using `labelled::var_label`.
+#' 2. Creates a new label by appending the text `"n (dm ; %dm)"` to the existing label.
+#' 3. Updates the variable's label using `labelled::set_variable_labels`.
+#'
+#' This is useful when preparing a dataset for descriptive analysis, where it is helpful to display
+#' missing data statistics (`n`, `dm`, and `%dm`) alongside variable labels in summary tables.
+#'
+#' @return A data frame with updated variable labels.
+#'
+#' @examples
+#' # Example usage:
+#' library(labelled)
+#'
+#' # Create a sample dataset
+#' data <- data.frame(
+#'   var1 = c(1, 2, NA),
+#'   var2 = c("A", "B", NA)
+#' )
+#'
+#' # Assign initial labels
+#' data <- labelled::set_variable_labels(
+#'   data,
+#'   labels = c(var1 = "Variable 1", var2 = "Variable 2")
+#' )
+#'
+#' # Add "n (dm ; %dm)" to labels
+#' data <- ajouter_label_ndm(data)
+#'
+#' # Check updated labels
+#' labelled::var_label(data)
+#'
+#' @importFrom labelled var_label set_variable_labels
+#' @export
+
+
+# Fonction pour ajouter une indication "n (dm ; %dm)" aux labels des variables
+ajouter_label_ndm <- function(data) {
+
+  # Boucle pour itérer sur toutes les colonnes du jeu de données
+  for (i in seq_along(data)) {
+    # Obtenir le label actuel de la variable (si défini)
+    label_actuel <- labelled::var_label(data[[i]])
+
+    # Créer un nouveau label en ajoutant "n (dm ; %dm)" au label existant
+    nouveau_label <- paste0(label_actuel, " ", "n (dm ; %dm)")
+
+    # Appliquer le nouveau label à la variable en utilisant la fonction set_variable_labels
+    data[[i]] <- labelled::set_variable_labels(data[[i]], nouveau_label)
+  }
+
+  # Retourner le jeu de données modifié avec les nouveaux labels
+  return(data)
+}

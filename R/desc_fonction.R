@@ -15,6 +15,8 @@ desc_var <- ## Les arugments de la fonction
            ## booléen pour préciser s'il faut degroupé ou pas les tables.
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
            group_title = "",
+           round_quanti = c(1),
+           round_quali = c(0,1),
            DM = "NULL") {
 
     data1 <- data1 %>% ajouter_label_ndm()
@@ -23,7 +25,7 @@ desc_var <- ## Les arugments de la fonction
     if(DM == "tout") {
 
       data1 <- ordonner_variables_qualitatives(data1) %>%
-        dplyr::mutate(across(where(is.factor), remove_zero_levels))
+        dplyr::mutate(across(where(is.factor),~ forcats::fct_drop(.)))
 
       if (group == "ALL") {
 
@@ -36,12 +38,14 @@ desc_var <- ## Les arugments de la fonction
           table_title = table_title,
           quali = quali,
           quanti = quanti,
+          round_quanti = round_quanti,
+          round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
           group_title = group_title
         )
 
-        return(desc_group_all)}
+        }
 
       else if(group == TRUE) {
 
@@ -55,12 +59,13 @@ desc_var <- ## Les arugments de la fonction
           table_title = table_title,
           quali = quali,
           quanti = quanti,
+          round_quanti = round_quanti,
+          round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
           group_title = group_title
         )
-
-        return(desc_group_all)}
+        }
 
        else if(group == FALSE) {
 
@@ -68,10 +73,11 @@ desc_var <- ## Les arugments de la fonction
            table_title = table_title,
            quali = quali,
            quanti = quanti,
+           round_quanti = round_quanti,
+           round_quali = round_quali,
            var_title = var_title
          )
 
-        return(desc_group_all)
       }
     }
     else if(DM == "tri") {
@@ -90,12 +96,14 @@ desc_var <- ## Les arugments de la fonction
           table_title = table_title,
           quali = quali,
           quanti = quanti,
+          round_quanti = round_quanti,
+          round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
           group_title = group_title)
 
 
-       return(desc_group_all)}
+       }
 
        else if(group == TRUE) {
 
@@ -109,12 +117,14 @@ desc_var <- ## Les arugments de la fonction
            table_title = table_title,
            quali = quali,
            quanti = quanti,
+           round_quanti = round_quanti,
+           round_quali = round_quali,
            var_title = var_title,
            var_group = var_group,
            group_title = group_title)
 
 
-         return(desc_group_all) }
+         }
 
         else if(group == FALSE) {
 
@@ -122,17 +132,19 @@ desc_var <- ## Les arugments de la fonction
             table_title = table_title,
             quali = quali,
             quanti = quanti,
+            round_quanti = round_quanti,
+            round_quali = round_quali,
             var_title = var_title
           )
 
-          return(desc_group_all)
+
 
       }
     }
 
     else if (DM == "remove") {
 
-      data1 <- data1 %>% dplyr::mutate(across(where(is.factor), remove_zero_levels))
+      data1 <- data1 %>% dplyr::mutate(across(where(is.factor), ~ forcats::fct_drop(.)))
 
       if (group == "ALL") {
 
@@ -146,12 +158,14 @@ desc_var <- ## Les arugments de la fonction
           table_title = table_title,
           quali = quali,
           quanti = quanti,
+          round_quanti = round_quanti,
+          round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
           group_title = group_title)
 
 
-        return(desc_group_all)}
+        }
 
 
        else if(group == TRUE) {
@@ -166,12 +180,13 @@ desc_var <- ## Les arugments de la fonction
            table_title = table_title,
            quali = quali,
            quanti = quanti,
+           round_quanti = round_quanti,
+           round_quali = round_quali,
            var_title = var_title,
            var_group = var_group,
            group_title = group_title)
 
 
-         return(desc_group_all)
 
       } else if(group == FALSE) {
 
@@ -180,9 +195,10 @@ desc_var <- ## Les arugments de la fonction
           table_title = table_title,
           quali = quali,
           quanti = quanti,
+          round_quanti = round_quanti,
+          round_quali = round_quali,
           var_title = var_title)
 
-        return(desc_group_all)
 
 
       }
@@ -195,12 +211,14 @@ desc_var <- ## Les arugments de la fonction
           table_title = table_title,
           quali = quali,
           quanti = quanti,
+          round_quanti = round_quanti,
+          round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
           group_title = group_title)
 
 
-        return(desc_group_all)}
+        }
 
     else if(group == TRUE) {
 
@@ -209,12 +227,14 @@ desc_var <- ## Les arugments de la fonction
         table_title = table_title,
         quali = quali,
         quanti = quanti,
+        round_quanti = round_quanti,
+        round_quali = round_quali,
         var_title = var_title,
         var_group = var_group,
         group_title = group_title)
 
 
-      return(desc_group_all)}
+      }
 
      else if(group == FALSE) {
 
@@ -223,12 +243,16 @@ desc_var <- ## Les arugments de la fonction
          table_title = table_title,
          quali = quali,
          quanti = quanti,
+         round_quanti = round_quanti,
+         round_quali = round_quali,
          var_title = var_title)
 
-       return(desc_group_all)
+
 
       }
     }
+
+    return(desc_group_all)
 
   }
 
