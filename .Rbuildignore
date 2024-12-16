@@ -3,3 +3,6 @@
 ^LICENSE\.md$
 ^doc$
 ^Meta$
+tests/code_test.R
+tests/data_test.R
+vignettes/descriptions_fonctions.Rmd

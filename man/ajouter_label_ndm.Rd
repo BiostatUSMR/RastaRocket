@@ -40,7 +40,8 @@ data <- data.frame(
 # Assign initial labels
 data <- labelled::set_variable_labels(
   data,
-  labels = c(var1 = "Variable 1", var2 = "Variable 2")
+  var1 = "Variable 1",
+  var2 = "Variable 2"
 )
 
 # Add "n (dm ; \%dm)" to labels

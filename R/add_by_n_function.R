@@ -74,7 +74,7 @@ add_by_n <- function(data, variable, by, tbl, ...) {
     # Création de nouvelles colonnes pour la sortie formatée
     dplyr::mutate(
       by_col = paste0("add_n_stat_", dplyr::row_number()), # ID unique basé sur le numéro de ligne
-      variable = style_number(variable),                  # Formatage éventuel de la variable (fonction externe)
+      variable = gtsummary::style_number(variable),                  # Formatage éventuel de la variable (fonction externe)
       variable = paste0(variable, " ", "(", nb_NA, " ; ", nb_percent, "%", ")") # Concaténation des stats dans une chaîne lisible
     ) %>%
 

@@ -1,10 +1,11 @@
-Package: develloppementfonction
-Title: What the Package Does (One Line, Title Case)
+Package: Descusmr
+Title: Description of clinical research tables
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+    person("Sahardid", "Mohamed Houssein", , "saharmed94@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: Description of the tables, ungrouped and grouped, with some associated data management actions, 
+             such as sorting the terms of the variables and deleting terms with zero numbers.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -13,9 +14,11 @@ Depends: R (>= 3.5.0)
 LazyData: TRUE
 Imports:
     dplyr,
+    tidyr,
     labelled,
     rlang,
-    tidyr
+    gtsummary,
+    forcats
 Suggests:
     testthat,
     knitr

@@ -1,4 +1,3 @@
-
 #' Add "n (dm ; %dm)" to Variable Labels
 #'
 #' This function appends the text "n (dm ; %dm)" to the labels of all variables in a dataset.
@@ -30,7 +29,8 @@
 #' # Assign initial labels
 #' data <- labelled::set_variable_labels(
 #'   data,
-#'   labels = c(var1 = "Variable 1", var2 = "Variable 2")
+#'   var1 = "Variable 1",
+#'   var2 = "Variable 2"
 #' )
 #'
 #' # Add "n (dm ; %dm)" to labels
@@ -41,6 +41,7 @@
 #'
 #' @importFrom labelled var_label set_variable_labels
 #' @export
+
 
 
 # Fonction pour ajouter une indication "n (dm ; %dm)" aux labels des variables

@@ -11,29 +11,22 @@ data %>%
 
 
 
-####  Point à finaliser ( les points avec 3# ont été finalisé)
+####  - Point à finaliser
+
+# - Description du package et Nom du package à completer.
+
+### - Les noms des fonctions à remplacer( desc_all = desc_degroup_group ; desc_true = desc_degroup ;
+
+# desc_group) ( revoir group ou ungroup)
 
 
-### Rtools à installer
+# - Regler les pb dans les check
 
-### Documentation Roxygen
-
-### Commentaires / Anglais
-
-# les parties des fonctions repetitives à automatiser
-
-### Remove, c'est une seule ligne de code à mettre juste dans le code principale au lieu d'une fonction
-
-### Effacer tous les return internes
-
-### Renommer tous les scripts comme les noms des fonctions
-
-### Modifications au sein de la fonction à prioriser du plus utile au moins utile
-
-### La seule modification à finaliser ( parametrer les nombres de decimales)
-
-# Bilan des taches restantes
+# - Vignette à ajouter pour les exemples ( à voir comment faire)
 
 
+
+###  Est-ce-que les dependances des packages sont gerées?
+### En gros avec tidyverse, est-ce-que nous devons charger dplyr et tidyr par exemple?
 
 

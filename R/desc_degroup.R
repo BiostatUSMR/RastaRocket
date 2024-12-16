@@ -1,51 +1,55 @@
-
-#' Create a Summary Table for Descriptive Statistics
+#' Description of grouped and ungrouped tables with data management
 #'
-#' This function generates a summary table of descriptive statistics for the given dataset,
-#' tailored for both categorical and continuous variables. It allows grouping and provides
-#' options to customize table titles, variable labels, and grouping headers.
+#' This function generates a statistical summary of grouped and ungrouped data
+#' using the `gtsummary` package. It allows displaying customized statistics for
+#' categorical and continuous variables, with options to adjust titles, rounding,
+#' and other parameters.
 #'
-#' @param data1 A data frame containing the dataset to summarize.
-#' @param table_title A character string specifying the title of the table (default: `""`).
-#' @param quali A vector of qualitative variables to include in the summary. These should be poorly described variables to prioritize for better description (default: `NULL`).
-#' @param quanti A vector of quantitative variables to include in the summary (default: `NULL`).
-#' @param var_title A character string specifying the column header for variables in the table (default: `"Variable"`).
-#' @param var_group A grouping variable to segment the table by. It must be a column in `data1` (default: `NULL`).
-#' @param group_title A character string specifying the header for the group variable in the table (default: `""`).
+#' @param data1 Dataframe. The input data to generate the table.
+#' @param table_title Character. Title of the table (default: "").
+#' @param quali Character vector. A vector containing the names of the qualitative
+#'   variables to describe (default: NULL).
+#' @param quanti Character vector. A vector containing the names of the quantitative
+#'   variables to describe (default: NULL).
+#' @param round_quanti Numeric vector. Number of decimal places for quantitative
+#'   variables (default: 1).
+#' @param round_quali Numeric vector. Number of decimal places for qualitative variables
+#'   (default: c(0, 1)).
+#' @param var_title Character. Title of the variable column in the table (default: "Variable").
+#' @param var_group Character. Name of the variable used to group the data (default: NULL).
+#' @param group_title Character. Title for the group variable (default: "").
+#'
+#' @return A `gtsummary` object representing the descriptive table.
 #'
 #' @details
-#' The function uses the `gtsummary` package to generate descriptive statistics.
-#' - Categorical variables are summarized using counts and percentages.
-#' - Continuous variables are summarized with the mean, standard deviation, minimum, maximum, median, and interquartile range.
-#' - Missing data statistics are added as a separate column, and formatting is applied to emphasize key elements (e.g., bold variable labels, italicized levels).
-#'
-#' It supports additional customization options such as hiding NA values, controlling the number of decimal places, and adding headers or captions.
-#'
-#' @return A `gtsummary` object representing the formatted summary table.
+#' - Categorical variables are displayed with statistics like `{n} ({p}%)`.
+#' - Continuous variables are displayed with statistics such as
+#'   `{mean} ({sd})`, `{min} ; {max}`, `{median} ({p25};{p75})`.
+#' - Columns are formatted and customized with options for style, titles, and footnotes.
 #'
 #' @examples
 #' # Example usage:
-#' library(gtsummary)
-#' data(mtcars)
-#' desc_table <- desc_true(
-#'   data1 = mtcars,
-#'   table_title = "Descriptive Statistics of mtcars Dataset",
-#'   quali = c("cyl", "gear"),
-#'   quanti = c("mpg", "disp", "hp"),
-#'   var_title = "Variable Name",
-#'   var_group = "cyl",
-#'   group_title = "Cylinders"
+#' data <- data.frame(
+#'   group = c("A", "B", "A", "B"),
+#'   gender = factor(c("Male", "Female", "Female", "Male")),
+#'   age = c(34, 29, 45, 36)
+#' )
+#' desc_degroup(
+#'   data1 = data,
+#'   table_title = "Descriptive Table",
+#'   quali = c("gender"),
+#'   quanti = c("age"),
+#'   var_group = "group"
 #' )
 #'
-#' desc_table
-#'
 #' @import dplyr
-#' @importFrom gtsummary tbl_summary bold_labels italicize_levels add_n modify_header modify_caption
+#' @import gtsummary
+#' @importFrom rlang ensym
 #' @export
 
 
 
-desc_true <- function (data1,
+desc_degroup <- function (data1,
                        table_title = "",
                        ## Titre de la table
                        quali = NULL,

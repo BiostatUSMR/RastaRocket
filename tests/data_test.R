@@ -2,7 +2,6 @@
 
 ### Packages
 
-
 library(tidyverse)
 library(dplyr)
 library(gtsummary)
@@ -33,7 +32,6 @@ data$quatre_modalites <- factor(data$quatre_modalites, levels = c("A", "B", "C",
 data$sexe <- factor(data$sexe, levels = c(0, 1), labels = c("Femme", "Homme"))
 
 # Aperçu des données
-
 
 
 
