@@ -21,5 +21,6 @@ Imports:
     forcats
 Suggests:
     testthat,
-    knitr
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr

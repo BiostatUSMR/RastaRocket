@@ -1,0 +1,147 @@
+---
+title: "DescusmrVignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{DescusmrVignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup}
+library(Descusmr)
+library(dplyr)
+library(tidyr)
+library(labelled)
+library(rlang)
+library(gtsummary)
+library(forcats)
+```
+
+
+This vignette shows the different options for the `desc_var` function, with examples to illustrate how it can be used.
+ 
+ 
+ 
+```{r}
+# Charger le package nécessaire
+set.seed(123)  # Pour garantir la reproductibilité
+
+# Création du data frame
+data <- data.frame(
+  Age = c(rnorm(45, mean = 50, sd = 10), rep(NA, 5)),  # Renommée Age
+  sexe = sample(c(0, 1), 50, replace = TRUE, prob = c(0.6, 0.4)),  # Renommée sexe
+  quatre_modalites = sample(c("A", "B", "C"), 50, replace = TRUE, prob = c(0.2, 0.5, 0.3)),  # Modalités sans "D"
+  traitement = sample(c("BRAS-A", "BRAS-B"), 50, replace = TRUE, prob = c(0.55, 0.45)),  # Nouvelle variable traitement
+  echelle = sample(0:5, 50, replace = TRUE)  # Nouvelle variable entière de 0 à 5
+)
+
+# Ajouter la modalité "D" comme niveau sans effectif
+data$quatre_modalites <- factor(data$quatre_modalites, levels = c("A", "B", "C", "D"))
+
+# Ajouter des labels à la variable sexe
+data$sexe <- factor(data$sexe, levels = c(0, 1), labels = c("Femme", "Homme"))
+
+# Aperçu des données
+
+
+
+data <- data %>% labelled::set_variable_labels( Age = "Age",
+                                                sexe = "sexe",
+                                                traitement  = "traitement",
+                                                quatre_modalites = "quatres niveaux",
+                                                echelle = "Echelle")
+```
+
+ 
+We'll describe all the options we've used in the example below.
+
+The dataset to be analyzed is passed through the `desc_var` function.
+
+- table_title: Title of the descriptive table. Here, it is "test".
+
+- var_group: The variable used for grouping the data. Here, it is "traitement".
+
+- group_title: Title for the grouping variable column. Here, it is "traitement".
+
+- group: A grouped and ungrouped description is created with the ‘ALL’ option.
+
+- DM: We sort the frequencies of the modalities in descending order and remove modalities with zero frequencies with the option DM = "tout". 
+
+
+```{r first example}
+
+data %>% desc_var(table_title = "test",
+             var_group = "traitement",
+             group_title = "traitement",
+             group = "ALL", 
+             DM = "tout")
+```
+
+
+In this example, we're just going to change the DM = ‘ALL’ option to DM = ‘tri’. 
+So we're just going to order the numbers of the categories of the categorical variables in descending order.
+
+
+```{r second example}
+data %>% desc_var(table_title = "test",
+             var_group = "traitement",
+             group_title = "traitement",
+             group = "ALL", 
+             DM = "tri")
+```
+
+
+In this case, we remove only the modalities with a null headcount. 
+
+```{r third example}
+data %>% desc_var(table_title = "test",
+             var_group = "traitement",
+             group_title = "traitement",
+             group = "ALL", 
+             DM = "remove")
+```
+
+
+Now we're going to change the way we describe the variables, by using a ungrouped description.
+
+
+```{r }
+data %>% desc_var(table_title = "test",
+             var_group = "traitement",
+             group_title = "traitement",
+             group = TRUE, 
+             DM = "tout")
+```
+
+
+A ungrouped description by sorting the characteristics of the categorical variables in descending order
+
+
+```{r }
+data %>% desc_var(table_title = "test",
+             var_group = "traitement",
+             group_title = "traitement",
+             group = TRUE, 
+             DM = "tri")
+```
+
+
+A ungrouped description of the variables by removing the variables with zero modality. 
+
+
+```{r}
+data %>% desc_var(table_title = "test",
+             var_group = "traitement",
+             group_title = "traitement",
+             group = TRUE, 
+             DM = "remove")
+```
+

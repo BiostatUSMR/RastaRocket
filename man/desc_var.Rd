@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc_var_function.R
 \name{desc_var}
 \alias{desc_var}
-\title{Description de variables pour un jeu de données}
+\title{Generate Descriptive Tables for Variables}
 \usage{
 desc_var(
   data1,
@@ -19,69 +19,74 @@ desc_var(
 )
 }
 \arguments{
-\item{data1}{Un data.frame. Le jeu de données à analyser.}
+\item{data1}{A data frame containing the dataset to be analyzed.}
 
-\item{table_title}{Un caractère. Le titre de la table. Par défaut, chaîne vide \code{""}.}
+\item{table_title}{A character string specifying the title of the table.}
 
-\item{quali}{Un vecteur de caractères. Variables qualitatives spécifiques à analyser. Par défaut, \code{NULL}.}
+\item{quali}{A vector of qualitative variables to be described. Defaults to \code{NULL}.}
 
-\item{quanti}{Un vecteur de caractères. Variables quantitatives spécifiques à analyser. Par défaut, \code{NULL}.}
+\item{quanti}{A vector of quantitative variables to be described. Defaults to \code{NULL}.}
 
-\item{group}{Soit "ALL", \code{TRUE}, ou \code{FALSE}. Spécifie comment les résultats sont regroupés :
+\item{group}{A logical value or character string indicating whether the variables should be grouped. Options:
 \itemize{
-\item \code{"ALL"} : Tous les groupes sont analysés.
-\item \code{TRUE} : Les groupes définis par \code{var_group} sont utilisés.
-\item \code{FALSE} : Aucune analyse par groupe.
+\item \code{"ALL"}: Grouped by all levels of \code{var_group}.
+\item \code{TRUE}: Grouped by \code{var_group}.
+\item \code{FALSE}: Not grouped.
 }}
 
-\item{var_title}{Un caractère. Nom de la colonne indiquant les variables dans la table résultante. Par défaut, \code{"Variable"}.}
+\item{var_title}{A character string for the title of the variable column in the table. Defaults to \code{"Variable"}.}
 
-\item{var_group}{Un caractère. Le nom de la variable de groupe utilisée pour la stratification. Par défaut, \code{NULL}.}
+\item{var_group}{A variable used for grouping (if applicable). Defaults to \code{NULL}.}
 
-\item{group_title}{Un caractère. Titre spécifique pour le regroupement. Par défaut, chaîne vide \code{""}.}
+\item{group_title}{A character string specifying the title for the grouping variable.}
 
-\item{round_quanti}{Un vecteur numérique. Précision d'arrondi pour les variables quantitatives. Par défaut, \code{c(1)}.}
+\item{round_quanti}{An integer vector specifying the number of decimal places for quantitative variables. Defaults to \code{c(1)}.}
 
-\item{round_quali}{Un vecteur numérique. Précision d'arrondi pour les variables qualitatives (e.g., pourcentage). Par défaut, \code{c(0, 1)}.}
+\item{round_quali}{An integer vector specifying the number of decimal places for qualitative variables. Defaults to \code{c(0, 1)}.}
 
-\item{DM}{Un caractère. Spécifie l'action à effectuer avant l'analyse :
+\item{DM}{A character string controlling the handling of missing data. Options:
 \itemize{
-\item \code{"tout"} : Toutes les modalités sont conservées.
-\item \code{"tri"} : Ordonnancement des modalités qualitatives.
-\item \code{"remove"} : Suppression des modalités inutilisées.
-\item \code{"NULL"} : Aucune action spécifique.
+\item \code{"tout"}: Keep all variables and drop unused levels of factors.
+\item \code{"tri"}: Retain only variables with at least three levels.
+\item \code{"remove"}: Remove missing levels from factors.
+\item \code{"NULL"}: No special handling of missing data.
 }}
 }
 \value{
-Un tableau descriptif des variables qualitatives et quantitatives du jeu de données, potentiellement stratifié par groupes.
+A gtsummary table object containing the descriptive statistics.
 }
 \description{
-Cette fonction permet de décrire des variables qualitatives et quantitatives
-d'un jeu de données, avec des options pour regrouper les résultats ou non, et
-pour ajuster les données avant l'analyse (comme ordonner ou supprimer certaines modalités).
+This function creates descriptive tables for variables in a dataset. It can handle qualitative and quantitative variables, grouped or ungrouped, and supports multiple configurations for handling missing data (DM).
 }
 \details{
-La fonction applique plusieurs étapes préliminaires aux données, telles que
-la suppression des valeurs manquantes, le tri ou la transformation des variables qualitatives.
-Elle s'appuie sur les fonctions internes \code{desc_all}, \code{desc_true}, et \code{desc_false}
-pour générer les résumés descriptifs selon les paramètres d'entrée.
+The function processes the dataset according to the specified parameters and generates descriptive tables.
+\itemize{
+\item It first uses the \code{ajouter_label_ndm()} function to append missing data statistics to variable labels.
+\item Depending on the \code{group} and \code{DM} arguments, it adjusts the dataset and creates tables using helper functions like \code{desc_group}, \code{desc_degroup}, and \code{desc_degroup_group}.
+\item Qualitative variables are reordered, and unused levels are dropped when necessary.
+}
 }
 \examples{
-# Exemple d'utilisation
+# Example usage:
+library(dplyr)
+
+# Sample dataset
 data1 <- data.frame(
-  group = rep(c("A", "B"), each = 5),
-  age = rnorm(10, 30, 5),
-  gender = sample(c("M", "F"), 10, replace = TRUE)
+  group = c("A", "B", "A", "C"),
+  var1 = c(1, 2, 3, NA),
+  var2 = c("X", "Y", "X", NA)
 )
 
-result <- desc_var(
-  data1,
-  table_title = "Description par groupes",
-  quali = "gender",
-  quanti = "age",
+# Generate descriptive table
+table <- desc_var(
+  data1 = data1,
+  table_title = "Descriptive Table",
+  quali = "var2",
+  quanti = "var1",
   group = TRUE,
-  var_group = "group"
+  var_group = "group",
+  group_title = "Group",
+  DM = "tout"
 )
-print(result)
 
 }
