@@ -1,5 +1,7 @@
 ---
 title: "DescusmrVignette"
+author: "Sahardid Mohamed"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{DescusmrVignette}
@@ -7,12 +9,16 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r,include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning=FALSE,
+  message=FALSE
 )
 ```
+
+\
 
 
 ```{r setup}
@@ -25,11 +31,17 @@ library(gtsummary)
 library(forcats)
 ```
 
+\
 
 This vignette shows the different options for the `desc_var` function, with examples to illustrate how it can be used.
  
  
- 
+\
+
+We are going to generate test data to apply the function `desc_var` 
+
+\
+
 ```{r}
 # Charger le package nécessaire
 set.seed(123)  # Pour garantir la reproductibilité
@@ -60,6 +72,7 @@ data <- data %>% labelled::set_variable_labels( Age = "Age",
                                                 echelle = "Echelle")
 ```
 
+\
  
 We'll describe all the options we've used in the example below.
 
@@ -73,22 +86,27 @@ The dataset to be analyzed is passed through the `desc_var` function.
 
 - group: A grouped and ungrouped description is created with the ‘ALL’ option.
 
-- DM: We sort the frequencies of the modalities in descending order and remove modalities with zero frequencies with the option DM = "tout". 
+
+In this example, we did not operate any data management.
 
 
-```{r first example}
+\
 
-data %>% desc_var(table_title = "test",
+```{r}
+data %>% Descusmr::desc_var(table_title = "test",
              var_group = "traitement",
              group_title = "traitement",
-             group = "ALL", 
-             DM = "tout")
+             group = "ALL")
 ```
 
+`
 
-In this example, we're just going to change the DM = ‘ALL’ option to DM = ‘tri’. 
+\
+
+In this example, we're just going to add DM = ‘tri’. 
 So we're just going to order the numbers of the categories of the categorical variables in descending order.
 
+\
 
 ```{r second example}
 data %>% desc_var(table_title = "test",
@@ -98,8 +116,11 @@ data %>% desc_var(table_title = "test",
              DM = "tri")
 ```
 
+\
 
 In this case, we remove only the modalities with a null headcount. 
+
+\
 
 ```{r third example}
 data %>% desc_var(table_title = "test",
@@ -109,9 +130,32 @@ data %>% desc_var(table_title = "test",
              DM = "remove")
 ```
 
+\
+
+
+In this example, we perform the two previous DataMangement operations at the same time with the DM = ‘ALL’ option.
+
+We also specify to consider the variable ‘Echelle’ as a quantitative variable because it is described as a qualitative variable.
+To do this, we use the argument quanti = ‘Echelle’. It should be noted that for several variables 
+specify them in a vector. 
+
+\
+
+```{r}
+
+data %>% Descusmr::desc_var(table_title = "test",
+             quanti = "echelle",
+             var_group = "traitement",
+             group_title = "traitement",
+             group = "ALL", 
+             DM = "tout")
+```
+
+\
 
 Now we're going to change the way we describe the variables, by using a ungrouped description.
 
+\
 
 ```{r }
 data %>% desc_var(table_title = "test",
@@ -121,27 +165,43 @@ data %>% desc_var(table_title = "test",
              DM = "tout")
 ```
 
+\
 
-A ungrouped description by sorting the characteristics of the categorical variables in descending order
+In this example, we are using a grouped description. 
 
-
-```{r }
-data %>% desc_var(table_title = "test",
-             var_group = "traitement",
-             group_title = "traitement",
-             group = TRUE, 
-             DM = "tri")
-```
-
-
-A ungrouped description of the variables by removing the variables with zero modality. 
-
+\
 
 ```{r}
-data %>% desc_var(table_title = "test",
-             var_group = "traitement",
-             group_title = "traitement",
-             group = TRUE, 
-             DM = "remove")
+data %>% Descusmr::desc_var(table_title = "test", group = FALSE)
 ```
+
+
+
+<!-- A ungrouped description by sorting the characteristics of the categorical variables in descending order -->
+
+<!-- \ -->
+
+<!-- ```{r } -->
+<!-- data %>% desc_var(table_title = "test", -->
+<!--              var_group = "traitement", -->
+<!--              group_title = "traitement", -->
+<!--              group = TRUE,  -->
+<!--              DM = "tri") -->
+<!-- ``` -->
+
+<!-- \ -->
+
+<!-- A ungrouped description of the variables by removing the variables with zero modality.  -->
+
+<!-- \ -->
+
+
+<!-- ```{r} -->
+<!-- data %>% desc_var(table_title = "test", -->
+<!--              var_group = "traitement", -->
+<!--              group_title = "traitement", -->
+<!--              group = TRUE,  -->
+<!--              DM = "remove") -->
+<!-- ``` -->
+
 

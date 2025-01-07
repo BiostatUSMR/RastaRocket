@@ -13,20 +13,11 @@ data %>%
 
 ####  - Point à finaliser
 
-# - Description du package et Nom du package à completer.
 
-### - Les noms des fonctions à remplacer( desc_all = desc_degroup_group ; desc_true = desc_degroup ;
+## Envoyer un mail à Aurore ; TF + 2 internes( MAtisse + Emilie)
 
-# desc_group) ( revoir group ou ungroup)
+## Préparation de la fonction EI ( états des lieux /Panorama)
 
-
-# - Regler les pb dans les check
-
-# - Vignette à ajouter pour les exemples ( à voir comment faire)
-
-
-
-###  Est-ce-que les dependances des packages sont gerées?
-### En gros avec tidyverse, est-ce-que nous devons charger dplyr et tidyr par exemple?
+## Mettre le mail
 
 
