@@ -1,6 +1,5 @@
 ---
 title: "DescusmrVignette"
-author: "Sahardid Mohamed"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
