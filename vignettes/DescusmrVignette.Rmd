@@ -176,31 +176,4 @@ data %>% Descusmr::desc_var(table_title = "test", group = FALSE)
 
 
 
-<!-- A ungrouped description by sorting the characteristics of the categorical variables in descending order -->
-
-<!-- \ -->
-
-<!-- ```{r } -->
-<!-- data %>% desc_var(table_title = "test", -->
-<!--              var_group = "traitement", -->
-<!--              group_title = "traitement", -->
-<!--              group = TRUE,  -->
-<!--              DM = "tri") -->
-<!-- ``` -->
-
-<!-- \ -->
-
-<!-- A ungrouped description of the variables by removing the variables with zero modality.  -->
-
-<!-- \ -->
-
-
-<!-- ```{r} -->
-<!-- data %>% desc_var(table_title = "test", -->
-<!--              var_group = "traitement", -->
-<!--              group_title = "traitement", -->
-<!--              group = TRUE,  -->
-<!--              DM = "remove") -->
-<!-- ``` -->
-
 
