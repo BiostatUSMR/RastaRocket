@@ -6,8 +6,9 @@ data %>%
              quanti = "echelle",
              var_group = "traitement",
              group_title = "traitement",
-             group = FALSE,
-             DM = "tout")
+             group = TRUE,
+             DM = "tout",
+           tests = TRUE)
 
 
 
