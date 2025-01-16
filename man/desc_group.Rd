@@ -50,7 +50,7 @@ formatting options.
 \item The table is formatted with bold labels for variables and italicized levels for
 the categories.
 \item Missing data is excluded from the summary (\code{missing = "no"}).
-\item The total column is labeled as "\strong{TOTAL} (n={N})".
+\item The total column is labeled as "\strong{TOTAL} (n=N)".
 \item The footnotes are removed from the table using \code{modify_footnote}.
 }
 }

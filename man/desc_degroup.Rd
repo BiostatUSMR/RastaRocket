@@ -13,7 +13,8 @@ desc_degroup(
   round_quali = c(0, 1),
   var_title = "Variable",
   var_group = NULL,
-  group_title = ""
+  group_title = "",
+  tests = FALSE
 )
 }
 \arguments{
@@ -38,6 +39,13 @@ variables (default: 1).}
 \item{var_group}{Character. Name of the variable used to group the data (default: NULL).}
 
 \item{group_title}{Character. Title for the group variable (default: "").}
+
+\item{tests}{A value in order to add p value. Defaut to \code{FALSE} OPTION :
+\itemize{
+\item \code{FALSE}: No p-value add
+\item \code{TRUE}: Add p-value made by default by gtsummary. See gtsummary add_p() options.
+\item \code{list()}: To force tests. See gtsummary add_p() options.
+}}
 }
 \value{
 A \code{gtsummary} object representing the descriptive table.
@@ -68,7 +76,8 @@ desc_degroup(
   table_title = "Descriptive Table",
   quali = c("gender"),
   quanti = c("age"),
-  var_group = "group"
+  var_group = "group",
+  tests = FALSE
 )
 
 }

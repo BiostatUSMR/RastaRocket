@@ -21,6 +21,10 @@
 #'   - `"tri"`: Retain only variables with at least three levels.
 #'   - `"remove"`: Remove missing levels from factors.
 #'   - `"NULL"`: No special handling of missing data.
+#' @param tests A value in order to add p value. Defaut to `FALSE` OPTION :
+#'   - `FALSE`: No p-value add
+#'   - `TRUE`: Add p-value made by default by gtsummary. See gtsummary add_p() options.
+#'   - `list()`: To force tests. See gtsummary add_p() options.
 #'
 #' @details
 #' The function processes the dataset according to the specified parameters and generates descriptive tables.
@@ -78,7 +82,8 @@ desc_var <- ## Les arugments de la fonction
            group_title = "",
            round_quanti = c(1),
            round_quali = c(0,1),
-           DM = "NULL") {
+           DM = "NULL",
+           tests = FALSE) {
 
     data1 <- data1 %>% ajouter_label_ndm()
 
@@ -103,7 +108,8 @@ desc_var <- ## Les arugments de la fonction
           round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
-          group_title = group_title
+          group_title = group_title,
+          tests = tests
         )
 
         }
@@ -124,7 +130,8 @@ desc_var <- ## Les arugments de la fonction
           round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
-          group_title = group_title
+          group_title = group_title,
+          tests = tests
         )
         }
 
@@ -161,7 +168,8 @@ desc_var <- ## Les arugments de la fonction
           round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
-          group_title = group_title)
+          group_title = group_title,
+          tests = tests)
 
 
        }
@@ -182,7 +190,8 @@ desc_var <- ## Les arugments de la fonction
            round_quali = round_quali,
            var_title = var_title,
            var_group = var_group,
-           group_title = group_title)
+           group_title = group_title,
+           tests = tests)
 
 
          }
@@ -223,7 +232,8 @@ desc_var <- ## Les arugments de la fonction
           round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
-          group_title = group_title)
+          group_title = group_title,
+          tests = tests)
 
 
         }
@@ -245,7 +255,8 @@ desc_var <- ## Les arugments de la fonction
            round_quali = round_quali,
            var_title = var_title,
            var_group = var_group,
-           group_title = group_title)
+           group_title = group_title,
+           tests = tests)
 
 
 
@@ -276,7 +287,8 @@ desc_var <- ## Les arugments de la fonction
           round_quali = round_quali,
           var_title = var_title,
           var_group = var_group,
-          group_title = group_title)
+          group_title = group_title,
+          tests = tests)
 
 
         }
@@ -292,7 +304,8 @@ desc_var <- ## Les arugments de la fonction
         round_quali = round_quali,
         var_title = var_title,
         var_group = var_group,
-        group_title = group_title)
+        group_title = group_title,
+        tests = tests)
 
 
       }

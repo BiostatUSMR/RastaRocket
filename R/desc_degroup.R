@@ -18,6 +18,10 @@
 #' @param var_title Character. Title of the variable column in the table (default: "Variable").
 #' @param var_group Character. Name of the variable used to group the data (default: NULL).
 #' @param group_title Character. Title for the group variable (default: "").
+#' @param tests A value in order to add p value. Defaut to `FALSE` OPTION :
+#'   - `FALSE`: No p-value add
+#'   - `TRUE`: Add p-value made by default by gtsummary. See gtsummary add_p() options.
+#'   - `list()`: To force tests. See gtsummary add_p() options.
 #'
 #' @return A `gtsummary` object representing the descriptive table.
 #'
@@ -39,7 +43,8 @@
 #'   table_title = "Descriptive Table",
 #'   quali = c("gender"),
 #'   quanti = c("age"),
-#'   var_group = "group"
+#'   var_group = "group",
+#'   tests = FALSE
 #' )
 #'
 #' @import dplyr
@@ -59,7 +64,8 @@ desc_degroup <- function (data1,
                        round_quali = c(0,1),
                        var_title = "Variable",
                        var_group = NULL,
-                       group_title = "") {
+                       group_title = "",
+                       tests = FALSE) {
 
   col_1 <- rlang::ensym(var_group)
 
@@ -107,5 +113,18 @@ desc_degroup <- function (data1,
     gtsummary::modify_footnote(everything() ~ NA) %>% ## Note de page.
     gtsummary::modify_spanning_header(c(all_stat_cols(F) ~ paste0("**", group_title, "**"))) %>% ## Titre pour la variable de groupe.
     gtsummary::modify_caption(paste0("**", table_title, "**")) %>% bold_labels()
-
+  # Add tests tests 
+  if (is.list(tests)) {
+    desc_degrou <- desc_degrou %>%
+      gtsummary::add_p(test = tests) %>%
+      gtsummary::separate_p_footnotes()
+  } else if (isTRUE(tests)) {
+    desc_degrou <- desc_degrou %>%
+      gtsummary::add_p() %>%
+      gtsummary::separate_p_footnotes()
+  } 
+  
+  return(desc_degrou)
+  
+  
 }

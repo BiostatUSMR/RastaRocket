@@ -15,7 +15,8 @@ desc_var(
   group_title = "",
   round_quanti = c(1),
   round_quali = c(0, 1),
-  DM = "NULL"
+  DM = "NULL",
+  tests = FALSE
 )
 }
 \arguments{
@@ -50,6 +51,13 @@ desc_var(
 \item \code{"tri"}: Retain only variables with at least three levels.
 \item \code{"remove"}: Remove missing levels from factors.
 \item \code{"NULL"}: No special handling of missing data.
+}}
+
+\item{tests}{A value in order to add p value. Defaut to \code{FALSE} OPTION :
+\itemize{
+\item \code{FALSE}: No p-value add
+\item \code{TRUE}: Add p-value made by default by gtsummary. See gtsummary add_p() options.
+\item \code{list()}: To force tests. See gtsummary add_p() options.
 }}
 }
 \value{
