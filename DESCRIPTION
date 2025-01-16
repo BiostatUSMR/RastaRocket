@@ -19,7 +19,8 @@ Imports:
     rlang,
     gtsummary,
     forcats,
-    gt
+    gt,
+    cardx
 Suggests:
     testthat,
     knitr,

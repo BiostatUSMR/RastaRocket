@@ -61,6 +61,7 @@
 #' @importFrom forcats fct_drop
 #' @importFrom tidyr drop_na
 #' @importFrom gtsummary tbl_summary
+#' @import cardx
 #' @export
 
 

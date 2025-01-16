@@ -222,7 +222,36 @@ gtsummary::tbl_stack(list(tb1, tb2))
 
 # Statistical tests
 
+## Add Default Statistical Tests
 
+You can include statistical tests in your summary table using the `tests = TRUE` argument. This automatically applies default statistical tests for the grouped variables.
 
+The following example adds statistical tests for all features, grouped by the `traitement` variable.
+
+```{r}
+data %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = TRUE,
+                     var_group = "traitement",
+                     tests = TRUE)
+```
+
+## Specify Statistical Tests for Each Feature
+
+For greater control, you can specify the test to use for each feature by passing a named list to the tests argument. The example below applies:
+
+- t-test for Age,
+- Chi-squared test for sexe, and
+- Fisher's exact test for echelle.
+
+```{r}
+data %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = TRUE,
+                     var_group = "traitement",
+                     tests = list(Age = "t.test",
+                                  sexe = "chisq.test",
+                                  echelle = "fisher.test"))
+```
 
 
