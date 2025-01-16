@@ -178,5 +178,51 @@ Descusmr::intermediate_header(tbls = list(tb1, tb2),
 
 ```
 
+# Number of Digits in Quantitative and Qualitative Features
+
+You can specify the number of digits for quantiative and qualitative features using the `round_quanti` and `round_quali` arguments, respectively.
+
+## Specify Number of Digits
+
+In the example below, quantitative values are rounded to 0 decimal places, while qualitative values are rounded to 1 decimal place.
+
+```{r}
+data %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = TRUE,
+                     var_group = "traitement",
+                     round_quanti = 0,
+                     round_quali = 1)
+```
+
+## Combine Subtables with Different Rounding
+
+To have more control over rounding, you can create subtables with different numbers of digits and combine them into a single table using `gtsummary::tbl_stack`.
+
+```{r}
+tb1 <- data %>%
+  dplyr::select(Age, sexe, traitement) %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = TRUE,
+                     var_group = "traitement",
+                     round_quanti = 0,
+                     round_quali = 0)
+
+tb2 <- data %>%
+  dplyr::select(quatre_modalites, traitement) %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = TRUE,
+                     var_group = "traitement",
+                     round_quanti = 2,
+                     round_quali = 2)
+
+gtsummary::tbl_stack(list(tb1, tb2))
+
+```
+
+# Statistical tests
+
+
+
 
 
