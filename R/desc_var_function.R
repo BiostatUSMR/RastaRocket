@@ -49,10 +49,7 @@
 #' table <- desc_var(
 #'   data1 = data1,
 #'   table_title = "Descriptive Table",
-#'   quali = "var2",
-#'   quanti = "var1",
-#'   group = TRUE,
-#'   var_group = "group",
+#'   group = FALSE,
 #'   group_title = "Group",
 #'   DM = "tout"
 #' )
@@ -63,9 +60,6 @@
 #' @importFrom gtsummary tbl_summary
 #' @import cardx
 #' @export
-
-
-
 
 desc_var <- ## Les arugments de la fonction
   function(data1,
@@ -85,249 +79,104 @@ desc_var <- ## Les arugments de la fonction
            round_quali = c(0,1),
            DM = "NULL",
            tests = FALSE) {
-
-    data1 <- data1 %>% ajouter_label_ndm()
-
-
-    if(DM == "tout") {
-
+    
+    ### Add labels
+    data1 <- data1 %>% Descusmr::ajouter_label_ndm()
+    
+    ### Apply DM option
+    if(DM == "tout"){
       data1 <- ordonner_variables_qualitatives(data1) %>%
         dplyr::mutate(across(where(is.factor),~ forcats::fct_drop(.)))
-
-      if (group == "ALL") {
-
-        col_1 <- rlang::ensym(var_group)
-
-        data1 <- data1 %>% tidyr::drop_na({{ var_group }}) %>%
-          dplyr::mutate(!!col_1 := factor(!!col_1))
-
-        desc_group_all <-  data1 %>% desc_degroup_group(
-          table_title = table_title,
-          quali = quali,
-          quanti = quanti,
-          round_quanti = round_quanti,
-          round_quali = round_quali,
-          var_title = var_title,
-          var_group = var_group,
-          group_title = group_title,
-          tests = tests
-        )
-
-        }
-
-      else if(group == TRUE) {
-
-        col_1 <- rlang::ensym(var_group)
-
-        data1 <- data1 %>% tidyr::drop_na({{ var_group }}) %>%
-          dplyr::mutate(!!col_1 := factor(!!col_1))
-
-
-        desc_group_all <-  data1 %>% desc_degroup(
-          table_title = table_title,
-          quali = quali,
-          quanti = quanti,
-          round_quanti = round_quanti,
-          round_quali = round_quali,
-          var_title = var_title,
-          var_group = var_group,
-          group_title = group_title,
-          tests = tests
-        )
-        }
-
-       else if(group == FALSE) {
-
-         desc_group_all <-  data1 %>% desc_group(
-           table_title = table_title,
-           quali = quali,
-           quanti = quanti,
-           round_quanti = round_quanti,
-           round_quali = round_quali,
-           var_title = var_title
-         )
-
-      }
-    }
-    else if(DM == "tri") {
-
+    } else if(DM == "tri") {
       data1 <- ordonner_variables_qualitatives(data1)
-
-      if (group == "ALL") {
-
-        col_1 <- rlang::ensym(var_group)
-
-        data1 <- data1 %>% tidyr::drop_na({{ var_group }}) %>%
-          dplyr::mutate(!!col_1 := factor(!!col_1))
-
-
-        desc_group_all <-  data1 %>% desc_degroup_group(
-          table_title = table_title,
-          quali = quali,
-          quanti = quanti,
-          round_quanti = round_quanti,
-          round_quali = round_quali,
-          var_title = var_title,
-          var_group = var_group,
-          group_title = group_title,
-          tests = tests)
-
-
-       }
-
-       else if(group == TRUE) {
-
-         col_1 <- rlang::ensym(var_group)
-
-         data1 <- data1 %>% tidyr::drop_na({{ var_group }}) %>%
-           dplyr::mutate(!!col_1 := factor(!!col_1))
-
-
-        desc_group_all <-  data1 %>% desc_degroup(
-           table_title = table_title,
-           quali = quali,
-           quanti = quanti,
-           round_quanti = round_quanti,
-           round_quali = round_quali,
-           var_title = var_title,
-           var_group = var_group,
-           group_title = group_title,
-           tests = tests)
-
-
-         }
-
-        else if(group == FALSE) {
-
-          desc_group_all <-  data1 %>% desc_group(
-            table_title = table_title,
-            quali = quali,
-            quanti = quanti,
-            round_quanti = round_quanti,
-            round_quali = round_quali,
-            var_title = var_title
-          )
-
-
-
-      }
-    }
-
-    else if (DM == "remove") {
-
+    } else if (DM == "remove") {
       data1 <- data1 %>% dplyr::mutate(across(where(is.factor), ~ forcats::fct_drop(.)))
-
-      if (group == "ALL") {
-
-        col_1 <- rlang::ensym(var_group)
-
-        data1 <- data1 %>% tidyr::drop_na({{ var_group }}) %>%
-          dplyr::mutate(!!col_1 := factor(!!col_1))
-
-
-       desc_group_all <-  data1 %>% desc_degroup_group(
-          table_title = table_title,
-          quali = quali,
-          quanti = quanti,
-          round_quanti = round_quanti,
-          round_quali = round_quali,
-          var_title = var_title,
-          var_group = var_group,
-          group_title = group_title,
-          tests = tests)
-
-
-        }
-
-
-       else if(group == TRUE) {
-
-         col_1 <- rlang::ensym(var_group)
-
-         data1 <- data1 %>% tidyr::drop_na({{ var_group }}) %>%
-           dplyr::mutate(!!col_1 := factor(!!col_1))
-
-
-         desc_group_all <-  data1 %>% desc_degroup(
-           table_title = table_title,
-           quali = quali,
-           quanti = quanti,
-           round_quanti = round_quanti,
-           round_quali = round_quali,
-           var_title = var_title,
-           var_group = var_group,
-           group_title = group_title,
-           tests = tests)
-
-
-
-      } else if(group == FALSE) {
-
-
-        desc_group_all <-  data1 %>% desc_group(
-          table_title = table_title,
-          quali = quali,
-          quanti = quanti,
-          round_quanti = round_quanti,
-          round_quali = round_quali,
-          var_title = var_title)
-
-
-
-      }
     }
-    else if (DM== "NULL") {
-      if (group == "ALL") {
-
-
-        desc_group_all <-  data1 %>% desc_degroup_group(
-          table_title = table_title,
-          quali = quali,
-          quanti = quanti,
-          round_quanti = round_quanti,
-          round_quali = round_quali,
-          var_title = var_title,
-          var_group = var_group,
-          group_title = group_title,
-          tests = tests)
-
-
-        }
-
-    else if(group == TRUE) {
-
-
-      desc_group_all <-  data1 %>% desc_degroup(
-        table_title = table_title,
-        quali = quali,
-        quanti = quanti,
-        round_quanti = round_quanti,
-        round_quali = round_quali,
-        var_title = var_title,
-        var_group = var_group,
-        group_title = group_title,
-        tests = tests)
-
-
+    
+    if(is.null(var_group)){
+      col_1 <- NULL
+    } else {
+      col_1 <- rlang::ensym(var_group)
+      
+      if(group_title == ""){
+        group_title <- var_group
       }
-
-     else if(group == FALSE) {
-
-
-       desc_group_all <-  data1 %>% desc_group(
-         table_title = table_title,
-         quali = quali,
-         quanti = quanti,
-         round_quanti = round_quanti,
-         round_quali = round_quali,
-         var_title = var_title)
-
-
-
-      }
+      
     }
-
-    return(desc_group_all)
-
+    
+    base_table <- data1 %>%
+      gtsummary::tbl_summary(
+        type = list(
+          where(is.factor) ~ "categorical",
+          ## type des var (qualitatives)
+          gtsummary::all_continuous() ~ "continuous2",
+          ## type des var (continus)
+          quali ~ "categorical",
+          quanti ~ "continuous2"
+        ),
+        by = !!col_1,
+        ## Pour degrouper les tables
+        missing = "no",
+        ## Ne pas afficher les NA
+        statistic = list(
+          gtsummary::all_continuous2() ~ c("{mean} ({sd})", "{median} ({p25} ; {p75})","{min} ; {max}"),
+          ## Stat à afficher pour les VAR (quantitatives)
+          gtsummary::all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
+        ),
+        digits = list(gtsummary::all_continuous() ~ round_quanti, gtsummary::all_categorical() ~ round_quali) ## le nbre de décimale pour les variables.
+      ) %>%
+      gtsummary::bold_labels()  ## Variables en gras.
+    
+    ### Add Overall column if specified
+    if(!is.null(var_group) & group == "ALL"){
+      base_table <- base_table %>%
+        gtsummary::add_overall(col_label = "**Total**")
+    }
+    
+    ### Add missing values
+    base_table_missing <- base_table %>%
+      gtsummary::add_n("{N_nonmiss} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)")
+    
+    if(!is.null(var_group)){
+      base_table_missing <- base_table_missing %>%
+        gtsummary::add_stat(fns = everything() ~ add_by_n) ## Stat en colonnes (Total et données manquantes)
+    }
+    
+    base_table_missing <- base_table_missing %>%
+      gtsummary::modify_header(
+        list(
+          label ~ paste0("**",var_title,"**"),
+          ## Titre des variables du tableau.
+          starts_with("add_n_stat") ~ "",
+          gtsummary::all_stat_cols(stat_0 = FALSE) ~ "**{level}**",
+          ## labels Stat des colonnes.
+          n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+        )
+      )  %>%
+      gtsummary::modify_table_body(~ modify_table_body_func(.)) %>%  ## Appel de la fonction externe pour modifier le corps du tableau
+      gtsummary::modify_footnote(everything() ~ NA) ## Note de page.
+    
+    if(!is.null(var_group)){
+      base_table_missing <- base_table_missing %>%
+        gtsummary::modify_spanning_header(c(gtsummary::all_stat_cols(F) ~ paste0("**",group_title,"**")))
+    }
+    
+    res <- base_table_missing %>%
+      gtsummary::modify_caption(paste0("**",table_title,"**")) %>%
+      gtsummary::bold_labels() ## Titre pour la table.
+    
+    # Add tests tests 
+    if (is.list(tests)) {
+      res <- res %>%
+        gtsummary::add_p(test = tests) %>%
+        gtsummary::separate_p_footnotes()
+    } else if (isTRUE(tests)) {
+      res <- res %>%
+        gtsummary::add_p() %>%
+        gtsummary::separate_p_footnotes()
+    }
+    
+    return(res)
+    
   }
 

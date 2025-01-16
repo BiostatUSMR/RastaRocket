@@ -51,6 +51,11 @@ ajouter_label_ndm <- function(data) {
   for (i in seq_along(data)) {
     # Obtenir le label actuel de la variable (si défini)
     label_actuel <- labelled::var_label(data[[i]])
+    
+    # set variable name as label if NULL
+    if(is.null(label_actuel)){
+      label_actuel <- colnames(data)[i]
+    }
 
     # Créer un nouveau label en ajoutant "n (dm ; %dm)" au label existant
     nouveau_label <- paste0(label_actuel, " ", "n (dm ; %dm)")

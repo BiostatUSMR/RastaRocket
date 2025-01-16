@@ -89,10 +89,7 @@ data1 <- data.frame(
 table <- desc_var(
   data1 = data1,
   table_title = "Descriptive Table",
-  quali = "var2",
-  quanti = "var1",
-  group = TRUE,
-  var_group = "group",
+  group = FALSE,
   group_title = "Group",
   DM = "tout"
 )
