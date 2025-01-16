@@ -26,7 +26,7 @@
 #' - The table is formatted with bold labels for variables and italicized levels for
 #'   the categories.
 #' - Missing data is excluded from the summary (`missing = "no"`).
-#' - The total column is labeled as "**TOTAL** (n={N})".
+#' - The total column is labeled as "**TOTAL** (n=N)".
 #' - The footnotes are removed from the table using `modify_footnote`.
 #'
 #' @examples
