@@ -18,7 +18,8 @@ Imports:
     labelled,
     rlang,
     gtsummary,
-    forcats
+    forcats,
+    gt
 Suggests:
     testthat,
     knitr,
