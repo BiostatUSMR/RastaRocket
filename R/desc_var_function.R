@@ -109,118 +109,27 @@ desc_var <- ## Les arugments de la fonction
     if(is.null(show_missing_data)){
       show_missing_data <- anyNA(data1)
     }
-    if(show_missing_data){
-      data1 <- data1 %>% Descusmr::ajouter_label_ndm()
-    } else {
-      if(anyNA(data1)){
-        warning("You ask not to show missing data but some are present in data1, be careful")
-      }
-    }
     
-    ### Apply DM option
-    if(DM == "tout"){
-      data1 <- ordonner_variables_qualitatives(data1) %>%
-        dplyr::mutate(across(where(is.factor),~ forcats::fct_drop(.)))
-    } else if(DM == "tri") {
-      data1 <- ordonner_variables_qualitatives(data1)
-    } else if (DM == "remove") {
-      data1 <- data1 %>% dplyr::mutate(across(where(is.factor), ~ forcats::fct_drop(.)))
-    }
+    data1 <- prepare_table(data1 = data1,
+                           show_missing_data = show_missing_data,
+                           DM = DM)
     
-    if(is.null(var_group)){
-      col_1 <- NULL
-    } else {
-      col_1 <- rlang::ensym(var_group)
-      
-      if(group_title == ""){
-        group_title <- var_group
-      }
-      
-    }
+    base_table <- base_table(data1 = data1,
+                             var_group = var_group,
+                             group_title = group_title,
+                             quali = quali,
+                             quanti = quanti,
+                             round_quanti = round_quanti,
+                             round_quali = round_quali)
     
-    base_table <- data1 %>%
-      gtsummary::tbl_summary(
-        type = list(
-          where(is.factor) ~ "categorical",
-          ## type des var (qualitatives)
-          gtsummary::all_continuous() ~ "continuous2",
-          ## type des var (continus)
-          quali ~ "categorical",
-          quanti ~ "continuous2"
-        ),
-        by = !!col_1,
-        ## Pour degrouper les tables
-        missing = "no",
-        ## Ne pas afficher les NA
-        statistic = list(
-          gtsummary::all_continuous2() ~ c("{mean} ({sd})", "{median} ({p25} ; {p75})","{min} ; {max}"),
-          ## Stat à afficher pour les VAR (quantitatives)
-          gtsummary::all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
-        ),
-        digits = list(gtsummary::all_continuous() ~ round_quanti, gtsummary::all_categorical() ~ round_quali) ## le nbre de décimale pour les variables.
-      ) %>%
-      gtsummary::bold_labels()  ## Variables en gras.
-    
-    ### Add Overall column if specified
-    if(!is.null(var_group) & group == "ALL"){
-      base_table <- base_table %>%
-        gtsummary::add_overall(col_label = "**Total**")
-    }
-    
-    ### Add missing values
-    if(show_missing_data){
-      base_table_missing <- base_table %>%
-        gtsummary::add_n("{N_nonmiss} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)")
-    } else {
-      base_table_missing <- base_table %>%
-        gtsummary::add_n("{N_nonmiss}", col_label = "**N**")
-    }
-        
-    if(!is.null(var_group)){
-      if(show_missing_data){
-        base_table_missing <- base_table_missing %>%
-          gtsummary::add_stat(fns = everything() ~ add_by_n) ## Stat en colonnes (Total et données manquantes)
-      } else {
-        base_table_missing <- base_table_missing %>%
-          gtsummary::add_stat(fns = everything() ~ add_by_n_noNA) ## Stat en colonnes (Total et données manquantes)
-      }
-      
-    }
-    
-    ls_modify_header <- list(
-      label ~ paste0("**",var_title,"**"),
-      ## Titre des variables du tableau.
-      starts_with("add_n_stat") ~ ""
-    )
-    
-    if(show_missing_data){
-      ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
-    } else {
-      ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  "**Total**" ## labels des Stat des NA.
-    }
-    
-    if(is.null(show_n_per_group)){
-      show_n_per_group = is.null(var_group)
-    }
-    
-    if(!show_n_per_group){
-      ls_modify_header[[length(ls_modify_header) + 1]] <- gtsummary::all_stat_cols() ~ "**{level}**"
-      # ls_modify_header[[length(ls_modify_header) + 1]] <- stat_0 ~ ""
-    }
-    
-    base_table_missing <- base_table_missing %>%
-      gtsummary::modify_header(ls_modify_header) %>%
-      gtsummary::modify_table_body(~ modify_table_body_func(.)) %>%  ## Appel de la fonction externe pour modifier le corps du tableau
-      gtsummary::modify_footnote(everything() ~ NA) ## Note de page.
-    
-    if(!is.null(var_group)){
-      base_table_missing <- base_table_missing %>%
-        gtsummary::modify_spanning_header(c(gtsummary::all_stat_cols(F) ~ paste0("**",group_title,"**")))
-    }
-    
-    res <- base_table_missing %>%
-      gtsummary::modify_caption(paste0("**",table_title,"**")) %>%
-      gtsummary::bold_labels() ## Titre pour la table.
+    res <- customize_table(base_table = base_table,
+                           var_group = var_group,
+                           group = group,
+                           show_missing_data = show_missing_data,
+                           show_n_per_group = show_n_per_group,
+                           group_title = group_title,
+                           table_title = table_title,
+                           var_title = var_title)
     
     # Add tests tests 
     if (is.list(tests)) {
