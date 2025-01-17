@@ -96,6 +96,8 @@ In the previous example, no specific data management operations were applied.
 
 ## Order of categorical features
 
+### Order by frequency
+
 In this example, we add `DM = "tri"`, which orders the categories of categorical variables in descending order based on their counts.
 
 ```{r second example}
@@ -104,6 +106,20 @@ data %>% desc_var(table_title = "test",
              group_title = "traitement",
              group = "ALL", 
              DM = "tri")
+```
+
+### Custom order
+
+The default order of categorical features is determined by their levels. If you want to customize this order, you can modify the levels using a library such as `forcats`.
+
+```{r}
+data %>%
+  dplyr::mutate(quatre_modalites = forcats::fct_relevel(quatre_modalites,
+                                                       "A", "C", "D", "B")) %>%
+  desc_var(table_title = "test",
+           var_group = "traitement",
+           group_title = "traitement",
+           group = "ALL")
 ```
 
 
