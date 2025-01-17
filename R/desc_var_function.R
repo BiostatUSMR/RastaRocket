@@ -25,6 +25,10 @@
 #'   - `FALSE`: No p-value add
 #'   - `TRUE`: Add p-value made by default by gtsummary. See gtsummary add_p() options.
 #'   - `list()`: To force tests. See gtsummary add_p() options.
+#' @param show_n_per_group Default to `NULL`. Should the 'N' appears in the colum header of the groups. Can be either :
+#'   - `FALSE`: No 'N' is shown
+#'   - `TRUE`: 'N' is shown
+#'   - `NULL` (default): will be switch to `FALSE` if `var_group` is not `NULL` and `TRUE` otherwise
 #'
 #' @details
 #' The function processes the dataset according to the specified parameters and generates descriptive tables.
@@ -61,6 +65,19 @@
 #' @import cardx
 #' @export
 
+# data1 = iris
+# table_title = ""
+# quali = NULL
+# quanti = NULL
+# group = "ALL"
+# var_title = "Variable"
+# var_group = "Species" ## Variable de groupe (dégroupée les tables)
+# group_title = "Speciesss"
+# round_quanti = c(1)
+# round_quali = c(0,1)
+# DM = "NULL"
+# tests = FALSE
+
 desc_var <- ## Les arugments de la fonction
   function(data1,
            ##  Jeux de données numéro 1.
@@ -78,7 +95,8 @@ desc_var <- ## Les arugments de la fonction
            round_quanti = c(1),
            round_quali = c(0,1),
            DM = "NULL",
-           tests = FALSE) {
+           tests = FALSE,
+           show_n_per_group = NULL) {
     
     ### Add labels
     data1 <- data1 %>% Descusmr::ajouter_label_ndm()
@@ -142,17 +160,25 @@ desc_var <- ## Les arugments de la fonction
         gtsummary::add_stat(fns = everything() ~ add_by_n) ## Stat en colonnes (Total et données manquantes)
     }
     
+    ls_modify_header <- list(
+      label ~ paste0("**",var_title,"**"),
+      ## Titre des variables du tableau.
+      starts_with("add_n_stat") ~ "",
+      ## labels Stat des colonnes.
+      n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+    )
+    
+    if(is.null(show_n_per_group)){
+      show_n_per_group = is.null(var_group)
+    }
+    
+    if(!show_n_per_group){
+      ls_modify_header[[length(ls_modify_header) + 1]] <- gtsummary::all_stat_cols() ~ "**{level}**"
+      # ls_modify_header[[length(ls_modify_header) + 1]] <- stat_0 ~ ""
+    }
+    
     base_table_missing <- base_table_missing %>%
-      gtsummary::modify_header(
-        list(
-          label ~ paste0("**",var_title,"**"),
-          ## Titre des variables du tableau.
-          starts_with("add_n_stat") ~ "",
-          gtsummary::all_stat_cols(stat_0 = FALSE) ~ "**{level}**",
-          ## labels Stat des colonnes.
-          n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
-        )
-      )  %>%
+      gtsummary::modify_header(ls_modify_header) %>%
       gtsummary::modify_table_body(~ modify_table_body_func(.)) %>%  ## Appel de la fonction externe pour modifier le corps du tableau
       gtsummary::modify_footnote(everything() ~ NA) ## Note de page.
     

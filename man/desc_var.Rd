@@ -16,7 +16,8 @@ desc_var(
   round_quanti = c(1),
   round_quali = c(0, 1),
   DM = "NULL",
-  tests = FALSE
+  tests = FALSE,
+  show_n_per_group = NULL
 )
 }
 \arguments{
@@ -58,6 +59,13 @@ desc_var(
 \item \code{FALSE}: No p-value add
 \item \code{TRUE}: Add p-value made by default by gtsummary. See gtsummary add_p() options.
 \item \code{list()}: To force tests. See gtsummary add_p() options.
+}}
+
+\item{show_n_per_group}{Default to \code{NULL}. Should the 'N' appears in the colum header of the groups. Can be either :
+\itemize{
+\item \code{FALSE}: No 'N' is shown
+\item \code{TRUE}: 'N' is shown
+\item \code{NULL} (default): will be switch to \code{FALSE} if \code{var_group} is not \code{NULL} and \code{TRUE} otherwise
 }}
 }
 \value{
