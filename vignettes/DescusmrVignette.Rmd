@@ -201,11 +201,13 @@ To insert intermediate titles, you can use the `intermediate_header` function wh
 ```{r}
 tb1 <- data %>%
   dplyr::select(Age, sexe) %>%
-  Descusmr::desc_var(table_title = "test", group = FALSE)
+  Descusmr::desc_var(table_title = "test",
+                     group = FALSE)
 
 tb2 <- data %>%
   dplyr::select(quatre_modalites) %>%
-  Descusmr::desc_var(table_title = "test", group = FALSE)
+  Descusmr::desc_var(table_title = "test",
+                     group = FALSE)
 
 Descusmr::intermediate_header(tbls = list(tb1, tb2),
                               group_header = c("Title A", "Title B"))
@@ -214,7 +216,7 @@ Descusmr::intermediate_header(tbls = list(tb1, tb2),
 
 # Number of Digits in Quantitative and Qualitative Features
 
-You can specify the number of digits for quantiative and qualitative features using the `round_quanti` and `round_quali` arguments, respectively.
+You can specify the number of digits for quantitative and qualitative features using the `round_quanti` and `round_quali` arguments, respectively.
 
 ## Specify Number of Digits
 
@@ -288,4 +290,53 @@ data %>%
                                   echelle = "fisher.test"))
 ```
 
+# Custom appearance
+
+To have a nicer appearance of the table, it is possible to customize it as a `gt` table. A dedicated function is implemented: `custom_format`.
+
+```{r}
+data %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = TRUE,
+                     var_group = "traitement",
+                     tests = list(Age = "t.test",
+                                  sexe = "chisq.test",
+                                  echelle = "fisher.test")) %>%
+  custom_format()
+```
+
+This also works when using stacked tables.
+
+```{r}
+tb1 <- data %>%
+  dplyr::select(Age, sexe, traitement) %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = TRUE,
+                     var_group = "traitement",
+                     round_quanti = 0,
+                     round_quali = 0)
+
+tb2 <- data %>%
+  dplyr::select(quatre_modalites, traitement) %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = TRUE,
+                     var_group = "traitement",
+                     round_quanti = 2,
+                     round_quali = 2)
+
+gtsummary::tbl_stack(list(tb1, tb2)) %>%
+  custom_format()
+```
+
+You can customize the format by specifying the column size and the alignment.
+
+```{r}
+data %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = TRUE,
+                     var_group = "traitement") %>%
+  custom_format(align = "left",
+                column_size = list(label ~ gt::pct(50),
+                                   gt::starts_with("stat") ~ gt::pct(25)))
+```
 

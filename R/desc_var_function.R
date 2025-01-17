@@ -81,7 +81,7 @@
 # round_quali = c(0,1)
 # DM = "NULL"
 # tests = FALSE
-# show_missing_data = TRUE
+# show_missing_data = FALSE
 # show_n_per_group = TRUE
 
 desc_var <- ## Les arugments de la fonction
@@ -177,8 +177,14 @@ desc_var <- ## Les arugments de la fonction
     }
         
     if(!is.null(var_group)){
-      base_table_missing <- base_table_missing %>%
-        gtsummary::add_stat(fns = everything() ~ add_by_n) ## Stat en colonnes (Total et données manquantes)
+      if(show_missing_data){
+        base_table_missing <- base_table_missing %>%
+          gtsummary::add_stat(fns = everything() ~ add_by_n) ## Stat en colonnes (Total et données manquantes)
+      } else {
+        base_table_missing <- base_table_missing %>%
+          gtsummary::add_stat(fns = everything() ~ add_by_n_noNA) ## Stat en colonnes (Total et données manquantes)
+      }
+      
     }
     
     ls_modify_header <- list(
@@ -226,8 +232,10 @@ desc_var <- ## Les arugments de la fonction
         gtsummary::add_p() %>%
         gtsummary::separate_p_footnotes()
     }
-    
+
     return(res)
     
   }
 
+
+  
