@@ -1,11 +1,15 @@
 ---
 title: "DescusmrVignette"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_vignette:
+    toc: true
+    toc_depth: 2
+    keep_md: true
 vignette: >
   %\VignetteIndexEntry{DescusmrVignette}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r,include = FALSE}
