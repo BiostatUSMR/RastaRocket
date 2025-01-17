@@ -90,6 +90,26 @@ data %>% Descusmr::desc_var(table_title = "test",
 ```
 
 
+# Missing data
+
+The display of missing data is controlled by the `show_missing_data` argument in the `Descusmr::desc_var` function. By default, if `anyNA(data1)` returns `TRUE`, missing data will be displayed. If no missing data is detected, it will be hidden. Users can override this behavior by explicitly setting `show_missing_data` to `TRUE` or `FALSE`.
+
+```{r}
+iris %>% Descusmr::desc_var(table_title = "test",
+                            var_group = "Species",
+                            group_title = "Species",
+                            group = "ALL",
+                            show_missing_data = TRUE)
+```
+
+```{r}
+iris %>% Descusmr::desc_var(table_title = "test",
+                            var_group = "Species",
+                            group_title = "Species",
+                            group = "ALL",
+                            show_missing_data = FALSE)
+```
+
 # Feature Data Management
 
 In the previous example, no specific data management operations were applied.

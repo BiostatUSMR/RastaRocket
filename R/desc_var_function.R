@@ -29,6 +29,10 @@
 #'   - `FALSE`: No 'N' is shown
 #'   - `TRUE`: 'N' is shown
 #'   - `NULL` (default): will be switch to `FALSE` if `var_group` is not `NULL` and `TRUE` otherwise
+#' @param show_missing_data Default to `NULL`. Should the missing data be displayed. Can be either :
+#'   - `FALSE`: No missing data displayed
+#'   - `TRUE`: Missing data displayed
+#'   - `NULL` (default): will be switch to `anyNA(data1)` value.
 #'
 #' @details
 #' The function processes the dataset according to the specified parameters and generates descriptive tables.
@@ -77,6 +81,8 @@
 # round_quali = c(0,1)
 # DM = "NULL"
 # tests = FALSE
+# show_missing_data = TRUE
+# show_n_per_group = TRUE
 
 desc_var <- ## Les arugments de la fonction
   function(data1,
@@ -96,10 +102,20 @@ desc_var <- ## Les arugments de la fonction
            round_quali = c(0,1),
            DM = "NULL",
            tests = FALSE,
-           show_n_per_group = NULL) {
+           show_n_per_group = NULL,
+           show_missing_data = NULL) {
     
     ### Add labels
-    data1 <- data1 %>% Descusmr::ajouter_label_ndm()
+    if(is.null(show_missing_data)){
+      show_missing_data <- anyNA(data1)
+    }
+    if(show_missing_data){
+      data1 <- data1 %>% Descusmr::ajouter_label_ndm()
+    } else {
+      if(anyNA(data1)){
+        warning("You ask not to show missing data but some are present in data1, be careful")
+      }
+    }
     
     ### Apply DM option
     if(DM == "tout"){
@@ -152,9 +168,14 @@ desc_var <- ## Les arugments de la fonction
     }
     
     ### Add missing values
-    base_table_missing <- base_table %>%
-      gtsummary::add_n("{N_nonmiss} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)")
-    
+    if(show_missing_data){
+      base_table_missing <- base_table %>%
+        gtsummary::add_n("{N_nonmiss} ({N_miss} ; {p_miss}%)", col_label = "**N** (**dm** ; **%dm**)")
+    } else {
+      base_table_missing <- base_table %>%
+        gtsummary::add_n("{N_nonmiss}", col_label = "**N**")
+    }
+        
     if(!is.null(var_group)){
       base_table_missing <- base_table_missing %>%
         gtsummary::add_stat(fns = everything() ~ add_by_n) ## Stat en colonnes (Total et données manquantes)
@@ -163,10 +184,14 @@ desc_var <- ## Les arugments de la fonction
     ls_modify_header <- list(
       label ~ paste0("**",var_title,"**"),
       ## Titre des variables du tableau.
-      starts_with("add_n_stat") ~ "",
-      ## labels Stat des colonnes.
-      n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+      starts_with("add_n_stat") ~ ""
     )
+    
+    if(show_missing_data){
+      ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+    } else {
+      ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  "**Total**" ## labels des Stat des NA.
+    }
     
     if(is.null(show_n_per_group)){
       show_n_per_group = is.null(var_group)
