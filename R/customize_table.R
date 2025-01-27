@@ -14,8 +14,7 @@
 #' @param show_missing_data A boolean indicating whether to display missing data counts 
 #'        and percentages in the table. If `TRUE`, columns for missing data will be added.
 #' @param show_n_per_group A boolean indicating whether to display group sizes (n) for 
-#'        each level of the grouping variable. If `NULL`, it defaults to `TRUE` when 
-#'        `var_group` is `NULL`.
+#'        each level of the grouping variable.
 #' @param group_title A string specifying the title for the group column in the table.
 #' @param table_title A string specifying the title of the entire table.
 #' @param var_title A string specifying the title for the variable column in the table.
@@ -99,10 +98,6 @@ customize_table <- function(base_table,
     ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
   } else {
     ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  "**Total**" ## labels des Stat des NA.
-  }
-  
-  if(is.null(show_n_per_group)){
-    show_n_per_group = is.null(var_group)
   }
   
   if(!show_n_per_group){

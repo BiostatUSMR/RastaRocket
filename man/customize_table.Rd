@@ -29,8 +29,7 @@ summarizing all groups will be added.}
 and percentages in the table. If \code{TRUE}, columns for missing data will be added.}
 
 \item{show_n_per_group}{A boolean indicating whether to display group sizes (n) for
-each level of the grouping variable. If \code{NULL}, it defaults to \code{TRUE} when
-\code{var_group} is \code{NULL}.}
+each level of the grouping variable.}
 
 \item{group_title}{A string specifying the title for the group column in the table.}
 

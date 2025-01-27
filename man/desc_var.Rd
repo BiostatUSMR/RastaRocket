@@ -17,7 +17,7 @@ desc_var(
   round_quali = c(0, 1),
   DM = "NULL",
   tests = FALSE,
-  show_n_per_group = NULL,
+  show_n_per_group = FALSE,
   show_missing_data = NULL
 )
 }
@@ -62,11 +62,10 @@ desc_var(
 \item \code{list()}: To force tests. See gtsummary add_p() options.
 }}
 
-\item{show_n_per_group}{Default to \code{NULL}. Should the 'N' appears in the colum header of the groups. Can be either :
+\item{show_n_per_group}{Default to \code{FALSE}. Should the 'N' appears in the column header of the groups. Can be either :
 \itemize{
 \item \code{FALSE}: No 'N' is shown
 \item \code{TRUE}: 'N' is shown
-\item \code{NULL} (default): will be switch to \code{FALSE} if \code{var_group} is not \code{NULL} and \code{TRUE} otherwise
 }}
 
 \item{show_missing_data}{Default to \code{NULL}. Should the missing data be displayed. Can be either :

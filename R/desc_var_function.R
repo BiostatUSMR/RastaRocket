@@ -25,10 +25,9 @@
 #'   - `FALSE`: No p-value add
 #'   - `TRUE`: Add p-value made by default by gtsummary. See gtsummary add_p() options.
 #'   - `list()`: To force tests. See gtsummary add_p() options.
-#' @param show_n_per_group Default to `NULL`. Should the 'N' appears in the colum header of the groups. Can be either :
+#' @param show_n_per_group Default to `FALSE`. Should the 'N' appears in the column header of the groups. Can be either :
 #'   - `FALSE`: No 'N' is shown
 #'   - `TRUE`: 'N' is shown
-#'   - `NULL` (default): will be switch to `FALSE` if `var_group` is not `NULL` and `TRUE` otherwise
 #' @param show_missing_data Default to `NULL`. Should the missing data be displayed. Can be either :
 #'   - `FALSE`: No missing data displayed
 #'   - `TRUE`: Missing data displayed
@@ -102,7 +101,7 @@ desc_var <- ## Les arugments de la fonction
            round_quali = c(0,1),
            DM = "NULL",
            tests = FALSE,
-           show_n_per_group = NULL,
+           show_n_per_group = FALSE,
            show_missing_data = NULL) {
     
     ### Add labels
