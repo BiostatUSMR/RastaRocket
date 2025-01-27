@@ -94,6 +94,21 @@ data %>% Descusmr::desc_var(table_title = "test",
              group = "ALL")
 ```
 
+# Quantitative and qualitative feature
+
+The package support the user specification of feature type as quantitative or qualitative features. For instance, you could chose to describe a quantitative features as a qualitative one if it has few values. For instance, we can do this for `Age` after we round it.
+
+```{r}
+data %>%
+  dplyr::select(Age, traitement) %>%
+  dplyr::mutate(Age = round(Age)) %>%
+  Descusmr::desc_var(table_title = "test",
+                     var_group = "traitement",
+                     group_title = "traitement",
+                     group = "ALL",
+                     quali = c("Age"))
+```
+
 
 # Missing data
 
