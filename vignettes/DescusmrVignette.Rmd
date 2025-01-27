@@ -345,3 +345,24 @@ data %>%
                                    gt::starts_with("stat") ~ gt::pct(25)))
 ```
 
+# French format
+
+You can customize the output format to french using the `gtsummary::theme_gtsummary_language` function. The `gtsummary::reset_gtsummary_theme()` reset the format to the default behavior (i.e English). You can set the format once at the beginning of the document, no need to specify it multiple times.
+
+
+```{r}
+# reset theme to default
+gtsummary::reset_gtsummary_theme()
+# switch to French format
+gtsummary::theme_gtsummary_language(language = "fr", decimal.mark = ",", big.mark = " ")
+
+iris %>%
+  Descusmr::desc_var(table_title = "test",
+                     group = FALSE)
+
+# you can put several tables here, it will keep French format
+
+# back to default format
+gtsummary::reset_gtsummary_theme()
+```
+
