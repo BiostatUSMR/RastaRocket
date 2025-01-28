@@ -8,8 +8,6 @@
 #' @param data1 A data frame containing the data to summarize.
 #' @param var_group A string or NULL, the variable to group by (optional). 
 #'        If NULL, no grouping will be applied.
-#' @param group_title A string, the title for the grouping variable. 
-#'        If an empty string is provided, the `var_group` will be used as the title.
 #' @param quali A character vector, the names of categorical variables to 
 #'        treat as categorical in the summary table.
 #' @param quanti A character vector, the names of continuous variables to 
@@ -25,7 +23,7 @@
 #'
 #' @examples
 #' # Example usage with the iris dataset
-#' base_table(iris, var_group = "Species", group_title = "The Species")
+#' base_table(iris, var_group = "Species")
 #'
 #' @import gtsummary
 #' @import dplyr
@@ -33,7 +31,6 @@
 #' @export
 base_table <- function(data1,
                        var_group,
-                       group_title,
                        quali = NULL,
                        quanti = NULL,
                        round_quanti = 1,
@@ -43,11 +40,6 @@ base_table <- function(data1,
     col_1 <- NULL
   } else {
     col_1 <- rlang::ensym(var_group)
-    
-    if(group_title == ""){
-      group_title <- var_group
-    }
-    
   }
   
   base_table <- data1 %>%

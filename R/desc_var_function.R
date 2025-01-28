@@ -13,7 +13,7 @@
 #'   - `FALSE`: Not grouped.
 #' @param var_title A character string for the title of the variable column in the table. Defaults to `"Variable"`.
 #' @param var_group A variable used for grouping (if applicable). Defaults to `NULL`.
-#' @param group_title A character string specifying the title for the grouping variable.
+#' @param group_title A character string specifying the title for the grouping variable. Default is `NULL` and get the label or the variable.
 #' @param round_quanti An integer vector specifying the number of decimal places for quantitative variables. Defaults to `1`.
 #' @param round_quali An integer vector specifying the number of decimal places for qualitative variables. Defaults to `1`.
 #' @param drop_levels Boolean (default = TRUE). Drop unused levels.
@@ -69,13 +69,14 @@
 # table_title = ""
 # quali = NULL
 # quanti = NULL
-# group = "ALL"
+# group = FALSE
 # var_title = "Variable"
 # var_group = "Species" ## Variable de groupe (dégroupée les tables)
-# group_title = "Speciesss"
+# group_title = NULL
 # round_quanti = c(1)
 # round_quali = c(0,1)
-# DM = "NULL"
+# drop_levels = TRUE
+# freq_relevel = FALSE
 # tests = FALSE
 # show_missing_data = FALSE
 # show_n_per_group = TRUE
@@ -93,7 +94,7 @@ desc_var <- ## Les arugments de la fonction
            var_title = "Variable",
            ## booléen pour préciser s'il faut degroupé ou pas les tables.
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
-           group_title = "",
+           group_title = NULL,
            round_quanti = 1,
            round_quali = 1,
            drop_levels = TRUE,
@@ -114,7 +115,6 @@ desc_var <- ## Les arugments de la fonction
     
     base_table <- base_table(data1 = data1,
                              var_group = var_group,
-                             group_title = group_title,
                              quali = quali,
                              quanti = quanti,
                              round_quanti = round_quanti,

@@ -111,6 +111,15 @@ customize_table <- function(base_table,
     gtsummary::modify_footnote(everything() ~ NA) ## Note de page.
   
   if(!is.null(var_group)){
+    
+    if(is.null(group_title)){
+      group_title <- labelled::get_variable_labels(base_table$inputs$data)[[var_group]]
+      
+      if(is.null(group_title)){
+        group_title <- var_group
+      }
+    }
+    
     base_table_missing <- base_table_missing %>%
       gtsummary::modify_spanning_header(c(gtsummary::all_stat_cols(F) ~ paste0("**",group_title,"**")))
   }
