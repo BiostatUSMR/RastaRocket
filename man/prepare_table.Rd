@@ -4,7 +4,12 @@
 \alias{prepare_table}
 \title{Prepare a Data Frame for Summarization with Custom Missing Data Handling and Factor Ordering}
 \usage{
-prepare_table(data1, show_missing_data, DM)
+prepare_table(
+  data1,
+  show_missing_data,
+  drop_levels = TRUE,
+  freq_relevel = FALSE
+)
 }
 \arguments{
 \item{data1}{A data frame containing the data to be prepared.}
@@ -13,11 +18,9 @@ prepare_table(data1, show_missing_data, DM)
 If \code{NULL}, it will be automatically determined based on the presence of missing data in \code{data1}.
 Defaults to \code{TRUE} if any missing values are detected.}
 
-\item{DM}{A character string specifying the data manipulation strategy for factor variables:
-- \code{"tout"}: Apply both factor ordering and drop unused factor levels.
-- \code{"tri"}: Only apply factor ordering.
-- \code{"remove"}: Drop unused factor levels.
-Defaults to \code{"tout"}.}
+\item{drop_levels}{Boolean (default = TRUE). Drop unused levels.}
+
+\item{freq_relevel}{Boolean  (default = FALSE). Reorder factors by frequency.}
 }
 \value{
 A data frame that has been prepared based on the \code{show_missing_data} and \code{DM} arguments.
@@ -45,6 +48,6 @@ for missing data to the variables in the data.
 }
 \examples{
 # Example usage with the iris dataset
-prepare_table(iris, show_missing_data = TRUE, DM = "tout")
+prepare_table(iris, show_missing_data = TRUE)
 
 }

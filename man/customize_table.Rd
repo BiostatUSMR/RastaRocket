@@ -7,7 +7,7 @@
 customize_table(
   base_table,
   var_group,
-  group,
+  add_total,
   show_missing_data,
   show_n_per_group,
   group_title,
@@ -22,8 +22,7 @@ like \code{gtsummary::tbl_summary}.}
 \item{var_group}{A string or NULL, specifying the variable used for grouping in the
 table. If \code{NULL}, no group-specific modifications are applied.}
 
-\item{group}{A string specifying the group to display. If \code{"ALL"}, an overall column
-summarizing all groups will be added.}
+\item{add_total}{A boolean to add total column or not when var_group is specified.}
 
 \item{show_missing_data}{A boolean indicating whether to display missing data counts
 and percentages in the table. If \code{TRUE}, columns for missing data will be added.}
@@ -49,8 +48,6 @@ and customizing table titles.
 }
 \details{
 \itemize{
-\item If \code{group} is \code{"ALL"} and \code{var_group} is not \code{NULL}, an additional "Total" column
-summarizing all groups will be added.
 \item The \code{show_missing_data} parameter determines whether missing data counts and
 percentages are displayed:
 \itemize{
@@ -72,7 +69,7 @@ base_table <- trial \%>\%
 customize_table(
   base_table,
   var_group = "trt",
-  group = "ALL",
+  add_total = TRUE,
   show_missing_data = TRUE,
   show_n_per_group = FALSE,
   group_title = "Treatment Group",

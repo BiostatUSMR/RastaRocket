@@ -1,9 +1,27 @@
 Package: Descusmr
 Title: Description of clinical research tables
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
-    person("Sahardid", "Mohamed Houssein", , "astreinte.usmr@chu-bordeaux.fr", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    c(person(given = "USMR",
+           family = "CHU de Bordeaux",
+           role = c("aut", "cre"),
+           email = "astreinte.usmr@chu-bordeaux.fr"),
+    person(given = "Sahardid",
+           family = "Mohamed Houssein",
+           role = c("aut"),
+           email = "astreinte.usmr@chu-bordeaux.fr"),
+    person(given = "Marion",
+           family = "Kret",
+           role = c("aut"),
+           email = "astreinte.usmr@chu-bordeaux.fr"),
+    person(given = "Matisse",
+           family = "Decilap",
+           role = c("aut"),
+           email = "astreinte.usmr@chu-bordeaux.fr"),
+    person(given = "Thomas",
+           family = "Ferté",
+           role = c("aut"),
+           email = "astreinte.usmr@chu-bordeaux.fr"))
 Description: Description of the tables, ungrouped and grouped, with some associated data management actions, 
              such as sorting the terms of the variables and deleting terms with zero numbers.
 License: GPL (>= 3)

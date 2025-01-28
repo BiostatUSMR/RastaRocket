@@ -8,9 +8,9 @@
 #' @param data1 A data frame containing the data to be prepared.
 #' @param show_missing_data A boolean indicating whether missing data should be shown in the table. 
 #'        If `NULL`, it will be automatically determined based on the presence of missing data in `data1`.
-#' @param drop_levels Boolean. Drop unused levels.
-#' @param freq_relevel Boolean. Reorder factors by frequency.
 #'        Defaults to `TRUE` if any missing values are detected.
+#' @param drop_levels Boolean (default = TRUE). Drop unused levels.
+#' @param freq_relevel Boolean  (default = FALSE). Reorder factors by frequency.
 #' @return A data frame that has been prepared based on the `show_missing_data` and `DM` arguments. 
 #'         The function modifies the input data frame by applying labels, ordering factor variables, 
 #'         and potentially dropping unused levels.
@@ -26,7 +26,7 @@
 #'
 #' @examples
 #' # Example usage with the iris dataset
-#' prepare_table(iris, show_missing_data = TRUE, DM = "tout")
+#' prepare_table(iris, show_missing_data = TRUE)
 #'
 #' @import dplyr
 #' @import Descusmr
@@ -34,8 +34,8 @@
 #' @export
 prepare_table <- function(data1,
                           show_missing_data,
-                          drop_levels,
-                          freq_relevel){
+                          drop_levels = TRUE,
+                          freq_relevel = FALSE){
   if(show_missing_data){
     data1 <- data1 %>% Descusmr::ajouter_label_ndm()
   } else {

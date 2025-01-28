@@ -9,13 +9,14 @@ desc_var(
   table_title = "",
   quali = NULL,
   quanti = NULL,
-  group,
+  add_total = TRUE,
   var_title = "Variable",
   var_group = NULL,
-  group_title = "",
-  round_quanti = c(1),
-  round_quali = c(0, 1),
-  DM = "NULL",
+  group_title = NULL,
+  round_quanti = 1,
+  round_quali = 1,
+  drop_levels = TRUE,
+  freq_relevel = FALSE,
   tests = FALSE,
   show_n_per_group = FALSE,
   show_missing_data = NULL
@@ -30,32 +31,23 @@ desc_var(
 
 \item{quanti}{A vector of quantitative variables to be described. Defaults to \code{NULL}.}
 
-\item{group}{A logical value or character string indicating whether the variables should be grouped. Options:
-\itemize{
-\item \code{"ALL"}: Grouped by all levels of \code{var_group}.
-\item \code{TRUE}: Grouped by \code{var_group}.
-\item \code{FALSE}: Not grouped.
-}}
+\item{add_total}{A boolean (default is TRUE) to add total column or not when var_group is specified.}
 
 \item{var_title}{A character string for the title of the variable column in the table. Defaults to \code{"Variable"}.}
 
 \item{var_group}{A variable used for grouping (if applicable). Defaults to \code{NULL}.}
 
-\item{group_title}{A character string specifying the title for the grouping variable.}
+\item{group_title}{A character string specifying the title for the grouping variable. Default is \code{NULL} and get the label or the variable.}
 
-\item{round_quanti}{An integer vector specifying the number of decimal places for quantitative variables. Defaults to \code{c(1)}.}
+\item{round_quanti}{An integer vector specifying the number of decimal places for quantitative variables. Defaults to \code{1}.}
 
-\item{round_quali}{An integer vector specifying the number of decimal places for qualitative variables. Defaults to \code{c(0, 1)}.}
+\item{round_quali}{An integer vector specifying the number of decimal places for qualitative variables. Defaults to \code{1}.}
 
-\item{DM}{A character string controlling the handling of missing data. Options:
-\itemize{
-\item \code{"tout"}: Keep all variables and drop unused levels of factors.
-\item \code{"tri"}: Retain only variables with at least three levels.
-\item \code{"remove"}: Remove missing levels from factors.
-\item \code{"NULL"}: No special handling of missing data.
-}}
+\item{drop_levels}{Boolean (default = TRUE). Drop unused levels.}
 
-\item{tests}{A value in order to add p value. Defaut to \code{FALSE} OPTION :
+\item{freq_relevel}{Boolean (default = FALSE). Reorder factors by frequency.}
+
+\item{tests}{A value in order to add p value. Default to \code{FALSE} OPTION :
 \itemize{
 \item \code{FALSE}: No p-value add
 \item \code{TRUE}: Add p-value made by default by gtsummary. See gtsummary add_p() options.
@@ -103,10 +95,7 @@ data1 <- data.frame(
 # Generate descriptive table
 table <- desc_var(
   data1 = data1,
-  table_title = "Descriptive Table",
-  group = FALSE,
-  group_title = "Group",
-  DM = "tout"
+  table_title = "Descriptive Table"
 )
 
 }

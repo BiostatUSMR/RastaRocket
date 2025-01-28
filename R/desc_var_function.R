@@ -49,10 +49,7 @@
 #' # Generate descriptive table
 #' table <- desc_var(
 #'   data1 = data1,
-#'   table_title = "Descriptive Table",
-#'   group = FALSE,
-#'   group_title = "Group",
-#'   DM = "tout"
+#'   table_title = "Descriptive Table"
 #' )
 #'
 #' @importFrom dplyr mutate across where

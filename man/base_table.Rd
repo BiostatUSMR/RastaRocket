@@ -7,7 +7,6 @@
 base_table(
   data1,
   var_group,
-  group_title,
   quali = NULL,
   quanti = NULL,
   round_quanti = 1,
@@ -19,9 +18,6 @@ base_table(
 
 \item{var_group}{A string or NULL, the variable to group by (optional).
 If NULL, no grouping will be applied.}
-
-\item{group_title}{A string, the title for the grouping variable.
-If an empty string is provided, the \code{var_group} will be used as the title.}
 
 \item{quali}{A character vector, the names of categorical variables to
 treat as categorical in the summary table.}
@@ -48,6 +44,6 @@ options for customizing the rounding and labels.
 }
 \examples{
 # Example usage with the iris dataset
-base_table(iris, var_group = "Species", group_title = "The Species")
+base_table(iris, var_group = "Species")
 
 }
