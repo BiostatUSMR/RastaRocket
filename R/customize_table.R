@@ -9,8 +9,7 @@
 #'        like `gtsummary::tbl_summary`.
 #' @param var_group A string or NULL, specifying the variable used for grouping in the 
 #'        table. If `NULL`, no group-specific modifications are applied.
-#' @param group A string specifying the group to display. If `"ALL"`, an overall column 
-#'        summarizing all groups will be added.
+#' @param add_total A boolean to add total column or not when var_group is specified.
 #' @param show_missing_data A boolean indicating whether to display missing data counts 
 #'        and percentages in the table. If `TRUE`, columns for missing data will be added.
 #' @param show_n_per_group A boolean indicating whether to display group sizes (n) for 
@@ -23,8 +22,6 @@
 #'         and modifications based on the provided arguments.
 #'
 #' @details
-#' - If `group` is `"ALL"` and `var_group` is not `NULL`, an additional "Total" column 
-#'   summarizing all groups will be added.
 #' - The `show_missing_data` parameter determines whether missing data counts and 
 #'   percentages are displayed:
 #'   - If `TRUE`, missing data columns are added.
@@ -43,7 +40,7 @@
 #' customize_table(
 #'   base_table,
 #'   var_group = "trt",
-#'   group = "ALL",
+#'   add_total = TRUE,
 #'   show_missing_data = TRUE,
 #'   show_n_per_group = FALSE,
 #'   group_title = "Treatment Group",
@@ -56,14 +53,14 @@
 #' @export
 customize_table <- function(base_table,
                             var_group,
-                            group,
+                            add_total,
                             show_missing_data,
                             show_n_per_group,
                             group_title,
                             table_title,
                             var_title){
   ### Add Overall column if specified
-  if(!is.null(var_group) & group == "ALL"){
+  if(!is.null(var_group) & add_total){
     base_table <- base_table %>%
       gtsummary::add_overall(col_label = "**Total**")
   }

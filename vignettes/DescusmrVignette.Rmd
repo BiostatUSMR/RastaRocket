@@ -84,14 +84,14 @@ The dataset is passed to the `desc_var` function for analysis.
 - `table_title`: Title of the descriptive table. Here, it is "test."
 - `var_group`: The variable used for grouping the data. Here, it is "traitement."
 - `group_title`: Title of the grouping variable column. Here, it is "traitement."
-- `group`: Indicates whether to create both grouped and ungrouped descriptions using the "ALL" option.
+- `add_total`: Add a Total column when `var_group` is specified
 
 
 ```{r}
 data %>% Descusmr::desc_var(table_title = "test",
              var_group = "traitement",
              group_title = "Traitement",
-             group = "ALL")
+             add_total = TRUE)
 ```
 
 # Quantitative and qualitative feature
@@ -105,7 +105,6 @@ data %>%
   Descusmr::desc_var(table_title = "test",
                      var_group = "traitement",
                      group_title = "traitement",
-                     group = "ALL",
                      quali = c("Age"))
 ```
 
@@ -118,7 +117,6 @@ The display of missing data is controlled by the `show_missing_data` argument in
 iris %>% Descusmr::desc_var(table_title = "test",
                             var_group = "Species",
                             group_title = "Species",
-                            group = "ALL",
                             show_missing_data = TRUE)
 ```
 
@@ -126,7 +124,6 @@ iris %>% Descusmr::desc_var(table_title = "test",
 iris %>% Descusmr::desc_var(table_title = "test",
                             var_group = "Species",
                             group_title = "Species",
-                            group = "ALL",
                             show_missing_data = FALSE)
 ```
 
@@ -144,7 +141,6 @@ In this example, we add `freq_relevel = TRUE`, which orders the categories of ca
 data %>% desc_var(table_title = "test",
              var_group = "traitement",
              group_title = "traitement",
-             group = "ALL",
              freq_relevel = TRUE)
 ```
 
@@ -158,8 +154,7 @@ data %>%
                                                        "A", "C", "D", "B")) %>%
   desc_var(table_title = "test",
            var_group = "traitement",
-           group_title = "traitement",
-           group = "ALL")
+           group_title = "traitement")
 ```
 
 
@@ -172,7 +167,6 @@ By default, zero-count levels are removed but we can explicitly specify we do no
 data %>% desc_var(table_title = "test",
              var_group = "traitement",
              group_title = "traitement",
-             group = "ALL",
              drop_levels = FALSE)
 ```
 
@@ -185,8 +179,7 @@ Here, we use a per-group description for the variables.
 ```{r }
 data %>% desc_var(table_title = "test",
              var_group = "traitement",
-             group_title = "traitement",
-             group = TRUE)
+             group_title = "traitement")
 ```
 
 ## Overall Description
@@ -194,7 +187,7 @@ data %>% desc_var(table_title = "test",
 In this example, we generate a global description of the variables.
 
 ```{r}
-data %>% Descusmr::desc_var(table_title = "test", group = FALSE)
+data %>% Descusmr::desc_var(table_title = "test")
 ```
 
 # Intermediate titles
@@ -204,13 +197,11 @@ To insert intermediate titles, you can use the `intermediate_header` function wh
 ```{r}
 tb1 <- data %>%
   dplyr::select(Age, sexe) %>%
-  Descusmr::desc_var(table_title = "test",
-                     group = FALSE)
+  Descusmr::desc_var(table_title = "test")
 
 tb2 <- data %>%
   dplyr::select(quatre_modalites) %>%
-  Descusmr::desc_var(table_title = "test",
-                     group = FALSE)
+  Descusmr::desc_var(table_title = "test")
 
 Descusmr::intermediate_header(tbls = list(tb1, tb2),
                               group_header = c("Title A", "Title B"))
@@ -228,7 +219,6 @@ In the example below, quantitative values are rounded to 0 decimal places, while
 ```{r}
 data %>%
   Descusmr::desc_var(table_title = "test",
-                     group = TRUE,
                      var_group = "traitement",
                      round_quanti = 0,
                      round_quali = 1)
@@ -242,7 +232,6 @@ To have more control over rounding, you can create subtables with different numb
 tb1 <- data %>%
   dplyr::select(Age, sexe, traitement) %>%
   Descusmr::desc_var(table_title = "test",
-                     group = TRUE,
                      var_group = "traitement",
                      round_quanti = 0,
                      round_quali = 0)
@@ -250,7 +239,6 @@ tb1 <- data %>%
 tb2 <- data %>%
   dplyr::select(quatre_modalites, traitement) %>%
   Descusmr::desc_var(table_title = "test",
-                     group = TRUE,
                      var_group = "traitement",
                      round_quanti = 2,
                      round_quali = 2)
@@ -270,7 +258,6 @@ The following example adds statistical tests for all features, grouped by the `t
 ```{r}
 data %>%
   Descusmr::desc_var(table_title = "test",
-                     group = TRUE,
                      var_group = "traitement",
                      tests = TRUE)
 ```
@@ -286,7 +273,6 @@ For greater control, you can specify the test to use for each feature by passing
 ```{r}
 data %>%
   Descusmr::desc_var(table_title = "test",
-                     group = TRUE,
                      var_group = "traitement",
                      tests = list(Age = "t.test",
                                   sexe = "chisq.test",
@@ -300,7 +286,6 @@ To have a nicer appearance of the table, it is possible to customize it as a `gt
 ```{r}
 data %>%
   Descusmr::desc_var(table_title = "test",
-                     group = TRUE,
                      var_group = "traitement",
                      tests = list(Age = "t.test",
                                   sexe = "chisq.test",
@@ -314,7 +299,6 @@ This also works when using stacked tables.
 tb1 <- data %>%
   dplyr::select(Age, sexe, traitement) %>%
   Descusmr::desc_var(table_title = "test",
-                     group = TRUE,
                      var_group = "traitement",
                      round_quanti = 0,
                      round_quali = 0)
@@ -322,7 +306,6 @@ tb1 <- data %>%
 tb2 <- data %>%
   dplyr::select(quatre_modalites, traitement) %>%
   Descusmr::desc_var(table_title = "test",
-                     group = TRUE,
                      var_group = "traitement",
                      round_quanti = 2,
                      round_quali = 2)
@@ -336,7 +319,6 @@ You can customize the format by specifying the column size and the alignment.
 ```{r}
 data %>%
   Descusmr::desc_var(table_title = "test",
-                     group = TRUE,
                      var_group = "traitement") %>%
   custom_format(align = "left",
                 column_size = list(label ~ gt::pct(50),
@@ -355,8 +337,7 @@ gtsummary::reset_gtsummary_theme()
 gtsummary::theme_gtsummary_language(language = "fr", decimal.mark = ",", big.mark = " ")
 
 iris %>%
-  Descusmr::desc_var(table_title = "test",
-                     group = FALSE)
+  Descusmr::desc_var(table_title = "test")
 
 # you can put several tables here, it will keep French format
 

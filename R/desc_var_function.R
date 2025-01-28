@@ -7,10 +7,7 @@
 #' @param table_title A character string specifying the title of the table.
 #' @param quali A vector of qualitative variables to be described. Defaults to `NULL`.
 #' @param quanti A vector of quantitative variables to be described. Defaults to `NULL`.
-#' @param group A logical value or character string indicating whether the variables should be grouped. Options:
-#'   - `"ALL"`: Grouped by all levels of `var_group`.
-#'   - `TRUE`: Grouped by `var_group`.
-#'   - `FALSE`: Not grouped.
+#' @param add_total A boolean (default is TRUE) to add total column or not when var_group is specified.
 #' @param var_title A character string for the title of the variable column in the table. Defaults to `"Variable"`.
 #' @param var_group A variable used for grouping (if applicable). Defaults to `NULL`.
 #' @param group_title A character string specifying the title for the grouping variable. Default is `NULL` and get the label or the variable.
@@ -90,7 +87,7 @@ desc_var <- ## Les arugments de la fonction
            ## Vecteur des variables quali ~tatives mal decrites
            quanti = NULL,
            ## Vecteur des variables quantitatives mal decrites
-           group,
+           add_total = TRUE,
            var_title = "Variable",
            ## booléen pour préciser s'il faut degroupé ou pas les tables.
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
@@ -122,7 +119,7 @@ desc_var <- ## Les arugments de la fonction
     
     res <- customize_table(base_table = base_table,
                            var_group = var_group,
-                           group = group,
+                           add_total = add_total,
                            show_missing_data = show_missing_data,
                            show_n_per_group = show_n_per_group,
                            group_title = group_title,
