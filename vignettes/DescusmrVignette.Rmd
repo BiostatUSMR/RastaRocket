@@ -138,14 +138,14 @@ In the previous example, no specific data management operations were applied.
 
 ### Order by frequency
 
-In this example, we add `DM = "tri"`, which orders the categories of categorical variables in descending order based on their counts.
+In this example, we add `freq_relevel = TRUE`, which orders the categories of categorical variables in descending order based on their counts.
 
 ```{r second example}
 data %>% desc_var(table_title = "test",
              var_group = "traitement",
              group_title = "traitement",
-             group = "ALL", 
-             DM = "tri")
+             group = "ALL",
+             freq_relevel = TRUE)
 ```
 
 ### Custom order
@@ -166,31 +166,15 @@ data %>%
 ## Remove zero-count levels
 
 
-Here, we remove levels with a zero count.
+By default, zero-count levels are removed but we can explicitly specify we do not want to drop them.
 
 ```{r third example}
 data %>% desc_var(table_title = "test",
              var_group = "traitement",
              group_title = "traitement",
-             group = "ALL", 
-             DM = "remove")
+             group = "ALL",
+             drop_levels = FALSE)
 ```
-
-## Both
-
-
-In this example, both previous data management operations are performed simultaneously using `DM = "ALL"`. Additionally, we specify the variable `echelle` as quantitative (even though it is treated as qualitative by default) using the `quanti` argument. If multiple variables are to be specified, they should be listed in a vector.
-
-```{r}
-
-data %>% Descusmr::desc_var(table_title = "test",
-             quanti = "echelle",
-             var_group = "traitement",
-             group_title = "traitement",
-             group = "ALL", 
-             DM = "tout")
-```
-
 
 # Overall and Per-Group Descriptions
 
@@ -202,8 +186,7 @@ Here, we use a per-group description for the variables.
 data %>% desc_var(table_title = "test",
              var_group = "traitement",
              group_title = "traitement",
-             group = TRUE, 
-             DM = "tout")
+             group = TRUE)
 ```
 
 ## Overall Description

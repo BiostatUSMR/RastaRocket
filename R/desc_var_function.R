@@ -14,14 +14,11 @@
 #' @param var_title A character string for the title of the variable column in the table. Defaults to `"Variable"`.
 #' @param var_group A variable used for grouping (if applicable). Defaults to `NULL`.
 #' @param group_title A character string specifying the title for the grouping variable.
-#' @param round_quanti An integer vector specifying the number of decimal places for quantitative variables. Defaults to `c(1)`.
-#' @param round_quali An integer vector specifying the number of decimal places for qualitative variables. Defaults to `c(0, 1)`.
-#' @param DM A character string controlling the handling of missing data. Options:
-#'   - `"tout"`: Keep all variables and drop unused levels of factors.
-#'   - `"tri"`: Retain only variables with at least three levels.
-#'   - `"remove"`: Remove missing levels from factors.
-#'   - `"NULL"`: No special handling of missing data.
-#' @param tests A value in order to add p value. Defaut to `FALSE` OPTION :
+#' @param round_quanti An integer vector specifying the number of decimal places for quantitative variables. Defaults to `1`.
+#' @param round_quali An integer vector specifying the number of decimal places for qualitative variables. Defaults to `1`.
+#' @param drop_levels Boolean (default = TRUE). Drop unused levels.
+#' @param freq_relevel Boolean (default = FALSE). Reorder factors by frequency.
+#' @param tests A value in order to add p value. Default to `FALSE` OPTION :
 #'   - `FALSE`: No p-value add
 #'   - `TRUE`: Add p-value made by default by gtsummary. See gtsummary add_p() options.
 #'   - `list()`: To force tests. See gtsummary add_p() options.
@@ -97,9 +94,10 @@ desc_var <- ## Les arugments de la fonction
            ## booléen pour préciser s'il faut degroupé ou pas les tables.
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
            group_title = "",
-           round_quanti = c(1),
-           round_quali = c(0,1),
-           DM = "NULL",
+           round_quanti = 1,
+           round_quali = 1,
+           drop_levels = TRUE,
+           freq_relevel = FALSE,
            tests = FALSE,
            show_n_per_group = FALSE,
            show_missing_data = NULL) {
@@ -111,7 +109,8 @@ desc_var <- ## Les arugments de la fonction
     
     data1 <- prepare_table(data1 = data1,
                            show_missing_data = show_missing_data,
-                           DM = DM)
+                           drop_levels = drop_levels,
+                           freq_relevel = freq_relevel)
     
     base_table <- base_table(data1 = data1,
                              var_group = var_group,

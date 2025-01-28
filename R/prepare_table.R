@@ -8,13 +8,9 @@
 #' @param data1 A data frame containing the data to be prepared.
 #' @param show_missing_data A boolean indicating whether missing data should be shown in the table. 
 #'        If `NULL`, it will be automatically determined based on the presence of missing data in `data1`.
+#' @param drop_levels Boolean. Drop unused levels.
+#' @param freq_relevel Boolean. Reorder factors by frequency.
 #'        Defaults to `TRUE` if any missing values are detected.
-#' @param DM A character string specifying the data manipulation strategy for factor variables:
-#'        - `"tout"`: Apply both factor ordering and drop unused factor levels.
-#'        - `"tri"`: Only apply factor ordering.
-#'        - `"remove"`: Drop unused factor levels.
-#'        Defaults to `"tout"`.
-#'
 #' @return A data frame that has been prepared based on the `show_missing_data` and `DM` arguments. 
 #'         The function modifies the input data frame by applying labels, ordering factor variables, 
 #'         and potentially dropping unused levels.
@@ -38,7 +34,8 @@
 #' @export
 prepare_table <- function(data1,
                           show_missing_data,
-                          DM){
+                          drop_levels,
+                          freq_relevel){
   if(show_missing_data){
     data1 <- data1 %>% Descusmr::ajouter_label_ndm()
   } else {
@@ -48,13 +45,13 @@ prepare_table <- function(data1,
   }
   
   ### Apply DM option
-  if(DM == "tout"){
-    data1 <- ordonner_variables_qualitatives(data1) %>%
-      dplyr::mutate(across(where(is.factor),~ forcats::fct_drop(.)))
-  } else if(DM == "tri") {
+  if(freq_relevel){
     data1 <- ordonner_variables_qualitatives(data1)
-  } else if (DM == "remove") {
-    data1 <- data1 %>% dplyr::mutate(across(where(is.factor), ~ forcats::fct_drop(.)))
+  }
+  
+  if(drop_levels){
+    data1 <- data1 %>%
+      dplyr::mutate(across(where(is.factor),~ forcats::fct_drop(.)))
   }
   
   return(data1)
