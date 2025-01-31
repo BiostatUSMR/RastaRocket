@@ -7,6 +7,7 @@
 prepare_table(
   data1,
   show_missing_data,
+  var_group = NULL,
   drop_levels = TRUE,
   freq_relevel = FALSE
 )
@@ -17,6 +18,8 @@ prepare_table(
 \item{show_missing_data}{A boolean indicating whether missing data should be shown in the table.
 If \code{NULL}, it will be automatically determined based on the presence of missing data in \code{data1}.
 Defaults to \code{TRUE} if any missing values are detected.}
+
+\item{var_group}{The group variable (used to correctly update the label if needed).}
 
 \item{drop_levels}{Boolean (default = TRUE). Drop unused levels.}
 

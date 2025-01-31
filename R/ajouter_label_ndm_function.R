@@ -4,6 +4,7 @@
 #' It uses the `labelled` package to modify and update variable labels in-place.
 #'
 #' @param data A data frame containing the dataset whose variable labels need to be updated.
+#' @param col_to_skip A column to skip when adding `"n (dm ; %dm)"`. Default is `NULL`.
 #'
 #' @details
 #' The function iterates over all columns in the dataset and performs the following steps:
@@ -45,20 +46,25 @@
 
 
 # Fonction pour ajouter une indication "n (dm ; %dm)" aux labels des variables
-ajouter_label_ndm <- function(data) {
+ajouter_label_ndm <- function(data,
+                              col_to_skip = NULL) {
 
   # Boucle pour itérer sur toutes les colonnes du jeu de données
   for (i in seq_along(data)) {
     # Obtenir le label actuel de la variable (si défini)
     label_actuel <- labelled::var_label(data[[i]])
-    
+    colname_actuel <- colnames(data)[i]
     # set variable name as label if NULL
     if(is.null(label_actuel)){
-      label_actuel <- colnames(data)[i]
+      label_actuel <- colname_actuel
     }
-
-    # Créer un nouveau label en ajoutant "n (dm ; %dm)" au label existant
-    nouveau_label <- paste0(label_actuel, " ", "n (dm ; %dm)")
+    
+    if(colname_actuel %in% col_to_skip){
+      nouveau_label <- label_actuel
+    } else {
+      # Créer un nouveau label en ajoutant "n (dm ; %dm)" au label existant
+      nouveau_label <- paste0(label_actuel, " ", "n (dm ; %dm)")
+    }
 
     # Appliquer le nouveau label à la variable en utilisant la fonction set_variable_labels
     data[[i]] <- labelled::set_variable_labels(data[[i]], nouveau_label)

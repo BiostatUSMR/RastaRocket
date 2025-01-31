@@ -4,10 +4,12 @@
 \alias{ajouter_label_ndm}
 \title{Add "n (dm ; \%dm)" to Variable Labels}
 \usage{
-ajouter_label_ndm(data)
+ajouter_label_ndm(data, col_to_skip = NULL)
 }
 \arguments{
 \item{data}{A data frame containing the dataset whose variable labels need to be updated.}
+
+\item{col_to_skip}{A column to skip when adding \code{"n (dm ; \%dm)"}. Default is \code{NULL}.}
 }
 \value{
 A data frame with updated variable labels.
