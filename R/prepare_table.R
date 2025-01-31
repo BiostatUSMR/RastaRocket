@@ -11,6 +11,7 @@
 #'        Defaults to `TRUE` if any missing values are detected.
 #' @param drop_levels Boolean (default = TRUE). Drop unused levels.
 #' @param freq_relevel Boolean  (default = FALSE). Reorder factors by frequency.
+#' @param var_group The group variable (used to correctly update the label if needed).
 #' @return A data frame that has been prepared based on the `show_missing_data` and `DM` arguments. 
 #'         The function modifies the input data frame by applying labels, ordering factor variables, 
 #'         and potentially dropping unused levels.
@@ -34,10 +35,11 @@
 #' @export
 prepare_table <- function(data1,
                           show_missing_data,
+                          var_group = NULL,
                           drop_levels = TRUE,
                           freq_relevel = FALSE){
   if(show_missing_data){
-    data1 <- data1 %>% Descusmr::ajouter_label_ndm()
+    data1 <- data1 %>% Descusmr::ajouter_label_ndm(col_to_skip = var_group)
   } else {
     if(anyNA(data1)){
       warning("You ask not to show missing data but some are present in data1, be careful")

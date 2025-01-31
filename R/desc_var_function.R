@@ -74,6 +74,7 @@
 # tests = FALSE
 # show_missing_data = FALSE
 # show_n_per_group = TRUE
+# add_total = TRUE
 
 desc_var <- ## Les arugments de la fonction
   function(data1,
@@ -103,6 +104,7 @@ desc_var <- ## Les arugments de la fonction
     }
     
     data1 <- prepare_table(data1 = data1,
+                           var_group = var_group,
                            show_missing_data = show_missing_data,
                            drop_levels = drop_levels,
                            freq_relevel = freq_relevel)
