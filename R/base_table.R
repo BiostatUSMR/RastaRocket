@@ -34,7 +34,7 @@ base_table <- function(data1,
                        quali = NULL,
                        quanti = NULL,
                        round_quanti = 1,
-                       round_quali = 1){
+                       round_quali = c(0, 1)){
   
   if(is.null(var_group)){
     col_1 <- NULL

@@ -14,7 +14,7 @@ desc_var(
   var_group = NULL,
   group_title = NULL,
   round_quanti = 1,
-  round_quali = 1,
+  round_quali = c(0, 1),
   drop_levels = TRUE,
   freq_relevel = FALSE,
   tests = FALSE,
@@ -41,7 +41,7 @@ desc_var(
 
 \item{round_quanti}{An integer vector specifying the number of decimal places for quantitative variables. Defaults to \code{1}.}
 
-\item{round_quali}{An integer vector specifying the number of decimal places for qualitative variables. Defaults to \code{1}.}
+\item{round_quali}{An integer vector specifying the number of decimal places for qualitative variables. Defaults to \code{c(0, 1)} (0 for 'n' and 1 for 'percentage'.}
 
 \item{drop_levels}{Boolean (default = TRUE). Drop unused levels.}
 

@@ -12,7 +12,7 @@
 #' @param var_group A variable used for grouping (if applicable). Defaults to `NULL`.
 #' @param group_title A character string specifying the title for the grouping variable. Default is `NULL` and get the label or the variable.
 #' @param round_quanti An integer vector specifying the number of decimal places for quantitative variables. Defaults to `1`.
-#' @param round_quali An integer vector specifying the number of decimal places for qualitative variables. Defaults to `1`.
+#' @param round_quali An integer vector specifying the number of decimal places for qualitative variables. Defaults to `c(0, 1)` (0 for 'n' and 1 for 'percentage'.
 #' @param drop_levels Boolean (default = TRUE). Drop unused levels.
 #' @param freq_relevel Boolean (default = FALSE). Reorder factors by frequency.
 #' @param tests A value in order to add p value. Default to `FALSE` OPTION :
@@ -91,7 +91,7 @@ desc_var <- ## Les arugments de la fonction
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
            group_title = NULL,
            round_quanti = 1,
-           round_quali = 1,
+           round_quali = c(0, 1),
            drop_levels = TRUE,
            freq_relevel = FALSE,
            tests = FALSE,

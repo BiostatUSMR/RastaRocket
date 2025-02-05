@@ -10,7 +10,7 @@ base_table(
   quali = NULL,
   quanti = NULL,
   round_quanti = 1,
-  round_quali = 1
+  round_quali = c(0, 1)
 )
 }
 \arguments{
