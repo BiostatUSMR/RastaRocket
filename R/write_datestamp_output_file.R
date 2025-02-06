@@ -14,9 +14,11 @@ write_datestamp_output_file <- function(output_folder,
                                         from_file){
   r_string <- glue::glue(
   'string_time <- format(Sys.time(), "%Y%m%d_%H%M")
+  new_name <- paste0("C:/Users/fertet/Desktop/temp/", string_time, ".html")
   file.copy(
-    from = from_file,
-    to = paste0("{output_folder}", string_time, ".html"))'
+    from = "{from_file}",
+    to = new_name)
+  browseURL(new_name)'
   )
   
   write.table(r_string, 
