@@ -38,7 +38,8 @@ Imports:
     gtsummary,
     forcats,
     gt,
-    cardx
+    cardx,
+    glue
 Suggests:
     testthat,
     knitr,
