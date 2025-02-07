@@ -5,5 +5,5 @@
 ^Meta$
 tests/code_test.R
 tests/data_test.R
-vignettes/DescusmrVignette.md
+
 

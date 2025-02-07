@@ -1,6 +1,6 @@
 ---
 title: "SetupProject"
-date: "`r Sys.Date()`"
+date: "2025-02-07"
 output:
   html_vignette:
     toc: true
@@ -12,15 +12,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  warning = FALSE,
-  message = FALSE,
-  results = 'asis'
-)
-```
+
 
 # Introduction
 
@@ -61,7 +53,8 @@ The function generates a folder containing several essential files:
 
 # Example
 
-```{r eval = FALSE}
+
+``` r
 start_new_reporting(folder_path = "reporting/",
                     output_folder = "UnEndroitSurleReseau/",
                     name = "report_analysis",

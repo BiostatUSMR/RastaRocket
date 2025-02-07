@@ -13,15 +13,27 @@ devtools::install_git(
   )
 ```
 
-### Access tutorial
+### Access tutorials
 
-After installing the package with `build_vignettes = TRUE`, you can access the `Descusmr` tutorial contained within the vignette. To verify and view the tutorial, run the following command:
+After installing the package with `build_vignettes = TRUE`, you can access the `Descusmr` tutorials contained within the vignette. Two tutorials are included :
+
+#### Setup project
+
+To see how you can setup a project, please look at `SetupProject` vignette 
+
+```r
+vignette("SetupProject")
+```
+
+#### Description function
+
+To view the tutorial on how to use the descriptive functions, run the following command:
 
 ```r
 vignette("DescusmrVignette")
 ```
 
-If everything is set up correctly, the vignette should open, providing a detailed guide to using the package.
+If everything is set up correctly, the vignettes should open, providing a detailed guide to using the package.
 
 ## Français
 
@@ -38,10 +50,23 @@ devtools::install_git(
 
 ### Accéder au tutoriel
 
-Après avoir installé le package avec l’option build_vignettes = TRUE, vous pouvez accéder au tutoriel Descusmr contenu dans la vignette. Pour vérifier et afficher le tutoriel, exécutez la commande suivante :
+
+Après avoir installé le package avec l'argument `build_vignettes = TRUE`, vous avez accès aux deux tutoriels de `Descusmr` :
+
+#### Démarrer un projet
+
+Pour voir comment démarrer un projet, vous pouvez regarder la vignette `SetupProject` :
+
+```r
+vignette("SetupProject")
+```
+
+#### Fonction de description
+
+Pour voir le tutoriel sur les fonctions de description, vous pouvez ouvrir la vignette `DescusmrVignette` :
 
 ```r
 vignette("DescusmrVignette")
 ```
 
-Si tout est correctement configuré, la vignette s’ouvrira et fournira un guide détaillé pour utiliser le package.
+Si tout est bien installé, les deux vignettes devraient s'ouvrir.
