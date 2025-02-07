@@ -1,6 +1,6 @@
 Package: Descusmr
 Title: Description of clinical research tables
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     c(person(given = "USMR",
            family = "CHU de Bordeaux",
