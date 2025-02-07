@@ -42,7 +42,6 @@ start_new_reporting <- function(folder_path,
                                 biostatistician_mail = NULL,
                                 datamanager_mail = NULL,
                                 language = "fr"){
-  folder_path = "doc/test"
   # create folder
   dir.create(file.path(folder_path))
   
