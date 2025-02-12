@@ -82,8 +82,8 @@ desc_ei_per_soc <- function(df_soc_pt,
 #' @param augmented_df_pat_soc_grp A dataframe linking patient IDs to SOC and PT, with group assignments.
 #'
 #' @return A wide-format dataframe summarizing adverse event occurrences and patient counts across groups.
-#' @export
 #' @importFrom purrr reduce
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
@@ -171,7 +171,7 @@ desc_ei_per_soc_prepare_df <- function(augmented_df_pat_grp,
 #' @param vec_grp A character vector of group names for which AE data is presented.
 #'
 #' @return A `gt` table formatted with appropriate labels, spans, and styling.
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{

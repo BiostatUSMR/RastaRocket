@@ -23,3 +23,4 @@ and converts it into a formatted \code{gt} table for easy visualization.
 gt_table <- desc_ei_per_soc_df_to_gt(df_wide, vec_grp)
 }
 }
+\keyword{internal}

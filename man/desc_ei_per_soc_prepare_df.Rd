@@ -23,3 +23,4 @@ including total counts and percentages of events and patients per SOC (System Or
 df_wide <- desc_ei_per_soc_prepare_df(augmented_df_pat_grp, augmented_df_pat_soc_grp)
 }
 }
+\keyword{internal}
