@@ -39,7 +39,8 @@ Imports:
     forcats,
     gt,
     cardx,
-    glue
+    glue,
+    purrr
 Suggests:
     testthat,
     knitr,
