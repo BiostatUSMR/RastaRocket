@@ -1,5 +1,5 @@
 ---
-title: "Describing Adverse Events in Clinical Trials with DescribeAE"
+title: "DescribeAE"
 date: "`r Sys.Date()`"
 output:
   html_vignette:
@@ -99,6 +99,22 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
 ### Interpretation:
 
 This table summarizes the distribution of adverse event grades (severity levels) per treatment group. It helps in understanding whether a treatment is associated with more severe adverse events compared to others.
+
+
+# What if you have only one group ?
+
+In that case the table `df_pat_grp` must still be provided with grp set to "Total" (or any other string)
+
+```{r}
+desc_ei_per_soc(df_soc_pt = df_soc_pt,
+                df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
+                df_pat_soc = df_pat_soc_grade)
+```
+
+```{r}
+desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
+                  df_pat_grade = df_pat_soc_grade)
+```
 
 
 # Conclusion

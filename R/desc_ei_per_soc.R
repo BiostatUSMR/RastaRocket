@@ -44,9 +44,15 @@ desc_ei_per_soc <- function(df_soc_pt,
   
   ##### Build augmented df, Total is a whole new group
   
-  augmented_df_pat_grp <- dplyr::bind_rows(df_pat_grp,
-                                           df_pat_grp |>
-                                             dplyr::mutate(grp = "Total"))
+  nb_grp <- length(unique(df_pat_grp$grp))
+  
+  if(nb_grp > 1){
+    augmented_df_pat_grp <- dplyr::bind_rows(df_pat_grp,
+                                             df_pat_grp |>
+                                               dplyr::mutate(grp = "Total"))
+  } else {
+    augmented_df_pat_grp <- df_pat_grp |> dplyr::mutate(grp = "Total")
+  }
   
   vec_grp <- unique(augmented_df_pat_grp$grp)
   
