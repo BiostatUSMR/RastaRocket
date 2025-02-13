@@ -29,6 +29,16 @@
 desc_ei_per_grade <- function(df_pat_grp,
                               df_pat_grade){
   
+  ##### clean type and df
+  
+  df_pat_grp <- df_pat_grp |> 
+    transmute(across(c(id_pat, grp),
+                     as.character))
+  
+  df_pat_grade <- df_pat_grade |> 
+    transmute(id_pat = as.character(id_pat),
+              grade = as.numeric(grade))
+  
   ##### Build augmented df, Total is a whole new group
   
   nb_grp <- length(unique(df_pat_grp$grp))
@@ -185,8 +195,8 @@ desc_ei_per_grade_df_to_gt <- function(df_wide,
                    columns = dplyr::everything()) |> 
     gt::tab_style(
       locations = gt::cells_body(rows = grade == "Total"),
-      style = gt::cell_fill(color = "lightblue" |>
-                              gt::adjust_luminance(steps = +1))
+      style = gt::cell_text(weight = "bold",
+                            style = "italic")
     )
   
   return(res)

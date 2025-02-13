@@ -42,6 +42,21 @@ desc_ei_per_soc <- function(df_soc_pt,
                             df_pat_grp,
                             df_pat_soc){
   
+  ##### clean type and df
+  
+  df_pat_grp <- df_pat_grp |> 
+    transmute(across(c(id_pat, grp),
+                     as.character))
+  
+  df_pat_soc <- df_pat_soc |> 
+    transmute(across(c(id_pat, soc),
+                     as.character))
+  
+  df_soc_pt <- df_soc_pt |> 
+    transmute(across(c(pt, soc),
+                     as.character))
+  
+  
   ##### Build augmented df, Total is a whole new group
   
   nb_grp <- length(unique(df_pat_grp$grp))
@@ -227,13 +242,12 @@ desc_ei_per_soc_df_to_gt <- function(df_wide,
                    columns = dplyr::everything()) |> 
     gt::tab_style(
       locations = gt::cells_body(rows = soc == "Total"),
-      style = gt::cell_fill(color = "lightblue" |>
-                              gt::adjust_luminance(steps = +1))
+      style = gt::cell_text(weight = "bold",
+                            style = "italic")
     ) |> 
     gt::tab_style(
       locations = gt::cells_row_groups(),
-      style = gt::cell_fill(color = "#c5c5c5" |>
-                              gt::adjust_luminance(steps = +1))
+      style = gt::cell_fill(color = "#F5F3F4")
     ) |> 
     gt::tab_style(
       locations = gt::cells_row_groups(),
