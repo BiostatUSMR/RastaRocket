@@ -40,7 +40,12 @@ Imports:
     gt,
     cardx,
     glue,
-    purrr
+    purrr,
+    ggh4x,
+    ggplot2,
+    ggrepel,
+    scales,
+    viridis
 Suggests:
     testthat,
     knitr,
