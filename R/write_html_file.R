@@ -71,6 +71,7 @@ write_html_file <- function(path,
     data_label = "Data manager"
     biostat_label = "Biostatisticien"
     methodo_label = "M\u00e9thodologiste"
+    doc_label = "DOCUMENT D\U0027ENREGISTREMENT"
   } else if (language == "en") {
     report_type1 = "Statistical analysis report"
     label_investigator = "Coordinating investigator"
@@ -79,6 +80,7 @@ write_html_file <- function(path,
     data_label = "Data manager"
     biostat_label = "Biostatistician"
     methodo_label = "M\U00e9thodologist"
+    doc_label = "RECORDING DOCUMENT"
   } else {
     stop("Language must be 'en' or 'fr'.")
   }
@@ -91,23 +93,27 @@ write_html_file <- function(path,
   
   html_string <- glue::glue(
   '<!DOCTYPE html> 
-  <html lang="fr"> 
-  <table style="border-collapse: collapse; width: 100%; height: 88px;" border="1">
-    <tbody>
-      <tr style="height: 44px;">
-      <td style="width: 20%; height: 66px;" rowspan="2"><img style="display: block; margin-left: auto; margin-right: auto;" src={path_logo} height="70" /></td>
-      <td style="width: 60%; height: 44px; text-align: center;">Entit\U00e9 d\U0027 application : USMR<br />Emetteur : USMR  
-      </td>
-      <td style="width: 20%; height: 44px; text-align: center;">EN-USM-511</td>
-      </tr>
-      <tr style="height: 22px;">
-      <td style="width: 60%; height: 22px; text-align: center;">RECORDING DOCUMENT</td>
-      <td style="width: 20%; height: 22px; text-align: center;">Ind : 02</td>
+<div class="custom-table">
+<table style="border-collapse: collapse; width: 100%; height: 88px;" border="1">
+  <colgroup>
+    <col style="width: 20%;"> <!-- Première colonne -->
+    <col style="width: 60%;"> <!-- Deuxième colonne -->
+    <col style="width: 20%;"> <!-- Troisième colonne -->
+  </colgroup>
+  <tbody>
+    <tr style="height: 44px;">
+      <td style="padding: 0; text-align: center;" rowspan="2"><img style="max-width: 90%; height: auto; display: inline-block;" src={path_logo} /></td>
+      <td style="text-align: center;">Entité d\U0027application : USMR<br />Emetteur : USMR</td>
+  <td style="text-align: center;">EN-USM-600</td>
+  </tr>
+  <tr style="height: 22px;">
+  <td style="text-align: center;">{doc_label}</td>
+      <td style="text-align: center;">Ind : 03</td>
     </tr>
     <tr style="height: 22px;">
-    <td style="width: 100%; height: 22px; text-align: center; text-transform: uppercase; font-weight: bolder;" colspan="3">{report_type1}</td>
-    </tr>
-    </tbody>
+      <td style="text-align: center; text-transform: uppercase; font-weight: bolder;" colspan="3">{report_type1}</td>
+  </tr>
+  </tbody>
   </table>
   
   <br />
