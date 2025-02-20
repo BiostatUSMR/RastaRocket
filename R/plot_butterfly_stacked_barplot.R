@@ -15,11 +15,11 @@
 #'     \item \code{id_pat} (character): Patient ID.
 #'     \item \code{grp} (character): Group assignment (e.g., treatment arms).
 #'   }
-#' @param df_pat_soc_grade A data frame linking patients to reported SOCs and AE grades.
+#' @param df_pat_pt_grade A data frame linking patients to reported PTs and AE grades.
 #'   Must contain columns:
 #'   \itemize{
 #'     \item \code{id_pat} (character): Patient ID.
-#'     \item \code{soc} (character): System Organ Class.
+#'     \item \code{pt} (character): Preferred Term.
 #'     \item \code{grade} (numeric or factor): Grade of the adverse event.
 #'   }
 #' @param ref_grp A character string specifying the reference group (used for alignment in the plot). 
@@ -36,9 +36,9 @@
 #' group and AE grade. It then generates a stacked bar plot where:
 #' \itemize{
 #'   \item The x-axis represents the percentage of patients experiencing an AE.
-#'   \item The y-axis represents SOCs (with PTs as facets).
+#'   \item The y-axis represents PTs (with SOCs as facets).
 #'   \item Bars are stacked by AE grade.
-#'   \item Labels for SOCs are displayed in the center.
+#'   \item Labels for PTs are displayed in the center.
 #'   \item The left and right panels correspond to different patient groups.
 #' }
 #'
@@ -53,19 +53,19 @@
 #' library(ggh4x)
 #' 
 #' df_soc_pt <- data.frame(
-#'   soc = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-#'   pt = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+#'   pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
+#'   soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
 #' )
 #'
 #' df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
 #'                          grp = c(rep("A", 5), rep("B", 5)))
 #'
-#' df_pat_soc_grade <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-#'                          soc = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", 
+#' df_pat_pt_grade <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+#'                          pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", 
 #'                                  "Pneumonia", "Pneumonia"),
 #'                          grade = c(4, 2, 1, 3, 4))
 #'
-#' plot_butterfly_stacked_barplot(df_soc_pt, df_pat_grp, df_pat_soc_grade)
+#' plot_butterfly_stacked_barplot(df_soc_pt, df_pat_grp, df_pat_pt_grade)
 #'
 #' @importFrom ggplot2 ggplot aes geom_bar geom_text scale_fill_manual theme_bw labs
 #' @importFrom dplyr group_by summarise mutate filter distinct left_join bind_rows
@@ -75,7 +75,7 @@
 #' @export
 plot_butterfly_stacked_barplot <- function(df_soc_pt,
                                            df_pat_grp,
-                                           df_pat_soc_grade,
+                                           df_pat_pt_grade,
                                            ref_grp = NULL,
                                            max_text_width = 9,
                                            vec_fill_color = viridis::viridis(n = 4)) {
@@ -91,34 +91,34 @@ plot_butterfly_stacked_barplot <- function(df_soc_pt,
     group_by(grp) |> 
     summarise(nb_pat_per_group = n())
   
-  df_label_soc_pt <- df_soc_pt |> 
-    filter(soc %in% df_pat_soc_grade$soc) |> 
-    mutate(grp = "SOC")
+  df_label_pt_pt <- df_soc_pt |> 
+    filter(pt %in% df_pat_pt_grade$pt) |> 
+    mutate(grp = "PT")
   
-  df_plot <- df_pat_soc_grade |> 
+  df_plot <- df_pat_pt_grade |> 
     distinct() |>
     left_join(df_pat_grp, by = "id_pat") |> 
-    group_by(grp, soc, grade) |> 
+    group_by(grp, pt, grade) |> 
     summarise(nb_ei = n(), .groups = "drop") |> 
     left_join(df_nb_pat_per_group, by = "grp") |> 
-    left_join(df_soc_pt, by = "soc") |> 
-    bind_rows(df_label_soc_pt) |> 
+    left_join(df_soc_pt, by = "pt") |> 
+    bind_rows(df_label_pt_pt) |> 
     mutate(freq_ei = nb_ei / nb_pat_per_group,
            grade = as.factor(grade),
            grp = as.factor(grp),
-           grp = forcats::fct_relevel(grp, ref_grp, "SOC"),
-           soc = purrr::map_chr(soc, ~ paste(strwrap(.x, width = max_text_width), collapse = "\n")))
+           grp = forcats::fct_relevel(grp, ref_grp, "PT"),
+           pt = purrr::map_chr(pt, ~ paste(strwrap(.x, width = max_text_width), collapse = "\n")))
   
-  p <- ggplot(data = df_plot |> filter(grp != 'SOC'),
-              mapping = aes(x = freq_ei, y = soc, fill = grade)) +
+  p <- ggplot(data = df_plot |> filter(grp != 'PT'),
+              mapping = aes(x = freq_ei, y = pt, fill = grade)) +
     geom_bar(position = position_stack(), stat = "identity") +
-    geom_text(data = df_plot |> filter(grp == 'SOC'),
-              mapping = aes(x = 0, y = soc, label = soc),
+    geom_text(data = df_plot |> filter(grp == 'PT'),
+              mapping = aes(x = 0, y = pt, label = pt),
               hjust = "center",
               inherit.aes = FALSE,
               size = 3) +
     scale_fill_manual(values = vec_fill_color) +
-    facet_grid(pt ~ grp, scales = "free", switch = "y", space = "free") +
+    facet_grid(soc ~ grp, scales = "free", switch = "y", space = "free") +
     ggh4x::facetted_pos_scales(x = list(scale_x_continuous(labels = scales::label_percent(),
                                                            trans = "reverse",
                                                            limits = c(1, 0)),

@@ -8,8 +8,8 @@
 #' Must contain columns `soc` (System Organ Class) and `pt` (Preferred Term).
 #' @param df_pat_grp A data frame of patient groups. Must contain columns `id_pat` (patient ID) 
 #' and `grp` (group assignment).
-#' @param df_pat_soc A data frame linking patients to adverse event system organ classes. 
-#' Must contain columns `id_pat` (patient ID) and `soc` (System Organ Class).
+#' @param df_pat_pt A data frame linking patients to adverse event system organ classes. 
+#' Must contain columns `id_pat` (patient ID) and `pt` (System Organ Class).
 #' @param ref_grp (Optional) A reference group for comparisons. Defaults to the first group in `df_pat_grp`.
 #' @param colors_arm A vector of colors for the patient groups. Defaults to `c("#1b9e77", "#7570b3")`.
 #' @param color_label A string specifying the legend label for the groups. Defaults to `"Arm"`.
@@ -18,24 +18,24 @@
 #' 
 #' @examples
 #' df_soc_pt <- data.frame(
-#'   soc = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-#'   pt = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+#'   pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
+#'   soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
 #' )
 #' 
 #' df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
 #'                          grp = c(rep("A", 5), rep("B", 5)))
 #' 
-#' df_pat_soc <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-#'                          soc = c("Arrhythmia", "Myocardial Infarction",
+#' df_pat_pt <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+#'                          pt = c("Arrhythmia", "Myocardial Infarction",
 #'                          "Arrhythmia", "Pneumonia", "Pneumonia"))
 #' 
-#' plot_dumbell(df_soc_pt, df_pat_grp, df_pat_soc)
+#' plot_dumbell(df_soc_pt, df_pat_grp, df_pat_pt)
 #' 
 #' @import ggplot2 dplyr forcats ggh4x scales
 #' @export
 plot_dumbell <- function(df_soc_pt,
                          df_pat_grp,
-                         df_pat_soc,
+                         df_pat_pt,
                          ref_grp = NULL,
                          colors_arm = c("#1b9e77", "#7570b3"),
                          color_label = "Arm"){
@@ -44,7 +44,7 @@ plot_dumbell <- function(df_soc_pt,
   
   df_all <- df_builder_ae(df_soc_pt = df_soc_pt,
                           df_pat_grp = df_pat_grp,
-                          df_pat_soc = df_pat_soc,
+                          df_pat_pt = df_pat_pt,
                           ref_grp = ref_grp)
   
   df_vline <- data.frame(xintercept = 0,
@@ -52,7 +52,7 @@ plot_dumbell <- function(df_soc_pt,
   
   ########## Plot
   
-  p <- ggplot(mapping = aes(y = soc)) +
+  p <- ggplot(mapping = aes(y = pt)) +
     geom_point(df_all |> filter(facet == "Prop. of patients"),
                mapping = aes(x = freq_pat, color = grp, shape = grp)) +
     geom_text(df_all |> filter(facet == "Total nb of AE"),
@@ -69,7 +69,7 @@ plot_dumbell <- function(df_soc_pt,
                    mapping = aes(xmin = CIinf, xmax = CIsup),
                    height = 0) +
     scale_color_manual(values = colors_arm) +
-    facet_grid(pt ~ facet, scales = "free", space = "free", switch = "both") +
+    facet_grid(soc ~ facet, scales = "free", space = "free", switch = "both") +
     theme_bw() +
     theme(legend.position="bottom",
           legend.text = element_text(size=10),

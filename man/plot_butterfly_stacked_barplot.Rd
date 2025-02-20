@@ -7,7 +7,7 @@
 plot_butterfly_stacked_barplot(
   df_soc_pt,
   df_pat_grp,
-  df_pat_soc_grade,
+  df_pat_pt_grade,
   ref_grp = NULL,
   max_text_width = 9,
   vec_fill_color = viridis::viridis(n = 4)
@@ -28,11 +28,11 @@ Must contain columns:
 \item \code{grp} (character): Group assignment (e.g., treatment arms).
 }}
 
-\item{df_pat_soc_grade}{A data frame linking patients to reported SOCs and AE grades.
+\item{df_pat_pt_grade}{A data frame linking patients to reported PTs and AE grades.
 Must contain columns:
 \itemize{
 \item \code{id_pat} (character): Patient ID.
-\item \code{soc} (character): System Organ Class.
+\item \code{pt} (character): Preferred Term.
 \item \code{grade} (numeric or factor): Grade of the adverse event.
 }}
 
@@ -57,9 +57,9 @@ The function processes input data to calculate the frequency of adverse events p
 group and AE grade. It then generates a stacked bar plot where:
 \itemize{
 \item The x-axis represents the percentage of patients experiencing an AE.
-\item The y-axis represents SOCs (with PTs as facets).
+\item The y-axis represents PTs (with SOCs as facets).
 \item Bars are stacked by AE grade.
-\item Labels for SOCs are displayed in the center.
+\item Labels for PTs are displayed in the center.
 \item The left and right panels correspond to different patient groups.
 }
 
@@ -74,18 +74,18 @@ library(viridis)
 library(ggh4x)
 
 df_soc_pt <- data.frame(
-  soc = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-  pt = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+  pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
+  soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
 )
 
 df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
                          grp = c(rep("A", 5), rep("B", 5)))
 
-df_pat_soc_grade <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-                         soc = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", 
+df_pat_pt_grade <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+                         pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", 
                                  "Pneumonia", "Pneumonia"),
                          grade = c(4, 2, 1, 3, 4))
 
-plot_butterfly_stacked_barplot(df_soc_pt, df_pat_grp, df_pat_soc_grade)
+plot_butterfly_stacked_barplot(df_soc_pt, df_pat_grp, df_pat_pt_grade)
 
 }

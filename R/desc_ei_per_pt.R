@@ -1,23 +1,24 @@
 # main function -----------------------------------------------------------
 
-#' desc_ei_per_soc
+#' desc_ei_per_pt
 #' 
 #' A function to describe AE by soc and pt
 #'
 #' @param df_soc_pt A dataframe with two columns: pt and soc
 #' @param df_pat_grp A dataframe with two columns: id_pat and grp (the rct arm)
-#' @param df_pat_soc A dataframe with two columns: id_pat and soc
+#' @param df_pat_pt A dataframe with two columns: id_pat and pt
+#' @param language 'fr' default or 'en'
 #'
 #' @return A gt table
 #' @export
 #'
 #' @examples
 #' df_soc_pt <- data.frame(
-#'   soc = c("Arrhythmia",
+#'   pt = c("Arrhythmia",
 #'           "Myocardial Infarction",
 #'           "Pneumonia",
 #'           "Sepsis"),
-#'   pt = c("Cardiac Disorders",
+#'   soc = c("Cardiac Disorders",
 #'          "Cardiac Disorders",
 #'          "Infections",
 #'          "Infections")
@@ -26,21 +27,38 @@
 #' df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
 #'                          grp = c(rep("A", 3), rep("B", 3), rep("C", 4)))
 #' 
-#' df_pat_soc <- data.frame(id_pat = c("ID_1", "ID_1",
+#' df_pat_pt <- data.frame(id_pat = c("ID_1", "ID_1",
 #'                                     "ID_2",
 #'                                     "ID_4",
 #'                                     "ID_9"),
-#'                          soc = c("Arrhythmia", "Myocardial Infarction",
+#'                          pt = c("Arrhythmia", "Myocardial Infarction",
 #'                                  "Arrhythmia", "Pneumonia",
 #'                                  "Pneumonia"))
 #' 
-#' desc_ei_per_soc(df_soc_pt = df_soc_pt,
-#'                 df_pat_grp = df_pat_grp,
-#'                 df_pat_soc = df_pat_soc)
+#' desc_ei_per_pt(df_soc_pt = df_soc_pt,
+#'                df_pat_grp = df_pat_grp,
+#'                df_pat_pt = df_pat_pt)
 #' 
-desc_ei_per_soc <- function(df_soc_pt,
-                            df_pat_grp,
-                            df_pat_soc){
+desc_ei_per_pt <- function(df_soc_pt,
+                           df_pat_grp,
+                           df_pat_pt,
+                           language = "fr"){
+  
+  ##### check for stupid missing data
+  if(anyNA(df_pat_grp)){
+    warning("Missing data removed from df_pat_grp please be careful !")
+    df_pat_grp <- na.omit(df_pat_grp)
+  }
+  
+  if(anyNA(df_pat_pt)){
+    warning("Missing data removed from df_pat_pt please be careful !")
+    df_pat_pt <- na.omit(df_pat_pt)
+  }
+  
+  if(anyNA(df_soc_pt)){
+    warning("Missing data removed from df_soc_pt please be careful !")
+    df_soc_pt <- na.omit(df_soc_pt)
+  }
   
   ##### clean type and df
   
@@ -49,16 +67,14 @@ desc_ei_per_soc <- function(df_soc_pt,
                      as.character)) |> 
     distinct()
   
-  df_pat_soc <- df_pat_soc |> 
-    transmute(across(c(id_pat, soc),
-                     as.character)) |> 
-    mutate(soc = if_else(is.na(soc), "Unknown", soc))
+  df_pat_pt <- df_pat_pt |> 
+    transmute(across(c(id_pat, pt),
+                     as.character))
   
   df_soc_pt <- df_soc_pt |> 
     transmute(across(c(pt, soc),
                      as.character)) |> 
-    distinct() |> 
-    bind_rows(data.frame(soc = "Unknown", pt = "Unknown"))
+    distinct()
   
   
   ##### Build augmented df, Total is a whole new group
@@ -75,28 +91,29 @@ desc_ei_per_soc <- function(df_soc_pt,
   
   vec_grp <- unique(augmented_df_pat_grp$grp)
   
-  augmented_df_pat_soc_grp <- df_pat_soc |> 
+  augmented_df_pat_pt_grp <- df_pat_pt |> 
     dplyr::left_join(augmented_df_pat_grp,
                      by = "id_pat",
                      relationship = "many-to-many") |> 
     dplyr::left_join(df_soc_pt,
-                     by = "soc")
+                     by = "pt")
   
   ##### Build wide dataframe
   
-  df_wide <- desc_ei_per_soc_prepare_df(augmented_df_pat_grp = augmented_df_pat_grp,
-                                        augmented_df_pat_soc_grp = augmented_df_pat_soc_grp)
+  df_wide <- desc_ei_per_pt_prepare_df(augmented_df_pat_grp = augmented_df_pat_grp,
+                                       augmented_df_pat_pt_grp = augmented_df_pat_pt_grp)
   
   ##### gt part
   
-  res <- desc_ei_per_soc_df_to_gt(df_wide = df_wide,
-                                  vec_grp = vec_grp)
+  res <- desc_ei_per_pt_df_to_gt(df_wide = df_wide,
+                                 vec_grp = vec_grp,
+                                 language = language)
   
   return(res)
 }
 
 
-# desc_ei_per_soc_prepare_df ----------------------------------------------
+# desc_ei_per_pt_prepare_df ----------------------------------------------
 
 #' Prepare Data for AE Description by SOC and PT
 #'
@@ -104,7 +121,7 @@ desc_ei_per_soc <- function(df_soc_pt,
 #' including total counts and percentages of events and patients per SOC (System Organ Class) and PT (Preferred Term).
 #'
 #' @param augmented_df_pat_grp A dataframe containing patient IDs and group assignments, including a "Total" group.
-#' @param augmented_df_pat_soc_grp A dataframe linking patient IDs to SOC and PT, with group assignments.
+#' @param augmented_df_pat_pt_grp A dataframe linking patient IDs to SOC and PT, with group assignments.
 #'
 #' @return A wide-format dataframe summarizing adverse event occurrences and patient counts across groups.
 #' @importFrom purrr reduce
@@ -112,10 +129,10 @@ desc_ei_per_soc <- function(df_soc_pt,
 #'
 #' @examples
 #' \dontrun{
-#' df_wide <- desc_ei_per_soc_prepare_df(augmented_df_pat_grp, augmented_df_pat_soc_grp)
+#' df_wide <- desc_ei_per_pt_prepare_df(augmented_df_pat_grp, augmented_df_pat_pt_grp)
 #' }
-desc_ei_per_soc_prepare_df <- function(augmented_df_pat_grp,
-                                       augmented_df_pat_soc_grp){
+desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
+                                      augmented_df_pat_pt_grp){
   
   ##### compute summary statistics per group
   
@@ -123,7 +140,7 @@ desc_ei_per_soc_prepare_df <- function(augmented_df_pat_grp,
     dplyr::group_by(grp) |> 
     dplyr::summarise(nb_pat_per_grp = n())
   
-  df_ei_total <- augmented_df_pat_soc_grp |> 
+  df_ei_total <- augmented_df_pat_pt_grp |> 
     dplyr::group_by(grp) |> 
     dplyr::summarise(nb_ei = n(),
                      pct_ei = 100,
@@ -136,10 +153,10 @@ desc_ei_per_soc_prepare_df <- function(augmented_df_pat_grp,
     dplyr::select(pt, soc, grp, nb_ei, pct_ei, nb_pat, pct_pat)
   
   ##### compute summary statisticsby SOC and PT
-  df_wide <- list(soc = c("grp", "soc", "pt"),
-                  pt = c("grp", "pt")) |> 
+  df_wide <- list(pt = c("grp", "soc", "pt"),
+                  soc = c("grp", "soc")) |> 
     lapply(function(vec_grp_by){
-      temp <- augmented_df_pat_soc_grp |> 
+      temp <- augmented_df_pat_pt_grp |> 
         dplyr::group_by(across(all_of(vec_grp_by))) |> 
         dplyr::summarise(nb_ei = n(),
                          nb_pat = length(unique(id_pat)),
@@ -152,12 +169,12 @@ desc_ei_per_soc_prepare_df <- function(augmented_df_pat_grp,
         dplyr::mutate(pct_pat = nb_pat/nb_pat_per_grp*100,
                       pct_ei = nb_ei/nb_ei_denom*100)
       
-      if(!"soc" %in% colnames(temp)){
-        temp$soc <- "Total"
+      if(!"pt" %in% colnames(temp)){
+        temp$pt <- "Total"
       }
       
       res <- temp |> 
-        dplyr::select(pt, soc, grp, nb_ei, pct_ei, nb_pat, pct_pat)
+        dplyr::select(soc, pt, grp, nb_ei, pct_ei, nb_pat, pct_pat)
       
       return(res)
     }) |> 
@@ -167,7 +184,7 @@ desc_ei_per_soc_prepare_df <- function(augmented_df_pat_grp,
     ### Arrange dataframe for visualization
     mutate(across(c("pt", "soc", "grp"), as.factor),
            across(c("pt", "soc", "grp"), function(x) forcats::fct_relevel(x, "Total"))) |> 
-    dplyr::arrange(pt, soc, grp) |> 
+    dplyr::arrange(soc, pt, grp) |> 
     ### Go to wide format with correct names
     dplyr::group_by(grp) |> 
     dplyr::group_split() |> 
@@ -185,7 +202,7 @@ desc_ei_per_soc_prepare_df <- function(augmented_df_pat_grp,
 }
 
 
-# desc_ei_per_soc_df_to_gt ------------------------------------------------
+# desc_ei_per_pt_df_to_gt ------------------------------------------------
 
 #' Convert AE Summary Data to GT Table
 #'
@@ -194,24 +211,35 @@ desc_ei_per_soc_prepare_df <- function(augmented_df_pat_grp,
 #'
 #' @param df_wide A wide-format dataframe containing summarized AE data.
 #' @param vec_grp A character vector of group names for which AE data is presented.
+#' @param language 'fr' default or 'en'
 #'
 #' @return A `gt` table formatted with appropriate labels, spans, and styling.
 #' @keywords internal
 #'
 #' @examples
 #' \dontrun{
-#' gt_table <- desc_ei_per_soc_df_to_gt(df_wide, vec_grp)
+#' gt_table <- desc_ei_per_pt_df_to_gt(df_wide, vec_grp)
 #' }
-desc_ei_per_soc_df_to_gt <- function(df_wide,
-                                     vec_grp){
+desc_ei_per_pt_df_to_gt <- function(df_wide,
+                                    vec_grp,
+                                    language = "fr"){
+  ### language
+  if (language == 'fr'){
+    label_pt <- "**Ev\u00e9nements ind\u00e9sirables**"
+  } else if (language == 'en'){
+    label_pt <- "**Adverse events**"
+  } else {
+    label_pt <- language
+  }
+  
   ### Create the gt table and labels
   
   gt_temp <- df_wide |> 
-    dplyr::group_by(pt) |> 
+    dplyr::group_by(soc) |> 
     gt::gt() |> 
     gt::cols_label(
-      pt = "PT",
-      soc = gt::md("**Ev\u00e9nements ind\u00e9sirables**"),
+      pt = gt::md(label_pt),
+      soc = "soc",
       dplyr::ends_with("nb_ei") ~ gt::md("**N**"),
       dplyr::ends_with("nb_pat") ~ gt::md("**N**"),
       dplyr::ends_with("pct_ei") ~ gt::md("**%**"),
@@ -245,7 +273,7 @@ desc_ei_per_soc_df_to_gt <- function(df_wide,
     gt::cols_align(align = "left",
                    columns = dplyr::everything()) |> 
     gt::tab_style(
-      locations = gt::cells_body(rows = soc == "Total"),
+      locations = gt::cells_body(rows = pt == "Total"),
       style = gt::cell_text(weight = "bold",
                             style = "italic")
     ) |> 

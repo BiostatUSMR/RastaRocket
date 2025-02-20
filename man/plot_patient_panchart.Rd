@@ -7,10 +7,10 @@
 plot_patient_panchart(
   df_soc_pt,
   df_pat_grp_rando,
-  df_pat_soc_grade_date,
+  df_pat_pt_grade_date,
   df_pat_treatment_date,
   pat_id,
-  vec_fill_color = viridis::viridis(n = 4)
+  vec_fill_color = viridis::viridis(n = 4, direction = -1, end = 0.95, option = "magma")
 )
 }
 \arguments{
@@ -19,7 +19,7 @@ plot_patient_panchart(
 \item{df_pat_grp_rando}{A data frame containing patient IDs, randomization groups, and
 randomization dates.}
 
-\item{df_pat_soc_grade_date}{A data frame with patient IDs, SOC terms, AE grades, start
+\item{df_pat_pt_grade_date}{A data frame with patient IDs, PT terms, AE grades, start
 and end dates of AEs.}
 
 \item{df_pat_treatment_date}{A data frame with patient IDs and treatment dates.}
@@ -44,9 +44,9 @@ df_pat_grp_rando <- data.frame(
   rando_date = c("2020-12-01", "2021-01-03")
 )
 
-df_pat_soc_grade_date <- data.frame(
+df_pat_pt_grade_date <- data.frame(
   id_pat = c("ID_1", "ID_1", "ID_1", "ID_1", "ID_2"),
-  soc = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia",
+  pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia",
           "Pneumonia", "Pneumonia"),
   grade = c(4, 2, 1, 3, 4),
   start = c("2021-01-01", "2021-02-03", "2021-01-02", "2021-03-05", "2021-02-01"),
@@ -58,14 +58,14 @@ df_pat_treatment_date <- data.frame(
   treatment_date = c("2021-01-25", "2021-03-01", "2021-01-20")
 )
 df_soc_pt <- data.frame(
-  soc = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-  pt = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+  pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
+  soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
 )
 
 plot_patient_panchart(
   df_soc_pt = df_soc_pt,
   df_pat_grp_rando = df_pat_grp_rando,
-  df_pat_soc_grade_date = df_pat_soc_grade_date,
+  df_pat_pt_grade_date = df_pat_pt_grade_date,
   df_pat_treatment_date = df_pat_treatment_date,
   pat_id = "ID_1"
 )

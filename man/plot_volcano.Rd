@@ -7,7 +7,7 @@
 plot_volcano(
   df_soc_pt,
   df_pat_grp,
-  df_pat_soc,
+  df_pat_pt,
   colors_arm = c("#1b9e77", "#7570b3"),
   size = "nb_pat"
 )
@@ -27,11 +27,11 @@ Must contain columns:
 \item \code{grp} (character): Group assignment (e.g., treatment arms).
 }}
 
-\item{df_pat_soc}{A data frame linking patients to reported SOCs.
+\item{df_pat_pt}{A data frame linking patients to reported PT.
 Must contain columns:
 \itemize{
 \item \code{id_pat} (character): Patient ID.
-\item \code{soc} (character): System Organ Class.
+\item \code{pt} (character): Preferred Term.
 }}
 
 \item{colors_arm}{A character vector of length two specifying the colors for the two patient groups in the plot.
@@ -63,17 +63,17 @@ such as risk difference (\code{RD}) and p-values. The volcano plot displays:
 }
 \examples{
 df_soc_pt <- data.frame(
-  soc = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-  pt = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+  pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
+  soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
 )
 
 df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
                          grp = c(rep("A", 5), rep("B", 5)))
 
-df_pat_soc <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-                         soc = c("Arrhythmia", "Myocardial Infarction",
+df_pat_pt <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+                         pt = c("Arrhythmia", "Myocardial Infarction",
                          "Arrhythmia", "Pneumonia", "Pneumonia"))
 
-plot_volcano(df_soc_pt, df_pat_grp, df_pat_soc)
+plot_volcano(df_soc_pt, df_pat_grp, df_pat_pt)
 
 }

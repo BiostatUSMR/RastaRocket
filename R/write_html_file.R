@@ -96,14 +96,14 @@ write_html_file <- function(path,
 <div class="custom-table">
 <table style="border-collapse: collapse; width: 100%; height: 88px;" border="1">
   <colgroup>
-    <col style="width: 20%;"> <!-- Première colonne -->
-    <col style="width: 60%;"> <!-- Deuxième colonne -->
-    <col style="width: 20%;"> <!-- Troisième colonne -->
+    <col style="width: 20%;"> 
+    <col style="width: 60%;"> 
+    <col style="width: 20%;"> 
   </colgroup>
   <tbody>
     <tr style="height: 44px;">
       <td style="padding: 0; text-align: center;" rowspan="2"><img style="max-width: 90%; height: auto; display: inline-block;" src={path_logo} /></td>
-      <td style="text-align: center;">Entité d\u0027application : USMR<br />Emetteur : USMR</td>
+      <td style="text-align: center;">Entit\u00e9 d\u0027application : USMR<br />Emetteur : USMR</td>
   <td style="text-align: center;">EN-USM-600</td>
   </tr>
   <tr style="height: 22px;">

@@ -7,7 +7,7 @@
 plot_dumbell(
   df_soc_pt,
   df_pat_grp,
-  df_pat_soc,
+  df_pat_pt,
   ref_grp = NULL,
   colors_arm = c("#1b9e77", "#7570b3"),
   color_label = "Arm"
@@ -20,8 +20,8 @@ Must contain columns \code{soc} (System Organ Class) and \code{pt} (Preferred Te
 \item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{id_pat} (patient ID)
 and \code{grp} (group assignment).}
 
-\item{df_pat_soc}{A data frame linking patients to adverse event system organ classes.
-Must contain columns \code{id_pat} (patient ID) and \code{soc} (System Organ Class).}
+\item{df_pat_pt}{A data frame linking patients to adverse event system organ classes.
+Must contain columns \code{id_pat} (patient ID) and \code{pt} (System Organ Class).}
 
 \item{ref_grp}{(Optional) A reference group for comparisons. Defaults to the first group in \code{df_pat_grp}.}
 
@@ -39,17 +39,17 @@ the proportion of patients affected, and the risk difference with confidence int
 }
 \examples{
 df_soc_pt <- data.frame(
-  soc = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-  pt = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+  pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
+  soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
 )
 
 df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
                          grp = c(rep("A", 5), rep("B", 5)))
 
-df_pat_soc <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-                         soc = c("Arrhythmia", "Myocardial Infarction",
+df_pat_pt <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+                         pt = c("Arrhythmia", "Myocardial Infarction",
                          "Arrhythmia", "Pneumonia", "Pneumonia"))
 
-plot_dumbell(df_soc_pt, df_pat_grp, df_pat_soc)
+plot_dumbell(df_soc_pt, df_pat_grp, df_pat_pt)
 
 }

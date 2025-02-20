@@ -14,11 +14,11 @@
 #'     \item \code{id_pat} (character): Patient ID.
 #'     \item \code{grp} (character): Group assignment (e.g., treatment arms).
 #'   }
-#' @param df_pat_soc A data frame linking patients to reported SOCs.
+#' @param df_pat_pt A data frame linking patients to reported PT.
 #'   Must contain columns:
 #'   \itemize{
 #'     \item \code{id_pat} (character): Patient ID.
-#'     \item \code{soc} (character): System Organ Class.
+#'     \item \code{pt} (character): Preferred Term.
 #'   }
 #' @param colors_arm A character vector of length two specifying the colors for the two patient groups in the plot. 
 #'   Default is \code{c("#1b9e77", "#7570b3")}.
@@ -44,18 +44,18 @@
 #'
 #' @examples
 #' df_soc_pt <- data.frame(
-#'   soc = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-#'   pt = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+#'   pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
+#'   soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
 #' )
 #'
 #' df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
 #'                          grp = c(rep("A", 5), rep("B", 5)))
 #'
-#' df_pat_soc <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-#'                          soc = c("Arrhythmia", "Myocardial Infarction",
+#' df_pat_pt <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+#'                          pt = c("Arrhythmia", "Myocardial Infarction",
 #'                          "Arrhythmia", "Pneumonia", "Pneumonia"))
 #'
-#' plot_volcano(df_soc_pt, df_pat_grp, df_pat_soc)
+#' plot_volcano(df_soc_pt, df_pat_grp, df_pat_pt)
 #'
 #' @importFrom ggplot2 ggplot aes geom_point geom_hline geom_label scale_color_manual theme_bw labs
 #' @importFrom dplyr group_by summarise mutate
@@ -64,7 +64,7 @@
 #' @export
 plot_volcano <- function(df_soc_pt,
                          df_pat_grp,
-                         df_pat_soc,
+                         df_pat_pt,
                          colors_arm = c("#1b9e77", "#7570b3"),
                          size = "nb_pat") {
   
@@ -73,7 +73,7 @@ plot_volcano <- function(df_soc_pt,
   
   df_all <- df_builder_ae(df_soc_pt = df_soc_pt,
                           df_pat_grp = df_pat_grp,
-                          df_pat_soc = df_pat_soc)
+                          df_pat_pt = df_pat_pt)
   
   grp_levels <- levels(df_all$grp)
   
@@ -93,7 +93,7 @@ plot_volcano <- function(df_soc_pt,
     ggplot(mapping = aes(x = RD, y = minus_log10_pval,
                          color = increased_risk,
                          size = .data[[size]],
-                         label = soc)) +
+                         label = pt)) +
     geom_point(alpha = 0.4) +
     ggrepel::geom_text_repel(size = 3,
                              color = "black",
