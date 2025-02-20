@@ -64,14 +64,14 @@ write_html_file <- function(path,
   if (is.null(datamanager_mail)) datamanager_mail <- from_name_to_adress(datamanager)
   
   if (language == "fr") {
-    report_type1 = "Rapport d\U0027analyses statistiques"
+    report_type1 = "Rapport d\u0027analyses statistiques"
     label_investigator = "Investigateur coordinateur"
     label_confidential = "Confidentiel"
     ctu_label = "Centre de M\u00e9thodologie et de Gestion : "
     data_label = "Data manager :"
     biostat_label = "Biostatisticien :"
     methodo_label = "M\u00e9thodologiste :"
-    doc_label = "DOCUMENT D\U0027ENREGISTREMENT"
+    doc_label = "DOCUMENT D\u0027ENREGISTREMENT"
   } else if (language == "en") {
     report_type1 = "Statistical analysis report"
     label_investigator = "Coordinating investigator"
@@ -103,7 +103,7 @@ write_html_file <- function(path,
   <tbody>
     <tr style="height: 44px;">
       <td style="padding: 0; text-align: center;" rowspan="2"><img style="max-width: 90%; height: auto; display: inline-block;" src={path_logo} /></td>
-      <td style="text-align: center;">Entité d\U0027application : USMR<br />Emetteur : USMR</td>
+      <td style="text-align: center;">Entité d\u0027application : USMR<br />Emetteur : USMR</td>
   <td style="text-align: center;">EN-USM-600</td>
   </tr>
   <tr style="height: 22px;">
