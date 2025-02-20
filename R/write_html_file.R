@@ -64,29 +64,29 @@ write_html_file <- function(path,
   if (is.null(datamanager_mail)) datamanager_mail <- from_name_to_adress(datamanager)
   
   if (language == "fr") {
-    report_type1 = "Rapport d\U0027analyse statistiques"
+    report_type1 = "Rapport d\U0027analyses statistiques"
     label_investigator = "Investigateur coordinateur"
-    label_confidential = "Confidential"
+    label_confidential = "Confidentiel"
     ctu_label = "Centre de M\u00e9thodologie et de Gestion : "
-    data_label = "Data manager"
-    biostat_label = "Biostatisticien"
-    methodo_label = "M\u00e9thodologiste"
+    data_label = "Data manager :"
+    biostat_label = "Biostatisticien :"
+    methodo_label = "M\u00e9thodologiste :"
     doc_label = "DOCUMENT D\U0027ENREGISTREMENT"
   } else if (language == "en") {
     report_type1 = "Statistical analysis report"
     label_investigator = "Coordinating investigator"
-    label_confidential = "Confidentiel"
+    label_confidential = "Confidential"
     ctu_label = "Clinical Trial Unit: "
-    data_label = "Data manager"
-    biostat_label = "Biostatistician"
-    methodo_label = "M\U00e9thodologist"
+    data_label = "Data manager:"
+    biostat_label = "Biostatistician:"
+    methodo_label = "M\U00e9thodologist:"
     doc_label = "RECORDING DOCUMENT"
   } else {
     stop("Language must be 'en' or 'fr'.")
   }
   
   if (confidential) {
-    confidential_html <- '<p style="text-align: center;text-transform: uppercase; font-weight: bolder;font-size:26px;">{label_confidential}</p><br />'
+    confidential_html <- glue::glue('<p style="text-align: center;text-transform: uppercase; font-weight: bolder;font-size:26px;">{label_confidential}</p><br />')
   } else {
     confidential_html <- ''
   }
