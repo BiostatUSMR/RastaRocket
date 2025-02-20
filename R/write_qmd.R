@@ -20,11 +20,6 @@ write_qmd <- function(path,
                       path_css){
   qmd_string <- glue::glue(
   '---
-  title: Title
-  subtitle: Subtitle
-  author: Author
-  date: today
-  description: Description
   format:
     html:
       toc: true
