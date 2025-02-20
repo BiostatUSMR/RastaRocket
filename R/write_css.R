@@ -8,22 +8,67 @@
 #'
 #' @export
 write_css <- function(path){
-  css_string <- "table {
+  css_string <- ".custom-table table {
     width: 100% !important;
     border-collapse: collapse !important;
-  }
-  
-  td, th {
+}
+
+.custom-table td, .custom-table th {
     border: 1px solid black !important;
     text-align: center !important;
     padding: 5px !important;
+}
+
+
+h1 .header-section-number{
+  color: rgb(51, 90, 137) !important;  
+  font-weight: bold !important;
+}
+
+h2 .header-section-number{
+  color: rgb(51, 90, 137) !important; 
+  font-weight: bold !important;
+}
+
+h3 .header-section-number, h4 .header-section-number, h5 .header-section-number, h6 .header-section-number {
+  color: rgb(51, 90, 137) !important;  
+  font-weight: bold !important;
+}
+
+h1 {
+  color: rgb(51, 90, 137) !important;  
+  font-weight: bold !important;
+  border-bottom: 3px solid rgb(51, 90, 137) !important;  
+  padding-bottom: 5px;
+}
+
+h2 {
+  color: rgb(51, 90, 137) !important; 
+  font-weight: bold !important;
+  border-bottom: 3px solid rgb(51, 90, 137) !important; 
+  padding-bottom: 5px;
+  margin-left: 40px;
+}
+
+h3, h4, h5, h6 {
+  color: rgb(51, 90, 137) !important;  
+  font-weight: bold !important;
+  margin-left: 80px;
+}
+
+
+table caption {
+  text-align: left !important; 
+  font-weight: bold !important;
   }
-  
-  .cent-gras {
-    text-align: center !important;
-    font-weight: bolder !important;
-    text-transform: uppercase !important;
-  }"
+
+
+caption p {
+    display: inline;  
+    margin-left: 5px; 
+}
+
+"
   
   write.table(css_string, 
               file = path, 
