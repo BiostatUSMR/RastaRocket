@@ -46,15 +46,19 @@ desc_ei_per_soc <- function(df_soc_pt,
   
   df_pat_grp <- df_pat_grp |> 
     transmute(across(c(id_pat, grp),
-                     as.character))
+                     as.character)) |> 
+    distinct()
   
   df_pat_soc <- df_pat_soc |> 
     transmute(across(c(id_pat, soc),
-                     as.character))
+                     as.character)) |> 
+    mutate(soc = if_else(is.na(soc), "Unknown", soc))
   
   df_soc_pt <- df_soc_pt |> 
     transmute(across(c(pt, soc),
-                     as.character))
+                     as.character)) |> 
+    distinct() |> 
+    bind_rows(data.frame(soc = "Unknown", pt = "Unknown"))
   
   
   ##### Build augmented df, Total is a whole new group
