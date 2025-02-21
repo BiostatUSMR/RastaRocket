@@ -115,7 +115,9 @@ write_html_file <- function(path,
   </tr>
   </tbody>
   </table>
-  
+  </div>  
+
+
   <br />
   
   <p style="text-align: center;text-transform: uppercase; font-weight: bolder;font-size:20px;">{report_type}</p>
