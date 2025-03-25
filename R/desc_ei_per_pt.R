@@ -4,45 +4,48 @@
 #' 
 #' A function to describe AE by soc and pt
 #'
-#' @param df_soc_pt A dataframe with two columns: pt and soc
 #' @param df_pat_grp A dataframe with two columns: id_pat and grp (the rct arm)
-#' @param df_pat_pt A dataframe with two columns: id_pat and pt
+#' @param df_pat_llt A dataframe with two columns: id_pat (patient id), num_ae (AE id), llt (AE LLT), pt (AE PT), soc (AE)
 #' @param language 'fr' default or 'en'
 #'
 #' @return A gt table
 #' @export
 #'
 #' @examples
-#' df_soc_pt <- data.frame(
-#'   pt = c("Arrhythmia",
-#'           "Myocardial Infarction",
-#'           "Pneumonia",
-#'           "Sepsis"),
-#'   soc = c("Cardiac Disorders",
-#'          "Cardiac Disorders",
-#'          "Infections",
-#'          "Infections")
-#' )
-#' 
 #' df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
 #'                          grp = c(rep("A", 3), rep("B", 3), rep("C", 4)))
 #' 
-#' df_pat_pt <- data.frame(id_pat = c("ID_1", "ID_1",
+#' df_pat_llt <- data.frame(id_pat = c("ID_1", "ID_1",
 #'                                     "ID_2",
 #'                                     "ID_4",
 #'                                     "ID_9"),
+#'                          num_ae = c(1, 2, 1, 1, 1),
+#'                          llt = c("llt1", "llt1",
+#'                                  "llt4", "llt3",
+#'                                  "llt1"),
 #'                          pt = c("Arrhythmia", "Myocardial Infarction",
 #'                                  "Arrhythmia", "Pneumonia",
-#'                                  "Pneumonia"))
+#'                                  "Pneumonia"),
+#'                          soc = c("Cardiac Disorders", "Cardiac Disorders",
+#'                                  "Cardiac Disorders", "Infections",
+#'                                  "Infections"))
 #' 
-#' desc_ei_per_pt(df_soc_pt = df_soc_pt,
-#'                df_pat_grp = df_pat_grp,
-#'                df_pat_pt = df_pat_pt)
+#' desc_ei_per_pt(df_pat_grp = df_pat_grp,
+#'                df_pat_llt = df_pat_llt)
 #' 
-desc_ei_per_pt <- function(df_soc_pt,
-                           df_pat_grp,
-                           df_pat_pt,
+desc_ei_per_pt <- function(df_pat_grp,
+                           df_pat_llt,
                            language = "fr"){
+  
+  ##### Check column names and remove duplicates
+  
+  if(any(!c("id_pat", "grp") %in% colnames(df_pat_grp))){
+    stop("df_pat_grp should contain 'id_pat' = the patient id and 'grp' = the randomization group")
+  }
+  
+  if(any(!c("id_pat", "llt", "soc", "pt", "num_ae") %in% colnames(df_pat_llt))){
+    stop("df_pat_grp should contain 'id_pat' = the patient id and 'num_ae' = the AE event number and 'llt' = the AE LLT and 'soc' = the AE SOC and 'pt' = the AE PT")
+  }
   
   ##### check for stupid missing data
   if(anyNA(df_pat_grp)){
@@ -50,31 +53,21 @@ desc_ei_per_pt <- function(df_soc_pt,
     df_pat_grp <- na.omit(df_pat_grp)
   }
   
-  if(anyNA(df_pat_pt)){
-    warning("Missing data removed from df_pat_pt please be careful !")
-    df_pat_pt <- na.omit(df_pat_pt)
-  }
-  
-  if(anyNA(df_soc_pt)){
-    warning("Missing data removed from df_soc_pt please be careful !")
-    df_soc_pt <- na.omit(df_soc_pt)
+  if(anyNA(df_pat_llt)){
+    warning("Missing data removed from df_pat_llt please be careful !")
+    df_pat_llt <- na.omit(df_pat_llt)
   }
   
   ##### clean type and df
   
   df_pat_grp <- df_pat_grp |> 
-    transmute(across(c(id_pat, grp),
-                     as.character)) |> 
-    distinct()
-  
-  df_pat_pt <- df_pat_pt |> 
-    transmute(across(c(id_pat, pt),
-                     as.character))
-  
-  df_soc_pt <- df_soc_pt |> 
-    transmute(across(c(pt, soc),
-                     as.character)) |> 
-    distinct()
+    dplyr::distinct(id_pat, grp) |> 
+    dplyr::mutate(id_pat = as.character(id_pat))
+
+  df_pat_llt <- df_pat_llt |> 
+    distinct(id_pat, num_ae, llt, pt, soc) |> 
+    dplyr::select(-num_ae, -llt) |> 
+    dplyr::mutate(id_pat = as.character(id_pat))
   
   
   ##### Build augmented df, Total is a whole new group
@@ -91,12 +84,10 @@ desc_ei_per_pt <- function(df_soc_pt,
   
   vec_grp <- unique(augmented_df_pat_grp$grp)
   
-  augmented_df_pat_pt_grp <- df_pat_pt |> 
+  augmented_df_pat_pt_grp <- df_pat_llt |> 
     dplyr::left_join(augmented_df_pat_grp,
                      by = "id_pat",
-                     relationship = "many-to-many") |> 
-    dplyr::left_join(df_soc_pt,
-                     by = "pt")
+                     relationship = "many-to-many")
   
   ##### Build wide dataframe
   

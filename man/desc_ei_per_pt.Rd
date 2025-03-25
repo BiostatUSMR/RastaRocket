@@ -4,14 +4,12 @@
 \alias{desc_ei_per_pt}
 \title{desc_ei_per_pt}
 \usage{
-desc_ei_per_pt(df_soc_pt, df_pat_grp, df_pat_pt, language = "fr")
+desc_ei_per_pt(df_pat_grp, df_pat_llt, language = "fr")
 }
 \arguments{
-\item{df_soc_pt}{A dataframe with two columns: pt and soc}
-
 \item{df_pat_grp}{A dataframe with two columns: id_pat and grp (the rct arm)}
 
-\item{df_pat_pt}{A dataframe with two columns: id_pat and pt}
+\item{df_pat_llt}{A dataframe with two columns: id_pat (patient id), num_ae (AE id), llt (AE LLT), pt (AE PT), soc (AE)}
 
 \item{language}{'fr' default or 'en'}
 }
@@ -22,30 +20,25 @@ A gt table
 A function to describe AE by soc and pt
 }
 \examples{
-df_soc_pt <- data.frame(
-  pt = c("Arrhythmia",
-          "Myocardial Infarction",
-          "Pneumonia",
-          "Sepsis"),
-  soc = c("Cardiac Disorders",
-         "Cardiac Disorders",
-         "Infections",
-         "Infections")
-)
-
 df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
                          grp = c(rep("A", 3), rep("B", 3), rep("C", 4)))
 
-df_pat_pt <- data.frame(id_pat = c("ID_1", "ID_1",
+df_pat_llt <- data.frame(id_pat = c("ID_1", "ID_1",
                                     "ID_2",
                                     "ID_4",
                                     "ID_9"),
+                         num_ae = c(1, 2, 1, 1, 1),
+                         llt = c("llt1", "llt1",
+                                 "llt4", "llt3",
+                                 "llt1"),
                          pt = c("Arrhythmia", "Myocardial Infarction",
                                  "Arrhythmia", "Pneumonia",
-                                 "Pneumonia"))
+                                 "Pneumonia"),
+                         soc = c("Cardiac Disorders", "Cardiac Disorders",
+                                 "Cardiac Disorders", "Infections",
+                                 "Infections"))
 
-desc_ei_per_pt(df_soc_pt = df_soc_pt,
-               df_pat_grp = df_pat_grp,
-               df_pat_pt = df_pat_pt)
+desc_ei_per_pt(df_pat_grp = df_pat_grp,
+               df_pat_llt = df_pat_llt)
 
 }

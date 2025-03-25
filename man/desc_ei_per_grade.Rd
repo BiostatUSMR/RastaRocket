@@ -9,7 +9,7 @@ desc_ei_per_grade(df_pat_grp, df_pat_grade)
 \arguments{
 \item{df_pat_grp}{A dataframe with two columns: id_pat and grp (the RCT arm).}
 
-\item{df_pat_grade}{A dataframe with two columns: id_pat and grade.}
+\item{df_pat_grade}{A dataframe with two columns: id_pat, num_ae (the AE id) and grade (the AE grade).}
 }
 \value{
 A gt table summarizing the AE by grade.
@@ -25,6 +25,10 @@ df_pat_grade <- data.frame(id_pat = c("ID_1", "ID_1",
                                       "ID_2",
                                       "ID_4",
                                       "ID_9"),
+                           num_ae = c(1, 2,
+                                      1,
+                                      1,
+                                      1),
                            grade = c(1, 3,
                                      4,
                                      2,

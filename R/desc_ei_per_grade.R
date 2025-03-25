@@ -5,7 +5,7 @@
 #' A function to describe adverse events (AE) by grade.
 #'
 #' @param df_pat_grp A dataframe with two columns: id_pat and grp (the RCT arm).
-#' @param df_pat_grade A dataframe with two columns: id_pat and grade.
+#' @param df_pat_grade A dataframe with two columns: id_pat, num_ae (the AE id) and grade (the AE grade).
 #'
 #' @return A gt table summarizing the AE by grade.
 #' @export
@@ -18,6 +18,10 @@
 #'                                       "ID_2",
 #'                                       "ID_4",
 #'                                       "ID_9"),
+#'                            num_ae = c(1, 2,
+#'                                       1,
+#'                                       1,
+#'                                       1),
 #'                            grade = c(1, 3,
 #'                                      4,
 #'                                      2,
@@ -29,7 +33,18 @@
 desc_ei_per_grade <- function(df_pat_grp,
                               df_pat_grade){
   
+  ##### Check column names and remove duplicates
+  
+  if(any(!c("id_pat", "grp") %in% colnames(df_pat_grp))){
+    stop("df_pat_grp should contain 'id_pat' = the patient id and 'grp' = the randomization group")
+  }
+
+  if(any(!c("id_pat", "grade", "num_ae") %in% colnames(df_pat_grade))){
+    stop("df_pat_grp should contain 'id_pat' = the patient id and 'grade' = the AE grade and 'num_ae' = the AE event number")
+  }
+  
   ##### check for stupid missing data
+  
   if(anyNA(df_pat_grp)){
     warning("Missing data removed from df_pat_grp please be careful !")
     df_pat_grp <- na.omit(df_pat_grp)
@@ -40,15 +55,17 @@ desc_ei_per_grade <- function(df_pat_grp,
     df_pat_grade <- na.omit(df_pat_grade)
   }
   
-  ##### clean type and df
+  ##### clean type and df, remove duplicate rows
   
   df_pat_grp <- df_pat_grp |> 
-    transmute(across(c(id_pat, grp),
-                     as.character))
+    dplyr::distinct(id_pat, grp) |> 
+    dplyr::mutate(id_pat = as.character(id_pat))
   
   df_pat_grade <- df_pat_grade |> 
-    transmute(id_pat = as.character(id_pat),
-              grade = as.numeric(grade))
+    dplyr::distinct(id_pat, grade, num_ae) |>
+    dplyr::select(-num_ae) |> 
+    dplyr::mutate(id_pat = as.character(id_pat),
+                  grade = as.character(grade))
   
   ##### Build augmented df, Total is a whole new group
   
@@ -67,8 +84,7 @@ desc_ei_per_grade <- function(df_pat_grp,
   augmented_df_pat_grade_grp <- df_pat_grade |> 
     dplyr::left_join(augmented_df_pat_grp,
                      by = "id_pat",
-                     relationship = "many-to-many") |> 
-    dplyr::mutate(grade = as.character(grade))
+                     relationship = "many-to-many")
   
   
   ##### Prepare df_wide
