@@ -68,7 +68,18 @@ caption p {
     margin-left: 5px; 
 }
 
-"
+
+
+figure figcaption {
+  text-align: left !important; 
+  font-weight: bold !important;
+  color: black !important;
+  }
+
+
+table {
+  font-size: 13px !important;
+}"
   
   write.table(css_string, 
               file = path, 
