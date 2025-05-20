@@ -70,8 +70,8 @@ desc_ei_per_pt <- function(df_pat_grp,
   if(anyNA(df_pat_llt)){
     warning("Missing data removed from df_pat_llt please be careful !")
     df_pat_llt <- df_pat_llt |> 
-      dplyr::mutate_at(.cols = c("soc", "pt"),
-                .funs = function(x) if_else(is.na(x), " Unknwon", x)) |> 
+      dplyr::mutate_at(.vars = c("soc", "pt"),
+                       .funs = function(x) if_else(is.na(x), " Unknown", x)) |> 
       na.omit()
   }
   
