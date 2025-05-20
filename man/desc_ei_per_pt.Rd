@@ -20,21 +20,21 @@ A gt table
 A function to describe AE by soc and pt
 }
 \examples{
-df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
-                         grp = c(rep("A", 3), rep("B", 3), rep("C", 4)))
+df_pat_grp <- data.frame(USUBJID = paste0("ID_", 1:10),
+                         RDGRPNAME = c(rep("A", 3), rep("B", 3), rep("C", 4)))
 
-df_pat_llt <- data.frame(id_pat = c("ID_1", "ID_1",
+df_pat_llt <- data.frame(USUBJID = c("ID_1", "ID_1",
                                     "ID_2",
                                     "ID_4",
                                     "ID_9"),
-                         num_ae = c(1, 2, 1, 1, 1),
-                         llt = c("llt1", "llt1",
+                         EINUM = c(1, 2, 1, 1, 1),
+                         EILLTN = c("llt1", "llt1",
                                  "llt4", "llt3",
                                  "llt1"),
-                         pt = c("Arrhythmia", "Myocardial Infarction",
+                         EIPTN = c("Arrhythmia", "Myocardial Infarction",
                                  "Arrhythmia", "Pneumonia",
                                  "Pneumonia"),
-                         soc = c("Cardiac Disorders", "Cardiac Disorders",
+                         EISOCN = c("Cardiac Disorders", "Cardiac Disorders",
                                  "Cardiac Disorders", "Infections",
                                  "Infections"))
 

@@ -12,21 +12,21 @@
 #' @export
 #'
 #' @examples
-#' df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
-#'                          grp = c(rep("A", 3), rep("B", 3), rep("C", 4)))
+#' df_pat_grp <- data.frame(USUBJID = paste0("ID_", 1:10),
+#'                          RDGRPNAME = c(rep("A", 3), rep("B", 3), rep("C", 4)))
 #' 
-#' df_pat_llt <- data.frame(id_pat = c("ID_1", "ID_1",
+#' df_pat_llt <- data.frame(USUBJID = c("ID_1", "ID_1",
 #'                                     "ID_2",
 #'                                     "ID_4",
 #'                                     "ID_9"),
-#'                          num_ae = c(1, 2, 1, 1, 1),
-#'                          llt = c("llt1", "llt1",
+#'                          EINUM = c(1, 2, 1, 1, 1),
+#'                          EILLTN = c("llt1", "llt1",
 #'                                  "llt4", "llt3",
 #'                                  "llt1"),
-#'                          pt = c("Arrhythmia", "Myocardial Infarction",
+#'                          EIPTN = c("Arrhythmia", "Myocardial Infarction",
 #'                                  "Arrhythmia", "Pneumonia",
 #'                                  "Pneumonia"),
-#'                          soc = c("Cardiac Disorders", "Cardiac Disorders",
+#'                          EISOCN = c("Cardiac Disorders", "Cardiac Disorders",
 #'                                  "Cardiac Disorders", "Infections",
 #'                                  "Infections"))
 #' 
@@ -39,12 +39,12 @@ desc_ei_per_pt <- function(df_pat_grp,
   
   ##### Check column names and remove duplicates
   
-  if(any(!c("id_pat", "grp") %in% colnames(df_pat_grp))){
-    stop("df_pat_grp should contain 'id_pat' = the patient id and 'grp' = the randomization group")
+  if(any(!c("USUBJID", "RDGRPNAME") %in% colnames(df_pat_grp))){
+    stop("df_pat_grp should contain 'USUBJID' = the patient id and 'RDGRPNAME' = the randomization group")
   }
   
-  if(any(!c("id_pat", "llt", "soc", "pt", "num_ae") %in% colnames(df_pat_llt))){
-    stop("df_pat_grp should contain 'id_pat' = the patient id and 'num_ae' = the AE event number and 'llt' = the AE LLT and 'soc' = the AE SOC and 'pt' = the AE PT")
+  if(any(!c("USUBJID", "EILLTN", "EISOCN", "EIPTN", "EINUM") %in% colnames(df_pat_llt))){
+    stop("df_pat_grp should contain 'USUBJID' = the patient id and 'EINUM' = the AE event number and 'EILLTN' = the AE LLT and 'EISOCN' = the AE SOC and 'EIPTN' = the AE PT")
   }
   
   ##### check for stupid missing data
@@ -61,13 +61,15 @@ desc_ei_per_pt <- function(df_pat_grp,
   ##### clean type and df
   
   df_pat_grp <- df_pat_grp |> 
-    dplyr::distinct(id_pat, grp) |> 
-    dplyr::mutate(id_pat = as.character(id_pat),
-                  grp = as.character(grp))
+    dplyr::mutate(id_pat = as.character(USUBJID),
+                  grp = as.character(RDGRPNAME)) |> 
+    dplyr::distinct(id_pat, grp)
 
   df_pat_llt <- df_pat_llt |> 
-    distinct(id_pat, num_ae, llt, pt, soc) |> 
-    dplyr::select(-num_ae, -llt) |> 
+    distinct(USUBJID, EILLTN, EISOCN, EIPTN, EINUM) |> 
+    dplyr::select(id_pat = USUBJID,
+                  soc = EISOCN,
+                  pt = EIPTN) |> 
     dplyr::mutate(id_pat = as.character(id_pat))
   
   

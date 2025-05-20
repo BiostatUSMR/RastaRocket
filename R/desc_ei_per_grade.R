@@ -11,18 +11,18 @@
 #' @export
 #'
 #' @examples
-#' df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
-#'                          grp = c(rep("A", 3), rep("B", 3), rep("C", 4)))
+#' df_pat_grp <- data.frame(USUBJID = paste0("ID_", 1:10),
+#'                          RDGRPNAME = c(rep("A", 3), rep("B", 3), rep("C", 4)))
 #' 
-#' df_pat_grade <- data.frame(id_pat = c("ID_1", "ID_1",
+#' df_pat_grade <- data.frame(USUBJID = c("ID_1", "ID_1",
 #'                                       "ID_2",
 #'                                       "ID_4",
 #'                                       "ID_9"),
-#'                            num_ae = c(1, 2,
+#'                            EINUM = c(1, 2,
 #'                                       1,
 #'                                       1,
 #'                                       1),
-#'                            grade = c(1, 3,
+#'                            EIGRDM = c(1, 3,
 #'                                      4,
 #'                                      2,
 #'                                      4))
@@ -34,13 +34,12 @@ desc_ei_per_grade <- function(df_pat_grp,
                               df_pat_grade){
   
   ##### Check column names and remove duplicates
-  
-  if(any(!c("id_pat", "grp") %in% colnames(df_pat_grp))){
-    stop("df_pat_grp should contain 'id_pat' = the patient id and 'grp' = the randomization group")
+  if(any(!c("USUBJID", "RDGRPNAME") %in% colnames(df_pat_grp))){
+    stop("df_pat_grp should contain 'USUBJID' = the patient id and 'RDGRPNAME' = the randomization group")
   }
 
-  if(any(!c("id_pat", "grade") %in% colnames(df_pat_grade))){
-    stop("df_pat_grade should contain 'id_pat' = the patient id and 'grade' = the AE grade")
+  if(any(!c("USUBJID", "EIGRDM", "EINUM") %in% colnames(df_pat_grade))){
+    stop("df_pat_grade should contain 'USUBJID' = the patient id and 'EIGRDM' = the AE grade and 'EINUM' = the AE id")
   }
   
   ##### check for stupid missing data
@@ -58,14 +57,15 @@ desc_ei_per_grade <- function(df_pat_grp,
   ##### clean type and df, remove duplicate rows
   
   df_pat_grp <- df_pat_grp |> 
-    dplyr::distinct(id_pat, grp) |> 
-    dplyr::mutate(id_pat = as.character(id_pat),
-                  grp = as.character(grp))
-  
+    dplyr::mutate(id_pat = as.character(USUBJID),
+                  grp = as.character(RDGRPNAME)) |> 
+    dplyr::distinct(id_pat, grp)
+
   df_pat_grade <- df_pat_grade |> 
-    dplyr::select(id_pat, grade) |> 
-    dplyr::mutate(id_pat = as.character(id_pat),
-                  grade = as.character(grade))
+    dplyr::distinct(USUBJID, EIGRDM, EINUM) |> 
+    dplyr::select(-EINUM) |> 
+    dplyr::mutate(id_pat = as.character(USUBJID),
+                  grade = as.character(EIGRDM))
   
   ##### Build augmented df, Total is a whole new group
   
