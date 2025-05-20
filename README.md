@@ -31,6 +31,15 @@ To view the tutorial on how to use the descriptive functions, run the following 
 
 ```r
 vignette("DescusmrVignette")
+vignette("DescribeAE")
+```
+
+#### Adverse Event Description
+
+To view the tutorial on how to use the adverse event descriptive functions, run the following command:
+
+```r
+vignette("DescribeAE")
 ```
 
 If everything is set up correctly, the vignettes should open, providing a detailed guide to using the package.
