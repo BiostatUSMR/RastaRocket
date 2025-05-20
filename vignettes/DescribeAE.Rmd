@@ -41,15 +41,6 @@ These functions generate tables that help interpret the distribution of adverse 
 
 Before using these functions, we need to create a toy datasets. Below is an example of how to structure the data.
 
-## Defining the System Organ Class (SOC) and Preferred Term (PT)
-
-```{r}
-df_soc_pt <- data.frame(
-  pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-  soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
-)
-```
-
 ## Assigning Patients to Treatment Arms
 
 ```{r}
@@ -59,12 +50,15 @@ df_pat_grp <- data.frame(
 )
 ```
 
-## Recording Adverse Events by SOC and Grade
+## Recording Adverse Events by LLT, PT, SOC and Grade
 
 ```{r}
-df_pat_pt_grade <- data.frame(
+df_pat_llt <- data.frame(
   id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+  num_ae = c(1, 2, 1, 1, 1),
+  llt = c("llt1", "llt2", "llt1", "llt3", "llt4"),
   pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", "Pneumonia", "Pneumonia"),
+  soc = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections"),
   grade = c(1, 3, 4, 2, 4)
 )
 ```
@@ -77,9 +71,8 @@ df_pat_pt_grade <- data.frame(
 To analyze adverse events based on their **System Organ Class (SOC)** and **Preferred Term (PT)**, use the `desc_ei_per_pt()` function:
 
 ```{r}
-desc_ei_per_pt(df_soc_pt = df_soc_pt,
-                df_pat_grp = df_pat_grp,
-                df_pat_pt = df_pat_pt_grade)
+desc_ei_per_pt(df_pat_grp = df_pat_grp,
+               df_pat_llt = df_pat_llt)
 ```
 
 ### Interpretation:
@@ -93,7 +86,7 @@ To assess the severity of adverse events across treatment arms, use `desc_ei_per
 
 ```{r}
 desc_ei_per_grade(df_pat_grp = df_pat_grp,
-                  df_pat_grade = df_pat_pt_grade)
+                  df_pat_grade = df_pat_llt)
 ```
 
 ### Interpretation:
@@ -106,109 +99,108 @@ This table summarizes the distribution of adverse event grades (severity levels)
 In that case the table `df_pat_grp` must still be provided with grp set to "Total" (or any other string)
 
 ```{r}
-desc_ei_per_pt(df_soc_pt = df_soc_pt,
-                df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
-                df_pat_pt = df_pat_pt_grade)
+desc_ei_per_pt(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
+               df_pat_llt = df_pat_llt)
 ```
 
 ```{r}
-desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
-                  df_pat_grade = df_pat_pt_grade)
+desc_ei_per_grade(df_pat_grp = df_pat_grp,
+                  df_pat_grade = df_pat_llt |> dplyr::mutate(grp = "A"))
 ```
 
-# Plot Adverse Events
+<!-- # Plot Adverse Events -->
 
-This section provides several visualization methods for adverse events (AEs) based on patient data.
-Currently, these plots support only two groups. Future work may involve migration to aevisR for enhanced functionality.
+<!-- This section provides several visualization methods for adverse events (AEs) based on patient data. -->
+<!-- Currently, these plots support only two groups. Future work may involve migration to aevisR for enhanced functionality. -->
 
-First, we define the two patients group:
+<!-- First, we define the two patients group: -->
 
-```{r}
-df_pat_grp <- data.frame(
-  id_pat = paste0("ID_", 1:10),
-  grp = c(rep("A", 5), rep("B", 5))
-)
-```
+<!-- ```{r} -->
+<!-- df_pat_grp <- data.frame( -->
+<!--   id_pat = paste0("ID_", 1:10), -->
+<!--   grp = c(rep("A", 5), rep("B", 5)) -->
+<!-- ) -->
+<!-- ``` -->
 
 
-## Dumbell plot
+<!-- ## Dumbell plot -->
 
-The dumbbell plot visualizes the difference in AE occurrence between the two groups. It highlights the absolute risk difference for each AE.
+<!-- The dumbbell plot visualizes the difference in AE occurrence between the two groups. It highlights the absolute risk difference for each AE. -->
 
-```{r fig.height=5, fig.width=8}
-plot_dumbell(df_soc_pt = df_soc_pt,
-             df_pat_grp = df_pat_grp,
-             df_pat_pt = df_pat_pt_grade)
-```
+<!-- ```{r fig.height=5, fig.width=8} -->
+<!-- plot_dumbell(df_soc_pt = df_soc_pt, -->
+<!--              df_pat_grp = df_pat_grp, -->
+<!--              df_pat_pt = df_pat_pt_grade) -->
+<!-- ``` -->
 
-## Volcano plot
+<!-- ## Volcano plot -->
 
-The volcano plot displays the association between risk differences and statistical significance (-log10 p-values). This helps identify AEs that differ significantly between groups.
+<!-- The volcano plot displays the association between risk differences and statistical significance (-log10 p-values). This helps identify AEs that differ significantly between groups. -->
 
-```{r fig.height=6, fig.width=6}
-plot_volcano(df_soc_pt = df_soc_pt,
-             df_pat_grp = df_pat_grp,
-             df_pat_pt = df_pat_pt_grade)
-```
+<!-- ```{r fig.height=6, fig.width=6} -->
+<!-- plot_volcano(df_soc_pt = df_soc_pt, -->
+<!--              df_pat_grp = df_pat_grp, -->
+<!--              df_pat_pt = df_pat_pt_grade) -->
+<!-- ``` -->
 
-## Butterfly plot
+<!-- ## Butterfly plot -->
 
-The butterfly stacked bar plot compares AE frequencies across groups while stacking by severity grade. It provides a detailed view of AE distributions.
+<!-- The butterfly stacked bar plot compares AE frequencies across groups while stacking by severity grade. It provides a detailed view of AE distributions. -->
 
-```{r fig.height=5, fig.width=6}
-plot_butterfly_stacked_barplot(df_soc_pt = df_soc_pt,
-                               df_pat_grp = df_pat_grp,
-                               df_pat_pt = df_pat_pt_grade)
-```
+<!-- ```{r fig.height=5, fig.width=6} -->
+<!-- plot_butterfly_stacked_barplot(df_soc_pt = df_soc_pt, -->
+<!--                                df_pat_grp = df_pat_grp, -->
+<!--                                df_pat_pt = df_pat_pt_grade) -->
+<!-- ``` -->
 
-## Patient Span Chart (Panchart)
+<!-- ## Patient Span Chart (Panchart) -->
 
-The Patient Span Chart provides a timeline view of adverse events, treatments, and randomization for a selected patient.
-It is particularly useful for tracking the sequence of AEs in relation to treatment administration and study randomization.
+<!-- The Patient Span Chart provides a timeline view of adverse events, treatments, and randomization for a selected patient. -->
+<!-- It is particularly useful for tracking the sequence of AEs in relation to treatment administration and study randomization. -->
 
-### Example Dataset
+<!-- ### Example Dataset -->
 
-```{r}
-df_pat_grp_rando <- data.frame(
-  id_pat = c("ID_1", "ID_2"),
-  grp = c("A", "B"),
-  rando_date = c("2020-12-01", "2021-01-03")
-)
+<!-- ```{r} -->
+<!-- df_pat_grp_rando <- data.frame( -->
+<!--   id_pat = c("ID_1", "ID_2"), -->
+<!--   grp = c("A", "B"), -->
+<!--   rando_date = c("2020-12-01", "2021-01-03") -->
+<!-- ) -->
 
-df_pat_pt_grade_date <- data.frame(
-  id_pat = c("ID_1", "ID_1", "ID_1", "ID_1", "ID_2"),
-  pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia",
-          "Pneumonia", "Pneumonia"),
-  grade = c(4, 2, 1, 3, 4),
-  start = c("2021-01-01", "2021-02-03", "2021-01-02", "2021-03-05", "2021-02-01"),
-  end = c("2021-01-14", "2021-03-03", "2021-01-22", "2021-05-05", "2021-02-03")
-)
+<!-- df_pat_pt_grade_date <- data.frame( -->
+<!--   id_pat = c("ID_1", "ID_1", "ID_1", "ID_1", "ID_2"), -->
+<!--   pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", -->
+<!--           "Pneumonia", "Pneumonia"), -->
+<!--   grade = c(4, 2, 1, 3, 4), -->
+<!--   start = c("2021-01-01", "2021-02-03", "2021-01-02", "2021-03-05", "2021-02-01"), -->
+<!--   end = c("2021-01-14", "2021-03-03", "2021-01-22", "2021-05-05", "2021-02-03") -->
+<!-- ) -->
 
-df_pat_treatment_date <- data.frame(
-  id_pat = c("ID_1", "ID_1", "ID_1"),
-  treatment_date = c("2021-01-25", "2021-03-01", "2021-01-20")
-)
-```
+<!-- df_pat_treatment_date <- data.frame( -->
+<!--   id_pat = c("ID_1", "ID_1", "ID_1"), -->
+<!--   treatment_date = c("2021-01-25", "2021-03-01", "2021-01-20") -->
+<!-- ) -->
+<!-- ``` -->
 
-### Generating the Panchart for a Specific Patient
+<!-- ### Generating the Panchart for a Specific Patient -->
 
-```{r fig.height=4, fig.width=6}
-plot_patient_panchart(
-  df_soc_pt = df_soc_pt,
-  df_pat_grp_rando = df_pat_grp_rando,
-  df_pat_pt_grade_date = df_pat_pt_grade_date,
-  df_pat_treatment_date = df_pat_treatment_date,
-  pat_id = "ID_1"
-)
-```
+<!-- ```{r fig.height=4, fig.width=6} -->
+<!-- plot_patient_panchart( -->
+<!--   df_soc_pt = df_soc_pt, -->
+<!--   df_pat_grp_rando = df_pat_grp_rando, -->
+<!--   df_pat_pt_grade_date = df_pat_pt_grade_date, -->
+<!--   df_pat_treatment_date = df_pat_treatment_date, -->
+<!--   pat_id = "ID_1" -->
+<!-- ) -->
+<!-- ``` -->
 
-Interpreting the Chart
+<!-- Interpreting the Chart -->
 
-- Horizontal bars represent the duration of each adverse event.
-- Vertical dashed lines indicate the patient's randomization and treatment dates.
-- Colors differentiate the severity of adverse events (by grade).
-- Separate facets display treatments and adverse events categorized by Preferred Term (PT).
-    
+<!-- - Horizontal bars represent the duration of each adverse event. -->
+<!-- - Vertical dashed lines indicate the patient's randomization and treatment dates. -->
+<!-- - Colors differentiate the severity of adverse events (by grade). -->
+<!-- - Separate facets display treatments and adverse events categorized by Preferred Term (PT). -->
+
 # Conclusion
 
 The `DescribeAE` package provides a structured approach to summarizing and visualizing adverse events in clinical trials. By using `desc_ei_per_soc()` and `desc_ei_per_grade()`, researchers can:
