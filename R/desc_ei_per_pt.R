@@ -62,7 +62,8 @@ desc_ei_per_pt <- function(df_pat_grp,
   
   df_pat_grp <- df_pat_grp |> 
     dplyr::distinct(id_pat, grp) |> 
-    dplyr::mutate(id_pat = as.character(id_pat))
+    dplyr::mutate(id_pat = as.character(id_pat),
+                  grp = as.character(grp))
 
   df_pat_llt <- df_pat_llt |> 
     distinct(id_pat, num_ae, llt, pt, soc) |> 
