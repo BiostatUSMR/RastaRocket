@@ -65,7 +65,7 @@ desc_ei_per_grade <- function(df_pat_grp,
   if(anyNA(df_pat_grade)){
     warning("Missing data removed from df_pat_grade please be careful ! If grade is unknown, replace missing data by 'Unknown'.")
     df_pat_grade <- df_pat_grade |> 
-      mutate(EIGRDM = if_else(is.na(EIGRDM), "Unknwon", EIGRDM)) |> 
+      mutate(grade = if_else(is.na(grade), "Unknown", grade)) |> 
       na.omit()
   }
   
