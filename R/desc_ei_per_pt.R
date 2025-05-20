@@ -26,7 +26,7 @@
 #'                          EIPTN = c("Arrhythmia", "Myocardial Infarction",
 #'                                  "Arrhythmia", "Pneumonia",
 #'                                  "Pneumonia"),
-#'                          EISOCN = c("Cardiac Disorders", "Cardiac Disorders",
+#'                          EISOCPN = c("Cardiac Disorders", "Cardiac Disorders",
 #'                                  "Cardiac Disorders", "Infections",
 #'                                  "Infections"))
 #' 
@@ -43,8 +43,8 @@ desc_ei_per_pt <- function(df_pat_grp,
     stop("df_pat_grp should contain 'USUBJID' = the patient id and 'RDGRPNAME' = the randomization group")
   }
   
-  if(any(!c("USUBJID", "EILLTN", "EISOCN", "EIPTN", "EINUM") %in% colnames(df_pat_llt))){
-    stop("df_pat_grp should contain 'USUBJID' = the patient id and 'EINUM' = the AE event number and 'EILLTN' = the AE LLT and 'EISOCN' = the AE SOC and 'EIPTN' = the AE PT")
+  if(any(!c("USUBJID", "EILLTN", "EISOCPN", "EIPTN", "EINUM") %in% colnames(df_pat_llt))){
+    stop("df_pat_grp should contain 'USUBJID' = the patient id and 'EINUM' = the AE event number and 'EILLTN' = the AE LLT and 'EISOCPN' = the AE SOC and 'EIPTN' = the AE PT")
   }
   
   ##### check for stupid missing data
@@ -66,9 +66,9 @@ desc_ei_per_pt <- function(df_pat_grp,
     dplyr::distinct(id_pat, grp)
 
   df_pat_llt <- df_pat_llt |> 
-    distinct(USUBJID, EILLTN, EISOCN, EIPTN, EINUM) |> 
+    distinct(USUBJID, EILLTN, EISOCPN, EIPTN, EINUM) |> 
     dplyr::select(id_pat = USUBJID,
-                  soc = EISOCN,
+                  soc = EISOCPN,
                   pt = EIPTN) |> 
     dplyr::mutate(id_pat = as.character(id_pat))
   

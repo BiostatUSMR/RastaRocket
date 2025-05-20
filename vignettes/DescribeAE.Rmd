@@ -58,7 +58,7 @@ df_pat_llt <- data.frame(
   EINUM = c(1, 2, 1, 1, 1),
   EILLTN = c("llt1", "llt2", "llt1", "llt3", "llt4"),
   EIPTN = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", "Pneumonia", "Pneumonia"),
-  EISOCN = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections"),
+  EISOCPN = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections"),
   EIGRDM = c(1, 3, 4, 2, 4)
 )
 ```

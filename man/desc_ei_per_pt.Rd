@@ -34,7 +34,7 @@ df_pat_llt <- data.frame(USUBJID = c("ID_1", "ID_1",
                          EIPTN = c("Arrhythmia", "Myocardial Infarction",
                                  "Arrhythmia", "Pneumonia",
                                  "Pneumonia"),
-                         EISOCN = c("Cardiac Disorders", "Cardiac Disorders",
+                         EISOCPN = c("Cardiac Disorders", "Cardiac Disorders",
                                  "Cardiac Disorders", "Infections",
                                  "Infections"))
 
