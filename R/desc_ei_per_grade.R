@@ -39,8 +39,8 @@ desc_ei_per_grade <- function(df_pat_grp,
     stop("df_pat_grp should contain 'id_pat' = the patient id and 'grp' = the randomization group")
   }
 
-  if(any(!c("id_pat", "grade", "num_ae") %in% colnames(df_pat_grade))){
-    stop("df_pat_grp should contain 'id_pat' = the patient id and 'grade' = the AE grade and 'num_ae' = the AE event number")
+  if(any(!c("id_pat", "grade") %in% colnames(df_pat_grade))){
+    stop("df_pat_grade should contain 'id_pat' = the patient id and 'grade' = the AE grade")
   }
   
   ##### check for stupid missing data
