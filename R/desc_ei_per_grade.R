@@ -51,9 +51,9 @@ desc_ei_per_grade <- function(df_pat_grp,
 
   df_pat_grade <- df_pat_grade |> 
     dplyr::distinct(USUBJID, EIGRDM, EINUM) |> 
-    dplyr::select(-EINUM) |> 
     dplyr::mutate(id_pat = as.character(USUBJID),
-                  grade = as.character(EIGRDM))
+                  grade = as.character(EIGRDM)) |> 
+    dplyr::select(grade, id_pat)
   
   ##### check for stupid missing data
   
