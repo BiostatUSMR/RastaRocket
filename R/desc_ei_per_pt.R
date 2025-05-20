@@ -47,17 +47,6 @@ desc_ei_per_pt <- function(df_pat_grp,
     stop("df_pat_grp should contain 'USUBJID' = the patient id and 'EINUM' = the AE event number and 'EILLTN' = the AE LLT and 'EISOCPN' = the AE SOC and 'EIPTN' = the AE PT")
   }
   
-  ##### check for stupid missing data
-  if(anyNA(df_pat_grp)){
-    warning("Missing data removed from df_pat_grp please be careful !")
-    df_pat_grp <- na.omit(df_pat_grp)
-  }
-  
-  if(anyNA(df_pat_llt)){
-    warning("Missing data removed from df_pat_llt please be careful !")
-    df_pat_llt <- na.omit(df_pat_llt)
-  }
-  
   ##### clean type and df
   
   df_pat_grp <- df_pat_grp |> 
@@ -71,6 +60,17 @@ desc_ei_per_pt <- function(df_pat_grp,
                   soc = EISOCPN,
                   pt = EIPTN) |> 
     dplyr::mutate(id_pat = as.character(id_pat))
+  
+  ##### check for stupid missing data
+  if(anyNA(df_pat_grp)){
+    warning("Missing data removed from df_pat_grp please be careful !")
+    df_pat_grp <- na.omit(df_pat_grp)
+  }
+  
+  if(anyNA(df_pat_llt)){
+    warning("Missing data removed from df_pat_llt please be careful !")
+    df_pat_llt <- na.omit(df_pat_llt)
+  }
   
   
   ##### Build augmented df, Total is a whole new group

@@ -42,18 +42,6 @@ desc_ei_per_grade <- function(df_pat_grp,
     stop("df_pat_grade should contain 'USUBJID' = the patient id and 'EIGRDM' = the AE grade and 'EINUM' = the AE id")
   }
   
-  ##### check for stupid missing data
-  
-  if(anyNA(df_pat_grp)){
-    warning("Missing data removed from df_pat_grp please be careful !")
-    df_pat_grp <- na.omit(df_pat_grp)
-  }
-  
-  if(anyNA(df_pat_grade)){
-    warning("Missing data removed from df_pat_grade please be careful ! If grade is unknown, replace missing data by 'Unknown'.")
-    df_pat_grade <- na.omit(df_pat_grade)
-  }
-  
   ##### clean type and df, remove duplicate rows
   
   df_pat_grp <- df_pat_grp |> 
@@ -66,6 +54,18 @@ desc_ei_per_grade <- function(df_pat_grp,
     dplyr::select(-EINUM) |> 
     dplyr::mutate(id_pat = as.character(USUBJID),
                   grade = as.character(EIGRDM))
+  
+  ##### check for stupid missing data
+  
+  if(anyNA(df_pat_grp)){
+    warning("Missing data removed from df_pat_grp please be careful !")
+    df_pat_grp <- na.omit(df_pat_grp)
+  }
+  
+  if(anyNA(df_pat_grade)){
+    warning("Missing data removed from df_pat_grade please be careful ! If grade is unknown, replace missing data by 'Unknown'.")
+    df_pat_grade <- na.omit(df_pat_grade)
+  }
   
   ##### Build augmented df, Total is a whole new group
   
