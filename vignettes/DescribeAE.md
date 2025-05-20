@@ -1,6 +1,6 @@
 ---
 title: "DescribeAE"
-date: "2025-02-20"
+date: "2025-05-20"
 output:
   html_vignette:
     toc: true
@@ -34,16 +34,6 @@ These functions generate tables that help interpret the distribution of adverse 
 
 Before using these functions, we need to create a toy datasets. Below is an example of how to structure the data.
 
-## Defining the System Organ Class (SOC) and Preferred Term (PT)
-
-
-``` r
-df_soc_pt <- data.frame(
-  pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-  soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
-)
-```
-
 ## Assigning Patients to Treatment Arms
 
 
@@ -54,13 +44,16 @@ df_pat_grp <- data.frame(
 )
 ```
 
-## Recording Adverse Events by SOC and Grade
+## Recording Adverse Events by LLT, PT, SOC and Grade
 
 
 ``` r
-df_pat_pt_grade <- data.frame(
+df_pat_llt <- data.frame(
   id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+  num_ae = c(1, 2, 1, 1, 1),
+  llt = c("llt1", "llt2", "llt1", "llt3", "llt4"),
   pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", "Pneumonia", "Pneumonia"),
+  soc = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections"),
   grade = c(1, 3, 4, 2, 4)
 )
 ```
@@ -74,30 +67,29 @@ To analyze adverse events based on their **System Organ Class (SOC)** and **Pref
 
 
 ``` r
-desc_ei_per_pt(df_soc_pt = df_soc_pt,
-                df_pat_grp = df_pat_grp,
-                df_pat_pt = df_pat_pt_grade)
+desc_ei_per_pt(df_pat_grp = df_pat_grp,
+               df_pat_llt = df_pat_llt)
 ```
 
 
 ```{=html}
-<div id="efheafezyz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#efheafezyz table {
+<div id="xwnqjpgqwt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xwnqjpgqwt table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#efheafezyz thead, #efheafezyz tbody, #efheafezyz tfoot, #efheafezyz tr, #efheafezyz td, #efheafezyz th {
+#xwnqjpgqwt thead, #xwnqjpgqwt tbody, #xwnqjpgqwt tfoot, #xwnqjpgqwt tr, #xwnqjpgqwt td, #xwnqjpgqwt th {
   border-style: none;
 }
 
-#efheafezyz p {
+#xwnqjpgqwt p {
   margin: 0;
   padding: 0;
 }
 
-#efheafezyz .gt_table {
+#xwnqjpgqwt .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -123,12 +115,12 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-left-color: #D3D3D3;
 }
 
-#efheafezyz .gt_caption {
+#xwnqjpgqwt .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#efheafezyz .gt_title {
+#xwnqjpgqwt .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -140,7 +132,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-bottom-width: 0;
 }
 
-#efheafezyz .gt_subtitle {
+#xwnqjpgqwt .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -152,7 +144,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-top-width: 0;
 }
 
-#efheafezyz .gt_heading {
+#xwnqjpgqwt .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -164,13 +156,13 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-right-color: #D3D3D3;
 }
 
-#efheafezyz .gt_bottom_border {
+#xwnqjpgqwt .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#efheafezyz .gt_col_headings {
+#xwnqjpgqwt .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -185,7 +177,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-right-color: #D3D3D3;
 }
 
-#efheafezyz .gt_col_heading {
+#xwnqjpgqwt .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -205,7 +197,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   overflow-x: hidden;
 }
 
-#efheafezyz .gt_column_spanner_outer {
+#xwnqjpgqwt .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -217,15 +209,15 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 4px;
 }
 
-#efheafezyz .gt_column_spanner_outer:first-child {
+#xwnqjpgqwt .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#efheafezyz .gt_column_spanner_outer:last-child {
+#xwnqjpgqwt .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#efheafezyz .gt_column_spanner {
+#xwnqjpgqwt .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -237,11 +229,11 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   width: 100%;
 }
 
-#efheafezyz .gt_spanner_row {
+#xwnqjpgqwt .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#efheafezyz .gt_group_heading {
+#xwnqjpgqwt .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -267,7 +259,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   text-align: left;
 }
 
-#efheafezyz .gt_empty_group_heading {
+#xwnqjpgqwt .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -282,15 +274,15 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   vertical-align: middle;
 }
 
-#efheafezyz .gt_from_md > :first-child {
+#xwnqjpgqwt .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#efheafezyz .gt_from_md > :last-child {
+#xwnqjpgqwt .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#efheafezyz .gt_row {
+#xwnqjpgqwt .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -309,7 +301,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   overflow-x: hidden;
 }
 
-#efheafezyz .gt_stub {
+#xwnqjpgqwt .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -322,7 +314,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#efheafezyz .gt_stub_row_group {
+#xwnqjpgqwt .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -336,15 +328,15 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   vertical-align: top;
 }
 
-#efheafezyz .gt_row_group_first td {
+#xwnqjpgqwt .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#efheafezyz .gt_row_group_first th {
+#xwnqjpgqwt .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#efheafezyz .gt_summary_row {
+#xwnqjpgqwt .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -354,16 +346,16 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#efheafezyz .gt_first_summary_row {
+#xwnqjpgqwt .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#efheafezyz .gt_first_summary_row.thick {
+#xwnqjpgqwt .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#efheafezyz .gt_last_summary_row {
+#xwnqjpgqwt .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -373,7 +365,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-bottom-color: #D3D3D3;
 }
 
-#efheafezyz .gt_grand_summary_row {
+#xwnqjpgqwt .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -383,7 +375,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#efheafezyz .gt_first_grand_summary_row {
+#xwnqjpgqwt .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -393,7 +385,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-top-color: #D3D3D3;
 }
 
-#efheafezyz .gt_last_grand_summary_row_top {
+#xwnqjpgqwt .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -403,11 +395,11 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-bottom-color: #D3D3D3;
 }
 
-#efheafezyz .gt_striped {
+#xwnqjpgqwt .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#efheafezyz .gt_table_body {
+#xwnqjpgqwt .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -416,7 +408,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-bottom-color: #D3D3D3;
 }
 
-#efheafezyz .gt_footnotes {
+#xwnqjpgqwt .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -430,7 +422,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-right-color: #D3D3D3;
 }
 
-#efheafezyz .gt_footnote {
+#xwnqjpgqwt .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -439,7 +431,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#efheafezyz .gt_sourcenotes {
+#xwnqjpgqwt .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -453,7 +445,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-right-color: #D3D3D3;
 }
 
-#efheafezyz .gt_sourcenote {
+#xwnqjpgqwt .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -461,72 +453,72 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#efheafezyz .gt_left {
+#xwnqjpgqwt .gt_left {
   text-align: left;
 }
 
-#efheafezyz .gt_center {
+#xwnqjpgqwt .gt_center {
   text-align: center;
 }
 
-#efheafezyz .gt_right {
+#xwnqjpgqwt .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#efheafezyz .gt_font_normal {
+#xwnqjpgqwt .gt_font_normal {
   font-weight: normal;
 }
 
-#efheafezyz .gt_font_bold {
+#xwnqjpgqwt .gt_font_bold {
   font-weight: bold;
 }
 
-#efheafezyz .gt_font_italic {
+#xwnqjpgqwt .gt_font_italic {
   font-style: italic;
 }
 
-#efheafezyz .gt_super {
+#xwnqjpgqwt .gt_super {
   font-size: 65%;
 }
 
-#efheafezyz .gt_footnote_marks {
+#xwnqjpgqwt .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#efheafezyz .gt_asterisk {
+#xwnqjpgqwt .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#efheafezyz .gt_indent_1 {
+#xwnqjpgqwt .gt_indent_1 {
   text-indent: 5px;
 }
 
-#efheafezyz .gt_indent_2 {
+#xwnqjpgqwt .gt_indent_2 {
   text-indent: 10px;
 }
 
-#efheafezyz .gt_indent_3 {
+#xwnqjpgqwt .gt_indent_3 {
   text-indent: 15px;
 }
 
-#efheafezyz .gt_indent_4 {
+#xwnqjpgqwt .gt_indent_4 {
   text-indent: 20px;
 }
 
-#efheafezyz .gt_indent_5 {
+#xwnqjpgqwt .gt_indent_5 {
   text-indent: 25px;
 }
 
-#efheafezyz .katex-display {
+#xwnqjpgqwt .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#efheafezyz div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#xwnqjpgqwt div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -725,28 +717,28 @@ To assess the severity of adverse events across treatment arms, use `desc_ei_per
 
 ``` r
 desc_ei_per_grade(df_pat_grp = df_pat_grp,
-                  df_pat_grade = df_pat_pt_grade)
+                  df_pat_grade = df_pat_llt)
 ```
 
 
 ```{=html}
-<div id="thzkjkxzor" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#thzkjkxzor table {
+<div id="hestzgknrp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hestzgknrp table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#thzkjkxzor thead, #thzkjkxzor tbody, #thzkjkxzor tfoot, #thzkjkxzor tr, #thzkjkxzor td, #thzkjkxzor th {
+#hestzgknrp thead, #hestzgknrp tbody, #hestzgknrp tfoot, #hestzgknrp tr, #hestzgknrp td, #hestzgknrp th {
   border-style: none;
 }
 
-#thzkjkxzor p {
+#hestzgknrp p {
   margin: 0;
   padding: 0;
 }
 
-#thzkjkxzor .gt_table {
+#hestzgknrp .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -772,12 +764,12 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-left-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_caption {
+#hestzgknrp .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#thzkjkxzor .gt_title {
+#hestzgknrp .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -789,7 +781,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-bottom-width: 0;
 }
 
-#thzkjkxzor .gt_subtitle {
+#hestzgknrp .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -801,7 +793,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-top-width: 0;
 }
 
-#thzkjkxzor .gt_heading {
+#hestzgknrp .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -813,13 +805,13 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-right-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_bottom_border {
+#hestzgknrp .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_col_headings {
+#hestzgknrp .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -834,7 +826,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-right-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_col_heading {
+#hestzgknrp .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -854,7 +846,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   overflow-x: hidden;
 }
 
-#thzkjkxzor .gt_column_spanner_outer {
+#hestzgknrp .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -866,15 +858,15 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   padding-right: 4px;
 }
 
-#thzkjkxzor .gt_column_spanner_outer:first-child {
+#hestzgknrp .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#thzkjkxzor .gt_column_spanner_outer:last-child {
+#hestzgknrp .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#thzkjkxzor .gt_column_spanner {
+#hestzgknrp .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -886,11 +878,11 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   width: 100%;
 }
 
-#thzkjkxzor .gt_spanner_row {
+#hestzgknrp .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#thzkjkxzor .gt_group_heading {
+#hestzgknrp .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -916,7 +908,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   text-align: left;
 }
 
-#thzkjkxzor .gt_empty_group_heading {
+#hestzgknrp .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -931,15 +923,15 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   vertical-align: middle;
 }
 
-#thzkjkxzor .gt_from_md > :first-child {
+#hestzgknrp .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#thzkjkxzor .gt_from_md > :last-child {
+#hestzgknrp .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#thzkjkxzor .gt_row {
+#hestzgknrp .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -958,7 +950,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   overflow-x: hidden;
 }
 
-#thzkjkxzor .gt_stub {
+#hestzgknrp .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -971,7 +963,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   padding-right: 5px;
 }
 
-#thzkjkxzor .gt_stub_row_group {
+#hestzgknrp .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -985,15 +977,15 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   vertical-align: top;
 }
 
-#thzkjkxzor .gt_row_group_first td {
+#hestzgknrp .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#thzkjkxzor .gt_row_group_first th {
+#hestzgknrp .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#thzkjkxzor .gt_summary_row {
+#hestzgknrp .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1003,16 +995,16 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   padding-right: 5px;
 }
 
-#thzkjkxzor .gt_first_summary_row {
+#hestzgknrp .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_first_summary_row.thick {
+#hestzgknrp .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#thzkjkxzor .gt_last_summary_row {
+#hestzgknrp .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1022,7 +1014,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-bottom-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_grand_summary_row {
+#hestzgknrp .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1032,7 +1024,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   padding-right: 5px;
 }
 
-#thzkjkxzor .gt_first_grand_summary_row {
+#hestzgknrp .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1042,7 +1034,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-top-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_last_grand_summary_row_top {
+#hestzgknrp .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1052,11 +1044,11 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-bottom-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_striped {
+#hestzgknrp .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#thzkjkxzor .gt_table_body {
+#hestzgknrp .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1065,7 +1057,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-bottom-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_footnotes {
+#hestzgknrp .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1079,7 +1071,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-right-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_footnote {
+#hestzgknrp .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1088,7 +1080,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   padding-right: 5px;
 }
 
-#thzkjkxzor .gt_sourcenotes {
+#hestzgknrp .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1102,7 +1094,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   border-right-color: #D3D3D3;
 }
 
-#thzkjkxzor .gt_sourcenote {
+#hestzgknrp .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1110,72 +1102,72 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
   padding-right: 5px;
 }
 
-#thzkjkxzor .gt_left {
+#hestzgknrp .gt_left {
   text-align: left;
 }
 
-#thzkjkxzor .gt_center {
+#hestzgknrp .gt_center {
   text-align: center;
 }
 
-#thzkjkxzor .gt_right {
+#hestzgknrp .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#thzkjkxzor .gt_font_normal {
+#hestzgknrp .gt_font_normal {
   font-weight: normal;
 }
 
-#thzkjkxzor .gt_font_bold {
+#hestzgknrp .gt_font_bold {
   font-weight: bold;
 }
 
-#thzkjkxzor .gt_font_italic {
+#hestzgknrp .gt_font_italic {
   font-style: italic;
 }
 
-#thzkjkxzor .gt_super {
+#hestzgknrp .gt_super {
   font-size: 65%;
 }
 
-#thzkjkxzor .gt_footnote_marks {
+#hestzgknrp .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#thzkjkxzor .gt_asterisk {
+#hestzgknrp .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#thzkjkxzor .gt_indent_1 {
+#hestzgknrp .gt_indent_1 {
   text-indent: 5px;
 }
 
-#thzkjkxzor .gt_indent_2 {
+#hestzgknrp .gt_indent_2 {
   text-indent: 10px;
 }
 
-#thzkjkxzor .gt_indent_3 {
+#hestzgknrp .gt_indent_3 {
   text-indent: 15px;
 }
 
-#thzkjkxzor .gt_indent_4 {
+#hestzgknrp .gt_indent_4 {
   text-indent: 20px;
 }
 
-#thzkjkxzor .gt_indent_5 {
+#hestzgknrp .gt_indent_5 {
   text-indent: 25px;
 }
 
-#thzkjkxzor .katex-display {
+#hestzgknrp .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#thzkjkxzor div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#hestzgknrp div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1347,30 +1339,29 @@ In that case the table `df_pat_grp` must still be provided with grp set to "Tota
 
 
 ``` r
-desc_ei_per_pt(df_soc_pt = df_soc_pt,
-                df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
-                df_pat_pt = df_pat_pt_grade)
+desc_ei_per_pt(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
+               df_pat_llt = df_pat_llt)
 ```
 
 
 ```{=html}
-<div id="uaxeenvbqn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#uaxeenvbqn table {
+<div id="mnkolcntfu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mnkolcntfu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#uaxeenvbqn thead, #uaxeenvbqn tbody, #uaxeenvbqn tfoot, #uaxeenvbqn tr, #uaxeenvbqn td, #uaxeenvbqn th {
+#mnkolcntfu thead, #mnkolcntfu tbody, #mnkolcntfu tfoot, #mnkolcntfu tr, #mnkolcntfu td, #mnkolcntfu th {
   border-style: none;
 }
 
-#uaxeenvbqn p {
+#mnkolcntfu p {
   margin: 0;
   padding: 0;
 }
 
-#uaxeenvbqn .gt_table {
+#mnkolcntfu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1396,12 +1387,12 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-left-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_caption {
+#mnkolcntfu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#uaxeenvbqn .gt_title {
+#mnkolcntfu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1413,7 +1404,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-bottom-width: 0;
 }
 
-#uaxeenvbqn .gt_subtitle {
+#mnkolcntfu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1425,7 +1416,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-top-width: 0;
 }
 
-#uaxeenvbqn .gt_heading {
+#mnkolcntfu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1437,13 +1428,13 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-right-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_bottom_border {
+#mnkolcntfu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_col_headings {
+#mnkolcntfu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1458,7 +1449,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-right-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_col_heading {
+#mnkolcntfu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1478,7 +1469,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   overflow-x: hidden;
 }
 
-#uaxeenvbqn .gt_column_spanner_outer {
+#mnkolcntfu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1490,15 +1481,15 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 4px;
 }
 
-#uaxeenvbqn .gt_column_spanner_outer:first-child {
+#mnkolcntfu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#uaxeenvbqn .gt_column_spanner_outer:last-child {
+#mnkolcntfu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#uaxeenvbqn .gt_column_spanner {
+#mnkolcntfu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1510,11 +1501,11 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   width: 100%;
 }
 
-#uaxeenvbqn .gt_spanner_row {
+#mnkolcntfu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#uaxeenvbqn .gt_group_heading {
+#mnkolcntfu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1540,7 +1531,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   text-align: left;
 }
 
-#uaxeenvbqn .gt_empty_group_heading {
+#mnkolcntfu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1555,15 +1546,15 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   vertical-align: middle;
 }
 
-#uaxeenvbqn .gt_from_md > :first-child {
+#mnkolcntfu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#uaxeenvbqn .gt_from_md > :last-child {
+#mnkolcntfu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#uaxeenvbqn .gt_row {
+#mnkolcntfu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1582,7 +1573,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   overflow-x: hidden;
 }
 
-#uaxeenvbqn .gt_stub {
+#mnkolcntfu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1595,7 +1586,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#uaxeenvbqn .gt_stub_row_group {
+#mnkolcntfu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1609,15 +1600,15 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   vertical-align: top;
 }
 
-#uaxeenvbqn .gt_row_group_first td {
+#mnkolcntfu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#uaxeenvbqn .gt_row_group_first th {
+#mnkolcntfu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#uaxeenvbqn .gt_summary_row {
+#mnkolcntfu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1627,16 +1618,16 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#uaxeenvbqn .gt_first_summary_row {
+#mnkolcntfu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_first_summary_row.thick {
+#mnkolcntfu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#uaxeenvbqn .gt_last_summary_row {
+#mnkolcntfu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1646,7 +1637,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-bottom-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_grand_summary_row {
+#mnkolcntfu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1656,7 +1647,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#uaxeenvbqn .gt_first_grand_summary_row {
+#mnkolcntfu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1666,7 +1657,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-top-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_last_grand_summary_row_top {
+#mnkolcntfu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1676,11 +1667,11 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-bottom-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_striped {
+#mnkolcntfu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#uaxeenvbqn .gt_table_body {
+#mnkolcntfu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1689,7 +1680,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-bottom-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_footnotes {
+#mnkolcntfu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1703,7 +1694,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-right-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_footnote {
+#mnkolcntfu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1712,7 +1703,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#uaxeenvbqn .gt_sourcenotes {
+#mnkolcntfu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1726,7 +1717,7 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   border-right-color: #D3D3D3;
 }
 
-#uaxeenvbqn .gt_sourcenote {
+#mnkolcntfu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1734,72 +1725,72 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
   padding-right: 5px;
 }
 
-#uaxeenvbqn .gt_left {
+#mnkolcntfu .gt_left {
   text-align: left;
 }
 
-#uaxeenvbqn .gt_center {
+#mnkolcntfu .gt_center {
   text-align: center;
 }
 
-#uaxeenvbqn .gt_right {
+#mnkolcntfu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#uaxeenvbqn .gt_font_normal {
+#mnkolcntfu .gt_font_normal {
   font-weight: normal;
 }
 
-#uaxeenvbqn .gt_font_bold {
+#mnkolcntfu .gt_font_bold {
   font-weight: bold;
 }
 
-#uaxeenvbqn .gt_font_italic {
+#mnkolcntfu .gt_font_italic {
   font-style: italic;
 }
 
-#uaxeenvbqn .gt_super {
+#mnkolcntfu .gt_super {
   font-size: 65%;
 }
 
-#uaxeenvbqn .gt_footnote_marks {
+#mnkolcntfu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#uaxeenvbqn .gt_asterisk {
+#mnkolcntfu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#uaxeenvbqn .gt_indent_1 {
+#mnkolcntfu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#uaxeenvbqn .gt_indent_2 {
+#mnkolcntfu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#uaxeenvbqn .gt_indent_3 {
+#mnkolcntfu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#uaxeenvbqn .gt_indent_4 {
+#mnkolcntfu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#uaxeenvbqn .gt_indent_5 {
+#mnkolcntfu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#uaxeenvbqn .katex-display {
+#mnkolcntfu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#uaxeenvbqn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#mnkolcntfu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -1877,29 +1868,29 @@ desc_ei_per_pt(df_soc_pt = df_soc_pt,
 
 
 ``` r
-desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
-                  df_pat_grade = df_pat_pt_grade)
+desc_ei_per_grade(df_pat_grp = df_pat_grp,
+                  df_pat_grade = df_pat_llt |> dplyr::mutate(grp = "A"))
 ```
 
 
 ```{=html}
-<div id="zglzhvbgmo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#zglzhvbgmo table {
+<div id="sqvaeuplfk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#sqvaeuplfk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#zglzhvbgmo thead, #zglzhvbgmo tbody, #zglzhvbgmo tfoot, #zglzhvbgmo tr, #zglzhvbgmo td, #zglzhvbgmo th {
+#sqvaeuplfk thead, #sqvaeuplfk tbody, #sqvaeuplfk tfoot, #sqvaeuplfk tr, #sqvaeuplfk td, #sqvaeuplfk th {
   border-style: none;
 }
 
-#zglzhvbgmo p {
+#sqvaeuplfk p {
   margin: 0;
   padding: 0;
 }
 
-#zglzhvbgmo .gt_table {
+#sqvaeuplfk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1925,12 +1916,12 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-left-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_caption {
+#sqvaeuplfk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#zglzhvbgmo .gt_title {
+#sqvaeuplfk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1942,7 +1933,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-bottom-width: 0;
 }
 
-#zglzhvbgmo .gt_subtitle {
+#sqvaeuplfk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1954,7 +1945,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-top-width: 0;
 }
 
-#zglzhvbgmo .gt_heading {
+#sqvaeuplfk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1966,13 +1957,13 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-right-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_bottom_border {
+#sqvaeuplfk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_col_headings {
+#sqvaeuplfk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1987,7 +1978,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-right-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_col_heading {
+#sqvaeuplfk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2007,7 +1998,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   overflow-x: hidden;
 }
 
-#zglzhvbgmo .gt_column_spanner_outer {
+#sqvaeuplfk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2019,15 +2010,15 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   padding-right: 4px;
 }
 
-#zglzhvbgmo .gt_column_spanner_outer:first-child {
+#sqvaeuplfk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#zglzhvbgmo .gt_column_spanner_outer:last-child {
+#sqvaeuplfk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#zglzhvbgmo .gt_column_spanner {
+#sqvaeuplfk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2039,11 +2030,11 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   width: 100%;
 }
 
-#zglzhvbgmo .gt_spanner_row {
+#sqvaeuplfk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#zglzhvbgmo .gt_group_heading {
+#sqvaeuplfk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2069,7 +2060,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   text-align: left;
 }
 
-#zglzhvbgmo .gt_empty_group_heading {
+#sqvaeuplfk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2084,15 +2075,15 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   vertical-align: middle;
 }
 
-#zglzhvbgmo .gt_from_md > :first-child {
+#sqvaeuplfk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#zglzhvbgmo .gt_from_md > :last-child {
+#sqvaeuplfk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#zglzhvbgmo .gt_row {
+#sqvaeuplfk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2111,7 +2102,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   overflow-x: hidden;
 }
 
-#zglzhvbgmo .gt_stub {
+#sqvaeuplfk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2124,7 +2115,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   padding-right: 5px;
 }
 
-#zglzhvbgmo .gt_stub_row_group {
+#sqvaeuplfk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2138,15 +2129,15 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   vertical-align: top;
 }
 
-#zglzhvbgmo .gt_row_group_first td {
+#sqvaeuplfk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#zglzhvbgmo .gt_row_group_first th {
+#sqvaeuplfk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#zglzhvbgmo .gt_summary_row {
+#sqvaeuplfk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2156,16 +2147,16 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   padding-right: 5px;
 }
 
-#zglzhvbgmo .gt_first_summary_row {
+#sqvaeuplfk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_first_summary_row.thick {
+#sqvaeuplfk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#zglzhvbgmo .gt_last_summary_row {
+#sqvaeuplfk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2175,7 +2166,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-bottom-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_grand_summary_row {
+#sqvaeuplfk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2185,7 +2176,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   padding-right: 5px;
 }
 
-#zglzhvbgmo .gt_first_grand_summary_row {
+#sqvaeuplfk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2195,7 +2186,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-top-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_last_grand_summary_row_top {
+#sqvaeuplfk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2205,11 +2196,11 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-bottom-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_striped {
+#sqvaeuplfk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#zglzhvbgmo .gt_table_body {
+#sqvaeuplfk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2218,7 +2209,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-bottom-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_footnotes {
+#sqvaeuplfk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2232,7 +2223,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-right-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_footnote {
+#sqvaeuplfk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2241,7 +2232,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   padding-right: 5px;
 }
 
-#zglzhvbgmo .gt_sourcenotes {
+#sqvaeuplfk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2255,7 +2246,7 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   border-right-color: #D3D3D3;
 }
 
-#zglzhvbgmo .gt_sourcenote {
+#sqvaeuplfk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2263,72 +2254,72 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
   padding-right: 5px;
 }
 
-#zglzhvbgmo .gt_left {
+#sqvaeuplfk .gt_left {
   text-align: left;
 }
 
-#zglzhvbgmo .gt_center {
+#sqvaeuplfk .gt_center {
   text-align: center;
 }
 
-#zglzhvbgmo .gt_right {
+#sqvaeuplfk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#zglzhvbgmo .gt_font_normal {
+#sqvaeuplfk .gt_font_normal {
   font-weight: normal;
 }
 
-#zglzhvbgmo .gt_font_bold {
+#sqvaeuplfk .gt_font_bold {
   font-weight: bold;
 }
 
-#zglzhvbgmo .gt_font_italic {
+#sqvaeuplfk .gt_font_italic {
   font-style: italic;
 }
 
-#zglzhvbgmo .gt_super {
+#sqvaeuplfk .gt_super {
   font-size: 65%;
 }
 
-#zglzhvbgmo .gt_footnote_marks {
+#sqvaeuplfk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#zglzhvbgmo .gt_asterisk {
+#sqvaeuplfk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#zglzhvbgmo .gt_indent_1 {
+#sqvaeuplfk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#zglzhvbgmo .gt_indent_2 {
+#sqvaeuplfk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#zglzhvbgmo .gt_indent_3 {
+#sqvaeuplfk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#zglzhvbgmo .gt_indent_4 {
+#sqvaeuplfk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#zglzhvbgmo .gt_indent_5 {
+#sqvaeuplfk .gt_indent_5 {
   text-indent: 25px;
 }
 
-#zglzhvbgmo .katex-display {
+#sqvaeuplfk .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#zglzhvbgmo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#sqvaeuplfk div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2339,6 +2330,15 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
       <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="4" scope="colgroup" id="over_Total">
         <div class="gt_column_spanner"><span class='gt_from_md'><strong>Total</strong></span></div>
       </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="4" scope="colgroup" id="over_A">
+        <div class="gt_column_spanner"><span class='gt_from_md'><strong>A</strong></span></div>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="4" scope="colgroup" id="over_B">
+        <div class="gt_column_spanner"><span class='gt_from_md'><strong>B</strong></span></div>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="4" scope="colgroup" id="over_C">
+        <div class="gt_column_spanner"><span class='gt_from_md'><strong>C</strong></span></div>
+      </th>
     </tr>
     <tr class="gt_col_headings gt_spanner_row">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1" scope="col" id="grade"><span class='gt_from_md'><strong>Grade</strong></span></th>
@@ -2348,12 +2348,42 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
       <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Patients_Total">
         <div class="gt_column_spanner"><span class='gt_from_md'><strong>Patients</strong></span></div>
       </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="EI_A">
+        <div class="gt_column_spanner"><span class='gt_from_md'><strong>EI</strong></span></div>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Patients_A">
+        <div class="gt_column_spanner"><span class='gt_from_md'><strong>Patients</strong></span></div>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="EI_B">
+        <div class="gt_column_spanner"><span class='gt_from_md'><strong>EI</strong></span></div>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Patients_B">
+        <div class="gt_column_spanner"><span class='gt_from_md'><strong>Patients</strong></span></div>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="EI_C">
+        <div class="gt_column_spanner"><span class='gt_from_md'><strong>EI</strong></span></div>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" scope="colgroup" id="Patients_C">
+        <div class="gt_column_spanner"><span class='gt_from_md'><strong>Patients</strong></span></div>
+      </th>
     </tr>
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Total_nb_ei"><span class='gt_from_md'><strong>N</strong></span></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Total_pct_ei"><span class='gt_from_md'><strong>%</strong></span></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Total_nb_pat"><span class='gt_from_md'><strong>N</strong></span></th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Total_pct_pat"><span class='gt_from_md'><strong>%</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="A_nb_ei"><span class='gt_from_md'><strong>N</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="A_pct_ei"><span class='gt_from_md'><strong>%</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="A_nb_pat"><span class='gt_from_md'><strong>N</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="A_pct_pat"><span class='gt_from_md'><strong>%</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="B_nb_ei"><span class='gt_from_md'><strong>N</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="B_pct_ei"><span class='gt_from_md'><strong>%</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="B_nb_pat"><span class='gt_from_md'><strong>N</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="B_pct_pat"><span class='gt_from_md'><strong>%</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="C_nb_ei"><span class='gt_from_md'><strong>N</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="C_pct_ei"><span class='gt_from_md'><strong>%</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="C_nb_pat"><span class='gt_from_md'><strong>N</strong></span></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="C_pct_pat"><span class='gt_from_md'><strong>%</strong></span></th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
@@ -2361,27 +2391,87 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
 <td headers="Total_nb_ei" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">5</td>
 <td headers="Total_pct_ei" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">100</td>
 <td headers="Total_nb_pat" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">4</td>
-<td headers="Total_pct_pat" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">40</td></tr>
+<td headers="Total_pct_pat" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">40</td>
+<td headers="A_nb_ei" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">3</td>
+<td headers="A_pct_ei" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">100</td>
+<td headers="A_nb_pat" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">2</td>
+<td headers="A_pct_pat" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">67</td>
+<td headers="B_nb_ei" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">1</td>
+<td headers="B_pct_ei" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">100</td>
+<td headers="B_nb_pat" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">1</td>
+<td headers="B_pct_pat" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">33</td>
+<td headers="C_nb_ei" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">1</td>
+<td headers="C_pct_ei" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">100</td>
+<td headers="C_nb_pat" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">1</td>
+<td headers="C_pct_pat" class="gt_row gt_left" style="font-style: italic; font-weight: bold;">25</td></tr>
     <tr><td headers="grade" class="gt_row gt_left">1</td>
 <td headers="Total_nb_ei" class="gt_row gt_left">1</td>
 <td headers="Total_pct_ei" class="gt_row gt_left">20</td>
 <td headers="Total_nb_pat" class="gt_row gt_left">1</td>
-<td headers="Total_pct_pat" class="gt_row gt_left">10</td></tr>
+<td headers="Total_pct_pat" class="gt_row gt_left">10</td>
+<td headers="A_nb_ei" class="gt_row gt_left">1</td>
+<td headers="A_pct_ei" class="gt_row gt_left">33</td>
+<td headers="A_nb_pat" class="gt_row gt_left">1</td>
+<td headers="A_pct_pat" class="gt_row gt_left">33</td>
+<td headers="B_nb_ei" class="gt_row gt_left"><br /></td>
+<td headers="B_pct_ei" class="gt_row gt_left"><br /></td>
+<td headers="B_nb_pat" class="gt_row gt_left"><br /></td>
+<td headers="B_pct_pat" class="gt_row gt_left"><br /></td>
+<td headers="C_nb_ei" class="gt_row gt_left"><br /></td>
+<td headers="C_pct_ei" class="gt_row gt_left"><br /></td>
+<td headers="C_nb_pat" class="gt_row gt_left"><br /></td>
+<td headers="C_pct_pat" class="gt_row gt_left"><br /></td></tr>
     <tr><td headers="grade" class="gt_row gt_left">2</td>
 <td headers="Total_nb_ei" class="gt_row gt_left">1</td>
 <td headers="Total_pct_ei" class="gt_row gt_left">20</td>
 <td headers="Total_nb_pat" class="gt_row gt_left">1</td>
-<td headers="Total_pct_pat" class="gt_row gt_left">10</td></tr>
+<td headers="Total_pct_pat" class="gt_row gt_left">10</td>
+<td headers="A_nb_ei" class="gt_row gt_left"><br /></td>
+<td headers="A_pct_ei" class="gt_row gt_left"><br /></td>
+<td headers="A_nb_pat" class="gt_row gt_left"><br /></td>
+<td headers="A_pct_pat" class="gt_row gt_left"><br /></td>
+<td headers="B_nb_ei" class="gt_row gt_left">1</td>
+<td headers="B_pct_ei" class="gt_row gt_left">100</td>
+<td headers="B_nb_pat" class="gt_row gt_left">1</td>
+<td headers="B_pct_pat" class="gt_row gt_left">33</td>
+<td headers="C_nb_ei" class="gt_row gt_left"><br /></td>
+<td headers="C_pct_ei" class="gt_row gt_left"><br /></td>
+<td headers="C_nb_pat" class="gt_row gt_left"><br /></td>
+<td headers="C_pct_pat" class="gt_row gt_left"><br /></td></tr>
     <tr><td headers="grade" class="gt_row gt_left">3</td>
 <td headers="Total_nb_ei" class="gt_row gt_left">1</td>
 <td headers="Total_pct_ei" class="gt_row gt_left">20</td>
 <td headers="Total_nb_pat" class="gt_row gt_left">1</td>
-<td headers="Total_pct_pat" class="gt_row gt_left">10</td></tr>
+<td headers="Total_pct_pat" class="gt_row gt_left">10</td>
+<td headers="A_nb_ei" class="gt_row gt_left">1</td>
+<td headers="A_pct_ei" class="gt_row gt_left">33</td>
+<td headers="A_nb_pat" class="gt_row gt_left">1</td>
+<td headers="A_pct_pat" class="gt_row gt_left">33</td>
+<td headers="B_nb_ei" class="gt_row gt_left"><br /></td>
+<td headers="B_pct_ei" class="gt_row gt_left"><br /></td>
+<td headers="B_nb_pat" class="gt_row gt_left"><br /></td>
+<td headers="B_pct_pat" class="gt_row gt_left"><br /></td>
+<td headers="C_nb_ei" class="gt_row gt_left"><br /></td>
+<td headers="C_pct_ei" class="gt_row gt_left"><br /></td>
+<td headers="C_nb_pat" class="gt_row gt_left"><br /></td>
+<td headers="C_pct_pat" class="gt_row gt_left"><br /></td></tr>
     <tr><td headers="grade" class="gt_row gt_left">4</td>
 <td headers="Total_nb_ei" class="gt_row gt_left">2</td>
 <td headers="Total_pct_ei" class="gt_row gt_left">40</td>
 <td headers="Total_nb_pat" class="gt_row gt_left">2</td>
-<td headers="Total_pct_pat" class="gt_row gt_left">20</td></tr>
+<td headers="Total_pct_pat" class="gt_row gt_left">20</td>
+<td headers="A_nb_ei" class="gt_row gt_left">1</td>
+<td headers="A_pct_ei" class="gt_row gt_left">33</td>
+<td headers="A_nb_pat" class="gt_row gt_left">1</td>
+<td headers="A_pct_pat" class="gt_row gt_left">33</td>
+<td headers="B_nb_ei" class="gt_row gt_left"><br /></td>
+<td headers="B_pct_ei" class="gt_row gt_left"><br /></td>
+<td headers="B_nb_pat" class="gt_row gt_left"><br /></td>
+<td headers="B_pct_pat" class="gt_row gt_left"><br /></td>
+<td headers="C_nb_ei" class="gt_row gt_left">1</td>
+<td headers="C_pct_ei" class="gt_row gt_left">100</td>
+<td headers="C_nb_pat" class="gt_row gt_left">1</td>
+<td headers="C_pct_pat" class="gt_row gt_left">25</td></tr>
   </tbody>
   
   
@@ -2390,113 +2480,99 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp |> dplyr::mutate(grp = "A"),
 ```
 
 
-# Plot Adverse Events
+<!-- # Plot Adverse Events -->
 
-This section provides several visualization methods for adverse events (AEs) based on patient data.
-Currently, these plots support only two groups. Future work may involve migration to aevisR for enhanced functionality.
+<!-- This section provides several visualization methods for adverse events (AEs) based on patient data. -->
+<!-- Currently, these plots support only two groups. Future work may involve migration to aevisR for enhanced functionality. -->
 
-First, we define the two patients group:
+<!-- First, we define the two patients group: -->
 
-
-``` r
-df_pat_grp <- data.frame(
-  id_pat = paste0("ID_", 1:10),
-  grp = c(rep("A", 5), rep("B", 5))
-)
-```
-
-
-## Dumbell plot
-
-The dumbbell plot visualizes the difference in AE occurrence between the two groups. It highlights the absolute risk difference for each AE.
+<!-- ```{r} -->
+<!-- df_pat_grp <- data.frame( -->
+<!--   id_pat = paste0("ID_", 1:10), -->
+<!--   grp = c(rep("A", 5), rep("B", 5)) -->
+<!-- ) -->
+<!-- ``` -->
 
 
-``` r
-plot_dumbell(df_soc_pt = df_soc_pt,
-             df_pat_grp = df_pat_grp,
-             df_pat_pt = df_pat_pt_grade)
-```
+<!-- ## Dumbell plot -->
 
-![](C:/Users/fertet/Documents/USMR/R&D/develloppementfonction/vignettes/DescribeAE_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+<!-- The dumbbell plot visualizes the difference in AE occurrence between the two groups. It highlights the absolute risk difference for each AE. -->
 
-## Volcano plot
+<!-- ```{r fig.height=5, fig.width=8} -->
+<!-- plot_dumbell(df_soc_pt = df_soc_pt, -->
+<!--              df_pat_grp = df_pat_grp, -->
+<!--              df_pat_pt = df_pat_pt_grade) -->
+<!-- ``` -->
 
-The volcano plot displays the association between risk differences and statistical significance (-log10 p-values). This helps identify AEs that differ significantly between groups.
+<!-- ## Volcano plot -->
 
+<!-- The volcano plot displays the association between risk differences and statistical significance (-log10 p-values). This helps identify AEs that differ significantly between groups. -->
 
-``` r
-plot_volcano(df_soc_pt = df_soc_pt,
-             df_pat_grp = df_pat_grp,
-             df_pat_pt = df_pat_pt_grade)
-```
+<!-- ```{r fig.height=6, fig.width=6} -->
+<!-- plot_volcano(df_soc_pt = df_soc_pt, -->
+<!--              df_pat_grp = df_pat_grp, -->
+<!--              df_pat_pt = df_pat_pt_grade) -->
+<!-- ``` -->
 
-![](C:/Users/fertet/Documents/USMR/R&D/develloppementfonction/vignettes/DescribeAE_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+<!-- ## Butterfly plot -->
 
-## Butterfly plot
+<!-- The butterfly stacked bar plot compares AE frequencies across groups while stacking by severity grade. It provides a detailed view of AE distributions. -->
 
-The butterfly stacked bar plot compares AE frequencies across groups while stacking by severity grade. It provides a detailed view of AE distributions.
+<!-- ```{r fig.height=5, fig.width=6} -->
+<!-- plot_butterfly_stacked_barplot(df_soc_pt = df_soc_pt, -->
+<!--                                df_pat_grp = df_pat_grp, -->
+<!--                                df_pat_pt = df_pat_pt_grade) -->
+<!-- ``` -->
 
+<!-- ## Patient Span Chart (Panchart) -->
 
-``` r
-plot_butterfly_stacked_barplot(df_soc_pt = df_soc_pt,
-                               df_pat_grp = df_pat_grp,
-                               df_pat_pt = df_pat_pt_grade)
-```
+<!-- The Patient Span Chart provides a timeline view of adverse events, treatments, and randomization for a selected patient. -->
+<!-- It is particularly useful for tracking the sequence of AEs in relation to treatment administration and study randomization. -->
 
-![](C:/Users/fertet/Documents/USMR/R&D/develloppementfonction/vignettes/DescribeAE_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+<!-- ### Example Dataset -->
 
-## Patient Span Chart (Panchart)
+<!-- ```{r} -->
+<!-- df_pat_grp_rando <- data.frame( -->
+<!--   id_pat = c("ID_1", "ID_2"), -->
+<!--   grp = c("A", "B"), -->
+<!--   rando_date = c("2020-12-01", "2021-01-03") -->
+<!-- ) -->
 
-The Patient Span Chart provides a timeline view of adverse events, treatments, and randomization for a selected patient.
-It is particularly useful for tracking the sequence of AEs in relation to treatment administration and study randomization.
+<!-- df_pat_pt_grade_date <- data.frame( -->
+<!--   id_pat = c("ID_1", "ID_1", "ID_1", "ID_1", "ID_2"), -->
+<!--   pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", -->
+<!--           "Pneumonia", "Pneumonia"), -->
+<!--   grade = c(4, 2, 1, 3, 4), -->
+<!--   start = c("2021-01-01", "2021-02-03", "2021-01-02", "2021-03-05", "2021-02-01"), -->
+<!--   end = c("2021-01-14", "2021-03-03", "2021-01-22", "2021-05-05", "2021-02-03") -->
+<!-- ) -->
 
-### Example Dataset
+<!-- df_pat_treatment_date <- data.frame( -->
+<!--   id_pat = c("ID_1", "ID_1", "ID_1"), -->
+<!--   treatment_date = c("2021-01-25", "2021-03-01", "2021-01-20") -->
+<!-- ) -->
+<!-- ``` -->
 
+<!-- ### Generating the Panchart for a Specific Patient -->
 
-``` r
-df_pat_grp_rando <- data.frame(
-  id_pat = c("ID_1", "ID_2"),
-  grp = c("A", "B"),
-  rando_date = c("2020-12-01", "2021-01-03")
-)
+<!-- ```{r fig.height=4, fig.width=6} -->
+<!-- plot_patient_panchart( -->
+<!--   df_soc_pt = df_soc_pt, -->
+<!--   df_pat_grp_rando = df_pat_grp_rando, -->
+<!--   df_pat_pt_grade_date = df_pat_pt_grade_date, -->
+<!--   df_pat_treatment_date = df_pat_treatment_date, -->
+<!--   pat_id = "ID_1" -->
+<!-- ) -->
+<!-- ``` -->
 
-df_pat_pt_grade_date <- data.frame(
-  id_pat = c("ID_1", "ID_1", "ID_1", "ID_1", "ID_2"),
-  pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia",
-          "Pneumonia", "Pneumonia"),
-  grade = c(4, 2, 1, 3, 4),
-  start = c("2021-01-01", "2021-02-03", "2021-01-02", "2021-03-05", "2021-02-01"),
-  end = c("2021-01-14", "2021-03-03", "2021-01-22", "2021-05-05", "2021-02-03")
-)
+<!-- Interpreting the Chart -->
 
-df_pat_treatment_date <- data.frame(
-  id_pat = c("ID_1", "ID_1", "ID_1"),
-  treatment_date = c("2021-01-25", "2021-03-01", "2021-01-20")
-)
-```
+<!-- - Horizontal bars represent the duration of each adverse event. -->
+<!-- - Vertical dashed lines indicate the patient's randomization and treatment dates. -->
+<!-- - Colors differentiate the severity of adverse events (by grade). -->
+<!-- - Separate facets display treatments and adverse events categorized by Preferred Term (PT). -->
 
-### Generating the Panchart for a Specific Patient
-
-
-``` r
-plot_patient_panchart(
-  df_soc_pt = df_soc_pt,
-  df_pat_grp_rando = df_pat_grp_rando,
-  df_pat_pt_grade_date = df_pat_pt_grade_date,
-  df_pat_treatment_date = df_pat_treatment_date,
-  pat_id = "ID_1"
-)
-```
-
-![](C:/Users/fertet/Documents/USMR/R&D/develloppementfonction/vignettes/DescribeAE_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
-
-Interpreting the Chart
-
-- Horizontal bars represent the duration of each adverse event.
-- Vertical dashed lines indicate the patient's randomization and treatment dates.
-- Colors differentiate the severity of adverse events (by grade).
-- Separate facets display treatments and adverse events categorized by Preferred Term (PT).
-    
 # Conclusion
 
 The `DescribeAE` package provides a structured approach to summarizing and visualizing adverse events in clinical trials. By using `desc_ei_per_soc()` and `desc_ei_per_grade()`, researchers can:

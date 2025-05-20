@@ -63,8 +63,7 @@ desc_ei_per_grade <- function(df_pat_grp,
                   grp = as.character(grp))
   
   df_pat_grade <- df_pat_grade |> 
-    dplyr::distinct(id_pat, grade, num_ae) |>
-    dplyr::select(-num_ae) |> 
+    dplyr::select(id_pat, grade) |> 
     dplyr::mutate(id_pat = as.character(id_pat),
                   grade = as.character(grade))
   
