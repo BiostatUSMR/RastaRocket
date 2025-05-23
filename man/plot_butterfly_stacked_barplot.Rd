@@ -5,36 +5,20 @@
 \title{Butterfly Stacked Bar Plot for Adverse Event Grades}
 \usage{
 plot_butterfly_stacked_barplot(
-  df_soc_pt,
   df_pat_grp,
-  df_pat_pt_grade,
+  df_pat_llt,
   ref_grp = NULL,
   max_text_width = 9,
   vec_fill_color = viridis::viridis(n = 4)
 )
 }
 \arguments{
-\item{df_soc_pt}{A data frame mapping system organ classes (SOC) to preferred terms (PT).
-Must contain columns:
-\itemize{
-\item \code{soc} (character): System Organ Class.
-\item \code{pt} (character): Preferred Term.
-}}
+\item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{USUBJID } (patient ID)
+and \code{RDGRPNAME} (group assignment).}
 
-\item{df_pat_grp}{A data frame with patient IDs and their assigned group.
-Must contain columns:
-\itemize{
-\item \code{id_pat} (character): Patient ID.
-\item \code{grp} (character): Group assignment (e.g., treatment arms).
-}}
-
-\item{df_pat_pt_grade}{A data frame linking patients to reported PTs and AE grades.
-Must contain columns:
-\itemize{
-\item \code{id_pat} (character): Patient ID.
-\item \code{pt} (character): Preferred Term.
-\item \code{grade} (numeric or factor): Grade of the adverse event.
-}}
+\item{df_pat_llt}{A data frame with USUBJID (subject ID), EINUM (AE ID),
+EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
+EIGRDM (severity grade)}
 
 \item{ref_grp}{A character string specifying the reference group (used for alignment in the plot).
 If NULL (default), the first level of \code{df_pat_grp$grp} is used.}
@@ -67,25 +51,22 @@ The function utilizes the \code{ggh4x} package to adjust panel sizes and axes fo
 butterfly plot.
 }
 \examples{
-library(ggplot2)
-library(dplyr)
-library(forcats)
-library(viridis)
-library(ggh4x)
 
-df_soc_pt <- data.frame(
-  pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-  soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+df_pat_grp <- data.frame(
+ USUBJID = paste0("ID_", 1:10),
+ RDGRPNAME = c(rep("A", 5), rep("B", 5))
 )
 
-df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
-                         grp = c(rep("A", 5), rep("B", 5)))
+df_pat_llt <- data.frame(
+  USUBJID = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+  EINUM = c(1, 2, 1, 1, 1),
+  EILLTN = c("llt1", "llt2", "llt1", "llt3", "llt4"),
+  EIPTN = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", "Pneumonia", "Pneumonia"),
+  EISOCPN = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders",
+  "Infections", "Infections"),
+  EIGRDM = c(1, 3, 4, 2, 4)
+)
 
-df_pat_pt_grade <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-                         pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", 
-                                 "Pneumonia", "Pneumonia"),
-                         grade = c(4, 2, 1, 3, 4))
-
-plot_butterfly_stacked_barplot(df_soc_pt, df_pat_grp, df_pat_pt_grade)
+plot_butterfly_stacked_barplot(df_pat_grp, df_pat_llt)
 
 }

@@ -3,25 +3,11 @@
 #' Creates a butterfly stacked bar plot to visualize the frequency of adverse event (AE) grades 
 #' across patient groups, with system organ class (SOC) and preferred terms (PT) as labels.
 #'
-#' @param df_soc_pt A data frame mapping system organ classes (SOC) to preferred terms (PT). 
-#'   Must contain columns:
-#'   \itemize{
-#'     \item \code{soc} (character): System Organ Class.
-#'     \item \code{pt} (character): Preferred Term.
-#'   }
-#' @param df_pat_grp A data frame with patient IDs and their assigned group.
-#'   Must contain columns:
-#'   \itemize{
-#'     \item \code{id_pat} (character): Patient ID.
-#'     \item \code{grp} (character): Group assignment (e.g., treatment arms).
-#'   }
-#' @param df_pat_pt_grade A data frame linking patients to reported PTs and AE grades.
-#'   Must contain columns:
-#'   \itemize{
-#'     \item \code{id_pat} (character): Patient ID.
-#'     \item \code{pt} (character): Preferred Term.
-#'     \item \code{grade} (numeric or factor): Grade of the adverse event.
-#'   }
+#' @param df_pat_llt A data frame with USUBJID (subject ID), EINUM (AE ID),
+#' EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
+#' EIGRDM (severity grade)
+#' @param df_pat_grp A data frame of patient groups. Must contain columns `USUBJID ` (patient ID) 
+#' and `RDGRPNAME` (group assignment).
 #' @param ref_grp A character string specifying the reference group (used for alignment in the plot). 
 #'   If NULL (default), the first level of `df_pat_grp$grp` is used.
 #' @param max_text_width An integer specifying the maximum width (in characters) for SOC labels 
@@ -46,26 +32,23 @@
 #' butterfly plot.
 #'
 #' @examples
-#' library(ggplot2)
-#' library(dplyr)
-#' library(forcats)
-#' library(viridis)
-#' library(ggh4x)
 #' 
-#' df_soc_pt <- data.frame(
-#'   pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-#'   soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+#' df_pat_grp <- data.frame(
+#'  USUBJID = paste0("ID_", 1:10),
+#'  RDGRPNAME = c(rep("A", 5), rep("B", 5))
+#' )
+#' 
+#' df_pat_llt <- data.frame(
+#'   USUBJID = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+#'   EINUM = c(1, 2, 1, 1, 1),
+#'   EILLTN = c("llt1", "llt2", "llt1", "llt3", "llt4"),
+#'   EIPTN = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", "Pneumonia", "Pneumonia"),
+#'   EISOCPN = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders",
+#'   "Infections", "Infections"),
+#'   EIGRDM = c(1, 3, 4, 2, 4)
 #' )
 #'
-#' df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
-#'                          grp = c(rep("A", 5), rep("B", 5)))
-#'
-#' df_pat_pt_grade <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-#'                          pt = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", 
-#'                                  "Pneumonia", "Pneumonia"),
-#'                          grade = c(4, 2, 1, 3, 4))
-#'
-#' plot_butterfly_stacked_barplot(df_soc_pt, df_pat_grp, df_pat_pt_grade)
+#' plot_butterfly_stacked_barplot(df_pat_grp, df_pat_llt)
 #'
 #' @importFrom ggplot2 ggplot aes geom_bar geom_text scale_fill_manual theme_bw labs
 #' @importFrom dplyr group_by summarise mutate filter distinct left_join bind_rows
@@ -73,52 +56,49 @@
 #' @importFrom ggh4x facetted_pos_scales force_panelsizes
 #' @importFrom viridis viridis
 #' @export
-plot_butterfly_stacked_barplot <- function(df_soc_pt,
-                                           df_pat_grp,
-                                           df_pat_pt_grade,
+plot_butterfly_stacked_barplot <- function(df_pat_grp,
+                                           df_pat_llt,
                                            ref_grp = NULL,
                                            max_text_width = 9,
                                            vec_fill_color = viridis::viridis(n = 4)) {
   
   if (is.null(ref_grp)) {
-    ref_grp <- levels(df_pat_grp$grp)[1]
+    ref_grp <- levels(df_pat_grp$RDGRPNAME)[1]
     if (is.null(ref_grp)) {
-      ref_grp <- df_pat_grp$grp[1]
+      ref_grp <- df_pat_grp$RDGRPNAME[1]
     }
   }
   
   df_nb_pat_per_group <- df_pat_grp |> 
-    group_by(grp) |> 
+    group_by(RDGRPNAME) |> 
     summarise(nb_pat_per_group = n())
   
-  df_label_pt_pt <- df_soc_pt |> 
-    filter(pt %in% df_pat_pt_grade$pt) |> 
-    mutate(grp = "PT")
+  df_label_pt_pt <- df_pat_llt |>
+    distinct(EISOCPN, EIPTN) |> 
+    mutate(RDGRPNAME = "PT")
   
-  df_plot <- df_pat_pt_grade |> 
-    distinct() |>
-    left_join(df_pat_grp, by = "id_pat") |> 
-    group_by(grp, pt, grade) |> 
-    summarise(nb_ei = n(), .groups = "drop") |> 
-    left_join(df_nb_pat_per_group, by = "grp") |> 
-    left_join(df_soc_pt, by = "pt") |> 
+  df_plot <- df_pat_llt |> 
+    left_join(df_pat_grp, by = "USUBJID") |> 
+    group_by(RDGRPNAME, EIPTN, EISOCPN, EIGRDM) |> 
+    summarise(nb_ei = n_distinct(USUBJID, EINUM), .groups = "drop") |> 
+    left_join(df_nb_pat_per_group, by = "RDGRPNAME") |> 
     bind_rows(df_label_pt_pt) |> 
     mutate(freq_ei = nb_ei / nb_pat_per_group,
-           grade = as.factor(grade),
-           grp = as.factor(grp),
-           grp = forcats::fct_relevel(grp, ref_grp, "PT"),
-           pt = purrr::map_chr(pt, ~ paste(strwrap(.x, width = max_text_width), collapse = "\n")))
+           EIGRDM = as.factor(EIGRDM),
+           RDGRPNAME = as.factor(RDGRPNAME),
+           RDGRPNAME = forcats::fct_relevel(RDGRPNAME, ref_grp, "PT"),
+           EIPTN = purrr::map_chr(EIPTN, ~ paste(strwrap(.x, width = max_text_width), collapse = "\n")))
   
-  p <- ggplot(data = df_plot |> filter(grp != 'PT'),
-              mapping = aes(x = freq_ei, y = pt, fill = grade)) +
+  p <- ggplot(data = df_plot |> filter(RDGRPNAME != 'PT'),
+              mapping = aes(x = freq_ei, y = EIPTN, fill = EIGRDM)) +
     geom_bar(position = position_stack(), stat = "identity") +
-    geom_text(data = df_plot |> filter(grp == 'PT'),
-              mapping = aes(x = 0, y = pt, label = pt),
+    geom_text(data = df_plot |> filter(RDGRPNAME == 'PT'),
+              mapping = aes(x = 0, y = EIPTN, label = EIPTN),
               hjust = "center",
               inherit.aes = FALSE,
               size = 3) +
     scale_fill_manual(values = vec_fill_color) +
-    facet_grid(soc ~ grp, scales = "free", switch = "y", space = "free") +
+    facet_grid(EISOCPN ~ RDGRPNAME, scales = "free", switch = "y", space = "free") +
     ggh4x::facetted_pos_scales(x = list(scale_x_continuous(labels = scales::label_percent(),
                                                            trans = "reverse",
                                                            limits = c(1, 0)),

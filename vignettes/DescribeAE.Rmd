@@ -108,50 +108,45 @@ desc_ei_per_grade(df_pat_grp = df_pat_grp,
                   df_pat_grade = df_pat_llt |> dplyr::mutate(RDGRPNAME = "A"))
 ```
 
-<!-- # Plot Adverse Events -->
+# Plot Adverse Events
 
-<!-- This section provides several visualization methods for adverse events (AEs) based on patient data. -->
-<!-- Currently, these plots support only two groups. Future work may involve migration to aevisR for enhanced functionality. -->
+This section provides several visualization methods for adverse events (AEs) based on patient data.
+Currently, these plots support only two groups. Future work may involve migration to aevisR for enhanced functionality.
 
-<!-- First, we define the two patients group: -->
+First, we define the two patients group:
 
-<!-- ```{r} -->
-<!-- df_pat_grp <- data.frame( -->
-<!--   id_pat = paste0("ID_", 1:10), -->
-<!--   grp = c(rep("A", 5), rep("B", 5)) -->
-<!-- ) -->
-<!-- ``` -->
+```{r}
+df_pat_grp <- df_pat_grp |> 
+  dplyr::mutate(RDGRPNAME = c(rep("A", 5), rep("B", 5)))
+```
 
 
-<!-- ## Dumbell plot -->
+## Dumbell plot
 
-<!-- The dumbbell plot visualizes the difference in AE occurrence between the two groups. It highlights the absolute risk difference for each AE. -->
+The dumbbell plot visualizes the difference in AE occurrence between the two groups. It highlights the absolute risk difference for each AE.
 
-<!-- ```{r fig.height=5, fig.width=8} -->
-<!-- plot_dumbell(df_soc_pt = df_soc_pt, -->
-<!--              df_pat_grp = df_pat_grp, -->
-<!--              df_pat_pt = df_pat_pt_grade) -->
-<!-- ``` -->
+```{r fig.height=5, fig.width=8}
+plot_dumbell(df_pat_llt = df_pat_llt,
+             df_pat_grp = df_pat_grp)
+```
 
-<!-- ## Volcano plot -->
+## Volcano plot
 
-<!-- The volcano plot displays the association between risk differences and statistical significance (-log10 p-values). This helps identify AEs that differ significantly between groups. -->
+The volcano plot displays the association between risk differences and statistical significance (-log10 p-values). This helps identify AEs that differ significantly between groups.
 
-<!-- ```{r fig.height=6, fig.width=6} -->
-<!-- plot_volcano(df_soc_pt = df_soc_pt, -->
-<!--              df_pat_grp = df_pat_grp, -->
-<!--              df_pat_pt = df_pat_pt_grade) -->
-<!-- ``` -->
+```{r fig.height=6, fig.width=6}
+plot_volcano(df_pat_llt = df_pat_llt,
+             df_pat_grp = df_pat_grp)
+```
 
-<!-- ## Butterfly plot -->
+## Butterfly plot
 
-<!-- The butterfly stacked bar plot compares AE frequencies across groups while stacking by severity grade. It provides a detailed view of AE distributions. -->
+The butterfly stacked bar plot compares AE frequencies across groups while stacking by severity grade. It provides a detailed view of AE distributions.
 
-<!-- ```{r fig.height=5, fig.width=6} -->
-<!-- plot_butterfly_stacked_barplot(df_soc_pt = df_soc_pt, -->
-<!--                                df_pat_grp = df_pat_grp, -->
-<!--                                df_pat_pt = df_pat_pt_grade) -->
-<!-- ``` -->
+```{r fig.height=5, fig.width=6}
+plot_butterfly_stacked_barplot(df_pat_llt = df_pat_llt,
+                               df_pat_grp = df_pat_grp)
+```
 
 <!-- ## Patient Span Chart (Panchart) -->
 

@@ -5,23 +5,20 @@
 \title{Plot a Dumbbell Chart for Adverse Events Analysis}
 \usage{
 plot_dumbell(
-  df_soc_pt,
   df_pat_grp,
-  df_pat_pt,
+  df_pat_llt,
   ref_grp = NULL,
   colors_arm = c("#1b9e77", "#7570b3"),
   color_label = "Arm"
 )
 }
 \arguments{
-\item{df_soc_pt}{A data frame mapping system organ classes (SOC) to preferred terms (PT).
-Must contain columns \code{soc} (System Organ Class) and \code{pt} (Preferred Term).}
+\item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{USUBJID } (patient ID)
+and \code{RDGRPNAME} (group assignment).}
 
-\item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{id_pat} (patient ID)
-and \code{grp} (group assignment).}
-
-\item{df_pat_pt}{A data frame linking patients to adverse event system organ classes.
-Must contain columns \code{id_pat} (patient ID) and \code{pt} (System Organ Class).}
+\item{df_pat_llt}{A data frame with USUBJID (subject ID), EINUM (AE ID),
+EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
+EIGRDM (severity grade)}
 
 \item{ref_grp}{(Optional) A reference group for comparisons. Defaults to the first group in \code{df_pat_grp}.}
 
@@ -38,18 +35,21 @@ across different patient groups. The plot includes the total number of adverse e
 the proportion of patients affected, and the risk difference with confidence intervals.
 }
 \examples{
-df_soc_pt <- data.frame(
-  pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-  soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+df_pat_grp <- data.frame(
+ USUBJID = paste0("ID_", 1:10),
+ RDGRPNAME = c(rep("A", 5), rep("B", 5))
 )
 
-df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
-                         grp = c(rep("A", 5), rep("B", 5)))
+df_pat_llt <- data.frame(
+  USUBJID = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+  EINUM = c(1, 2, 1, 1, 1),
+  EILLTN = c("llt1", "llt2", "llt1", "llt3", "llt4"),
+  EIPTN = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", "Pneumonia", "Pneumonia"),
+  EISOCPN = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders",
+  "Infections", "Infections"),
+  EIGRDM = c(1, 3, 4, 2, 4)
+)
 
-df_pat_pt <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-                         pt = c("Arrhythmia", "Myocardial Infarction",
-                         "Arrhythmia", "Pneumonia", "Pneumonia"))
-
-plot_dumbell(df_soc_pt, df_pat_grp, df_pat_pt)
+plot_dumbell(df_pat_llt = df_pat_llt, df_pat_grp = df_pat_grp)
 
 }

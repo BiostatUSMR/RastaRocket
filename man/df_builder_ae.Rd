@@ -4,17 +4,15 @@
 \alias{df_builder_ae}
 \title{Prepare a dataframe for creating AE plots}
 \usage{
-df_builder_ae(df_soc_pt, df_pat_grp, df_pat_pt, ref_grp = NULL)
+df_builder_ae(df_pat_grp, df_pat_llt, ref_grp = NULL)
 }
 \arguments{
-\item{df_soc_pt}{A data frame mapping system organ classes (SOC) to preferred terms (PT).
-Must contain columns \code{soc} (System Organ Class) and \code{pt} (Preferred Term).}
+\item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{USUBJID } (patient ID)
+and \code{RDGRPNAME} (group assignment).}
 
-\item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{id_pat} (patient ID)
-and \code{grp} (group assignment).}
-
-\item{df_pat_pt}{A data frame linking patients to adverse event system organ classes.
-Must contain columns \code{id_pat} (patient ID) and \code{pt} (Preferred Term).}
+\item{df_pat_llt}{A data frame with USUBJID (subject ID), EINUM (AE ID),
+EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
+EIGRDM (severity grade)}
 
 \item{ref_grp}{(Optional) A reference group for comparisons. Defaults to the first group in \code{df_pat_grp}.}
 }

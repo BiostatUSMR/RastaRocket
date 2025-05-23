@@ -5,34 +5,22 @@
 \title{Volcano Plot for Adverse Event Analysis}
 \usage{
 plot_volcano(
-  df_soc_pt,
   df_pat_grp,
-  df_pat_pt,
+  df_pat_llt,
+  ref_grp = NULL,
   colors_arm = c("#1b9e77", "#7570b3"),
   size = "nb_pat"
 )
 }
 \arguments{
-\item{df_soc_pt}{A data frame mapping system organ classes (SOC) to preferred terms (PT).
-Must contain columns:
-\itemize{
-\item \code{soc} (character): System Organ Class.
-\item \code{pt} (character): Preferred Term.
-}}
+\item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{USUBJID } (patient ID)
+and \code{RDGRPNAME} (group assignment).}
 
-\item{df_pat_grp}{A data frame with patient IDs and their assigned group.
-Must contain columns:
-\itemize{
-\item \code{id_pat} (character): Patient ID.
-\item \code{grp} (character): Group assignment (e.g., treatment arms).
-}}
+\item{df_pat_llt}{A data frame with USUBJID (subject ID), EINUM (AE ID),
+EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
+EIGRDM (severity grade)}
 
-\item{df_pat_pt}{A data frame linking patients to reported PT.
-Must contain columns:
-\itemize{
-\item \code{id_pat} (character): Patient ID.
-\item \code{pt} (character): Preferred Term.
-}}
+\item{ref_grp}{(Optional) A reference group for comparisons. Defaults to the first group in \code{df_pat_grp}.}
 
 \item{colors_arm}{A character vector of length two specifying the colors for the two patient groups in the plot.
 Default is \code{c("#1b9e77", "#7570b3")}.}
@@ -62,18 +50,21 @@ such as risk difference (\code{RD}) and p-values. The volcano plot displays:
 }
 }
 \examples{
-df_soc_pt <- data.frame(
-  pt = c("Arrhythmia", "Myocardial Infarction", "Pneumonia", "Sepsis"),
-  soc = c("Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections")
+df_pat_grp <- data.frame(
+ USUBJID = paste0("ID_", 1:10),
+ RDGRPNAME = c(rep("A", 5), rep("B", 5))
 )
 
-df_pat_grp <- data.frame(id_pat = paste0("ID_", 1:10),
-                         grp = c(rep("A", 5), rep("B", 5)))
+df_pat_llt <- data.frame(
+  USUBJID = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
+  EINUM = c(1, 2, 1, 1, 1),
+  EILLTN = c("llt1", "llt2", "llt1", "llt3", "llt4"),
+  EIPTN = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", "Pneumonia", "Pneumonia"),
+  EISOCPN = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders",
+  "Infections", "Infections"),
+  EIGRDM = c(1, 3, 4, 2, 4)
+)
 
-df_pat_pt <- data.frame(id_pat = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
-                         pt = c("Arrhythmia", "Myocardial Infarction",
-                         "Arrhythmia", "Pneumonia", "Pneumonia"))
-
-plot_volcano(df_soc_pt, df_pat_grp, df_pat_pt)
+plot_volcano(df_pat_grp, df_pat_llt)
 
 }
