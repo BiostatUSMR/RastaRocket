@@ -6,6 +6,7 @@
 #'
 #' @param df_pat_grp A dataframe with two columns: USUBJID and RDGRPNAME (the RCT arm).
 #' @param df_pat_grade A dataframe with three columns: USUBJID, EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").
+#' @param severity A boolean to show severe adverse event line or not.
 #'
 #' @return A gt table summarizing the AE by grade.
 #' @export
@@ -16,7 +17,7 @@
 #' 
 #' df_pat_grade <- data.frame(USUBJID = c("ID_1", "ID_1",
 #'                                       "ID_2",
-#'                                       "ID_4",
+#'                                       "ID_8",
 #'                                       "ID_9"),
 #'                            EINUM = c(1, 2,
 #'                                       1,
@@ -35,21 +36,29 @@
 #'                   df_pat_grade = df_pat_grade)
 #' 
 desc_ei_per_grade <- function(df_pat_grp,
-                              df_pat_grade){
+                              df_pat_grade,
+                              severity = TRUE){
   
   ##### Check column names and remove duplicates
   if(any(!c("USUBJID", "RDGRPNAME") %in% colnames(df_pat_grp))){
     stop("df_pat_grp should contain 'USUBJID' = the patient id and 'RDGRPNAME' = the randomization group")
   }
 
-  if(any(!c("USUBJID", "EIGRDM", "EINUM", "EIGRAV") %in% colnames(df_pat_grade))){
-    stop("df_pat_grade should contain 'USUBJID' = the patient id and 'EIGRDM' = the AE grade and 'EINUM' = the AE id and EIGRAV = the AE severity coded as 'Grave' or 'Non grave'")
+  if(any(!c("USUBJID", "EIGRDM", "EINUM") %in% colnames(df_pat_grade))){
+    stop("df_pat_grade should contain 'USUBJID' = the patient id and 'EIGRDM' = the AE grade and 'EINUM' = the AE id")
   }
 
   ##### Check severity encoding
-  vec_severity <- unique(na.omit(df_pat_grade$EIGRAV))
-  if(!all(vec_severity %in% c("Grave", "Non grave"))){
-    stop(paste0("EIGRAV should contain only 'Grave' or 'Non grave' but it contains: ", paste(vec_severity, collapse = "; ")))
+  
+  if(severity){
+    if(any(!c("EIGRAV") %in% colnames(df_pat_grade))){
+      stop("Because you used severity = TRUE, df_pat_grade should contain EIGRAV = the AE severity coded as 'Grave' or 'Non grave'")
+    }
+    
+    vec_severity <- unique(na.omit(df_pat_grade$EIGRAV))
+    if(!all(vec_severity %in% c("Grave", "Non grave"))){
+      stop(paste0("EIGRAV should contain only 'Grave' or 'Non grave' but it contains: ", paste(vec_severity, collapse = "; ")))
+    }
   }
 
   ##### clean type and df, remove duplicate rows
@@ -86,11 +95,16 @@ desc_ei_per_grade <- function(df_pat_grp,
   nb_grp <- length(unique(df_pat_grp$grp))
   
   ### set severe as an independent grade
-  df_pat_grade_sae <- df_pat_grade |> 
-    filter(severity == "Grave") |> 
-    mutate(grade = "SAE") |> 
-    bind_rows(df_pat_grade) |> 
-    select(id_pat, grade)
+  if(severity){
+    df_pat_grade_sae <- df_pat_grade |> 
+      filter(severity == "Grave") |> 
+      mutate(grade = "SAE") |> 
+      bind_rows(df_pat_grade) |> 
+      select(id_pat, grade)
+  } else {
+    df_pat_grade_sae <- df_pat_grade |> 
+      select(id_pat, grade)
+  }
   
   if(nb_grp > 1){
     augmented_df_pat_grp <- dplyr::bind_rows(df_pat_grp,
@@ -143,12 +157,15 @@ desc_ei_per_grade_prepare_df <- function(augmented_df_pat_grp,
     dplyr::summarise(nb_pat_per_grp = n())
   
   df_ei_total <- augmented_df_pat_grade_grp |> 
+    dplyr::filter(grade != "SAE") |> 
     dplyr::group_by(grp) |> 
     dplyr::summarise(nb_ei = n(),
                      pct_ei = 100,
                      nb_pat = length(unique(id_pat)),
                      .groups = "drop") |> 
-    dplyr::left_join(df_nb_pat_per_grp, by = "grp") |> 
+    dplyr::full_join(df_nb_pat_per_grp, by = "grp") |>
+    dplyr::mutate(across(.cols = c("nb_ei", "pct_ei", "nb_pat"),
+                         .fns = function(x) if_else(is.na(x), 0, x))) |> 
     dplyr::mutate(pct_pat = nb_pat/nb_pat_per_grp*100,
                   grade = "Any grade") |> 
     dplyr::select(grade, grp, nb_ei, pct_ei, nb_pat, pct_pat)
@@ -251,3 +268,4 @@ desc_ei_per_grade_df_to_gt <- function(df_wide,
   
   return(res)
 }
+

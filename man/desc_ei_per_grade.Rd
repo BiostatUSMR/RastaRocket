@@ -4,12 +4,14 @@
 \alias{desc_ei_per_grade}
 \title{desc_ei_per_grade}
 \usage{
-desc_ei_per_grade(df_pat_grp, df_pat_grade)
+desc_ei_per_grade(df_pat_grp, df_pat_grade, severity = TRUE)
 }
 \arguments{
 \item{df_pat_grp}{A dataframe with two columns: USUBJID and RDGRPNAME (the RCT arm).}
 
 \item{df_pat_grade}{A dataframe with three columns: USUBJID, EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").}
+
+\item{severity}{A boolean to show severe adverse event line or not.}
 }
 \value{
 A gt table summarizing the AE by grade.
@@ -23,7 +25,7 @@ df_pat_grp <- data.frame(USUBJID = paste0("ID_", 1:10),
 
 df_pat_grade <- data.frame(USUBJID = c("ID_1", "ID_1",
                                       "ID_2",
-                                      "ID_4",
+                                      "ID_8",
                                       "ID_9"),
                            EINUM = c(1, 2,
                                       1,
