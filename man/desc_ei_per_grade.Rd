@@ -7,9 +7,9 @@
 desc_ei_per_grade(df_pat_grp, df_pat_grade)
 }
 \arguments{
-\item{df_pat_grp}{A dataframe with two columns: id_pat and grp (the RCT arm).}
+\item{df_pat_grp}{A dataframe with two columns: USUBJID and RDGRPNAME (the RCT arm).}
 
-\item{df_pat_grade}{A dataframe with two columns: id_pat, num_ae (the AE id) and grade (the AE grade).}
+\item{df_pat_grade}{A dataframe with three columns: USUBJID, EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").}
 }
 \value{
 A gt table summarizing the AE by grade.
@@ -32,7 +32,11 @@ df_pat_grade <- data.frame(USUBJID = c("ID_1", "ID_1",
                            EIGRDM = c(1, 3,
                                      4,
                                      2,
-                                     4))
+                                     4),
+                           EIGRAV = c("Grave", "Non grave",
+                                      "Non grave",
+                                      "Non grave",
+                                      "Grave"))
 
 desc_ei_per_grade(df_pat_grp = df_pat_grp,
                   df_pat_grade = df_pat_grade)

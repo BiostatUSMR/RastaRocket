@@ -7,7 +7,7 @@
 desc_ei_per_grade_prepare_df(augmented_df_pat_grp, augmented_df_pat_grade_grp)
 }
 \arguments{
-\item{augmented_df_pat_grp}{A dataframe with patient IDs and groups, including a "Total" group.}
+\item{augmented_df_pat_grp}{A dataframe with patient IDs and groups, including a "Any grade" group.}
 
 \item{augmented_df_pat_grade_grp}{A dataframe with patient IDs, grades, and groups.}
 }

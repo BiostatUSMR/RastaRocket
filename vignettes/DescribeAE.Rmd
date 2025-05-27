@@ -59,7 +59,8 @@ df_pat_llt <- data.frame(
   EILLTN = c("llt1", "llt2", "llt1", "llt3", "llt4"),
   EIPTN = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", "Pneumonia", "Pneumonia"),
   EISOCPN = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections"),
-  EIGRDM = c(1, 3, 4, 2, 4)
+  EIGRDM = c(1, 3, 4, 2, 4),
+  EIGRAV = c("Grave", "Non grave", "Non grave", "Non grave", "Grave") 
 )
 ```
 

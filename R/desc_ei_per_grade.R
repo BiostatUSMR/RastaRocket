@@ -4,8 +4,8 @@
 #' 
 #' A function to describe adverse events (AE) by grade.
 #'
-#' @param df_pat_grp A dataframe with two columns: id_pat and grp (the RCT arm).
-#' @param df_pat_grade A dataframe with two columns: id_pat, num_ae (the AE id) and grade (the AE grade).
+#' @param df_pat_grp A dataframe with two columns: USUBJID and RDGRPNAME (the RCT arm).
+#' @param df_pat_grade A dataframe with three columns: USUBJID, EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").
 #'
 #' @return A gt table summarizing the AE by grade.
 #' @export
@@ -25,7 +25,11 @@
 #'                            EIGRDM = c(1, 3,
 #'                                      4,
 #'                                      2,
-#'                                      4))
+#'                                      4),
+#'                            EIGRAV = c("Grave", "Non grave",
+#'                                       "Non grave",
+#'                                       "Non grave",
+#'                                       "Grave"))
 #' 
 #' desc_ei_per_grade(df_pat_grp = df_pat_grp,
 #'                   df_pat_grade = df_pat_grade)
@@ -38,10 +42,16 @@ desc_ei_per_grade <- function(df_pat_grp,
     stop("df_pat_grp should contain 'USUBJID' = the patient id and 'RDGRPNAME' = the randomization group")
   }
 
-  if(any(!c("USUBJID", "EIGRDM", "EINUM") %in% colnames(df_pat_grade))){
-    stop("df_pat_grade should contain 'USUBJID' = the patient id and 'EIGRDM' = the AE grade and 'EINUM' = the AE id")
+  if(any(!c("USUBJID", "EIGRDM", "EINUM", "EIGRAV") %in% colnames(df_pat_grade))){
+    stop("df_pat_grade should contain 'USUBJID' = the patient id and 'EIGRDM' = the AE grade and 'EINUM' = the AE id and EIGRAV = the AE severity coded as 'Grave' or 'Non grave'")
   }
-  
+
+  ##### Check severity encoding
+  vec_severity <- unique(na.omit(df_pat_grade$EIGRAV))
+  if(!all(vec_severity %in% c("Grave", "Non grave"))){
+    stop(paste0("EIGRAV should contain only 'Grave' or 'Non grave' but it contains: ", paste(vec_severity, collapse = "; ")))
+  }
+
   ##### clean type and df, remove duplicate rows
   
   df_pat_grp <- df_pat_grp |> 
@@ -50,10 +60,11 @@ desc_ei_per_grade <- function(df_pat_grp,
     dplyr::distinct(id_pat, grp)
 
   df_pat_grade <- df_pat_grade |> 
-    dplyr::distinct(USUBJID, EIGRDM, EINUM) |> 
+    dplyr::distinct(USUBJID, EIGRDM, EINUM, EIGRAV) |> 
     dplyr::mutate(id_pat = as.character(USUBJID),
-                  grade = as.character(EIGRDM)) |> 
-    dplyr::select(grade, id_pat)
+                  grade = as.character(EIGRDM),
+                  severity = as.character(EIGRAV)) |> 
+    dplyr::select(id_pat, grade, severity)
   
   ##### check for stupid missing data
   
@@ -70,9 +81,16 @@ desc_ei_per_grade <- function(df_pat_grp,
       na.omit()
   }
   
-  ##### Build augmented df, Total is a whole new group
+  ##### Build augmented df, Any grade is a whole new group
   
   nb_grp <- length(unique(df_pat_grp$grp))
+  
+  ### set severe as an independent grade
+  df_pat_grade_sae <- df_pat_grade |> 
+    filter(severity == "Grave") |> 
+    mutate(grade = "SAE") |> 
+    bind_rows(df_pat_grade) |> 
+    select(id_pat, grade)
   
   if(nb_grp > 1){
     augmented_df_pat_grp <- dplyr::bind_rows(df_pat_grp,
@@ -84,7 +102,7 @@ desc_ei_per_grade <- function(df_pat_grp,
   
   vec_grp <- unique(augmented_df_pat_grp$grp)
   
-  augmented_df_pat_grade_grp <- df_pat_grade |> 
+  augmented_df_pat_grade_grp <- df_pat_grade_sae |> 
     dplyr::left_join(augmented_df_pat_grp,
                      by = "id_pat",
                      relationship = "many-to-many")
@@ -111,7 +129,7 @@ desc_ei_per_grade <- function(df_pat_grp,
 #' 
 #' Prepares a wide-format dataframe summarizing AE by grade and group.
 #'
-#' @param augmented_df_pat_grp A dataframe with patient IDs and groups, including a "Total" group.
+#' @param augmented_df_pat_grp A dataframe with patient IDs and groups, including a "Any grade" group.
 #' @param augmented_df_pat_grade_grp A dataframe with patient IDs, grades, and groups.
 #'
 #' @return A dataframe in wide format with AE counts and percentages by grade and group.
@@ -132,7 +150,7 @@ desc_ei_per_grade_prepare_df <- function(augmented_df_pat_grp,
                      .groups = "drop") |> 
     dplyr::left_join(df_nb_pat_per_grp, by = "grp") |> 
     dplyr::mutate(pct_pat = nb_pat/nb_pat_per_grp*100,
-                  grade = "Total") |> 
+                  grade = "Any grade") |> 
     dplyr::select(grade, grp, nb_ei, pct_ei, nb_pat, pct_pat)
   
   ##### compute summary statisticsby SOC and PT
@@ -152,8 +170,10 @@ desc_ei_per_grade_prepare_df <- function(augmented_df_pat_grp,
     ### add total ei dataset
     bind_rows(df_ei_total) |> 
     ### Arrange dataframe for visualization
-    mutate(across(c("grade", "grp"), as.factor),
-           across(c("grade", "grp"), function(x) forcats::fct_relevel(x, "Total"))) |> 
+    mutate(grade = as.factor(grade),
+           grade = forcats::fct_relevel(grade, "Any grade"),
+           grp = as.factor(grp),
+           grp = forcats::fct_relevel(grp, "Total")) |> 
     dplyr::arrange(grade, grp) |> 
     ### Go to wide format with correct names
     dplyr::group_by(grp) |> 
@@ -224,7 +244,7 @@ desc_ei_per_grade_df_to_gt <- function(df_wide,
     gt::cols_align(align = "left",
                    columns = dplyr::everything()) |> 
     gt::tab_style(
-      locations = gt::cells_body(rows = grade == "Total"),
+      locations = gt::cells_body(rows = grade %in% c("Any grade", "SAE")),
       style = gt::cell_text(weight = "bold",
                             style = "italic")
     )
