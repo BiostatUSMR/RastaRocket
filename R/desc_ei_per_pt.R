@@ -143,7 +143,9 @@ desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
                      pct_ei = 100,
                      nb_pat = length(unique(id_pat)),
                      .groups = "drop") |> 
-    dplyr::left_join(df_nb_pat_per_grp, by = "grp") |> 
+    dplyr::full_join(df_nb_pat_per_grp, by = "grp") |> 
+    dplyr::mutate(across(.cols = c("nb_ei", "pct_ei", "nb_pat"),
+                         .fns = function(x) if_else(is.na(x), 0, x))) |> 
     dplyr::mutate(pct_pat = nb_pat/nb_pat_per_grp*100,
                   pt = "Total",
                   soc = "Total") |> 
