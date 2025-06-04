@@ -7,7 +7,8 @@
 #' @param df_pat_grp A dataframe with two columns: id_pat and grp (the rct arm)
 #' @param df_pat_llt A dataframe with two columns: id_pat (patient id), num_ae (AE id), llt (AE LLT), pt (AE PT), soc (AE)
 #' @param language 'fr' default or 'en'
-#'
+#' @param order_by_freq Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.
+#' 
 #' @return A gt table
 #' @export
 #'
@@ -35,7 +36,8 @@
 #' 
 desc_ei_per_pt <- function(df_pat_grp,
                            df_pat_llt,
-                           language = "fr"){
+                           language = "fr",
+                           order_by_freq = TRUE){
   
   ##### Check column names and remove duplicates
   
@@ -119,6 +121,7 @@ desc_ei_per_pt <- function(df_pat_grp,
 #'
 #' @param augmented_df_pat_grp A dataframe containing patient IDs and group assignments, including a "Total" group.
 #' @param augmented_df_pat_pt_grp A dataframe linking patient IDs to SOC and PT, with group assignments.
+#' @param order_by_freq Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.
 #'
 #' @return A wide-format dataframe summarizing adverse event occurrences and patient counts across groups.
 #' @importFrom purrr reduce
@@ -129,7 +132,8 @@ desc_ei_per_pt <- function(df_pat_grp,
 #' df_wide <- desc_ei_per_pt_prepare_df(augmented_df_pat_grp, augmented_df_pat_pt_grp)
 #' }
 desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
-                                      augmented_df_pat_pt_grp){
+                                      augmented_df_pat_pt_grp,
+                                      order_by_freq = TRUE){
   
   ##### compute summary statistics per group
   
@@ -152,7 +156,7 @@ desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
     dplyr::select(pt, soc, grp, nb_ei, pct_ei, nb_pat, pct_pat)
   
   ##### compute summary statisticsby SOC and PT
-  df_wide <- list(pt = c("grp", "soc", "pt"),
+  df_wide_temp <- list(pt = c("grp", "soc", "pt"),
                   soc = c("grp", "soc")) |> 
     lapply(function(vec_grp_by){
       temp <- augmented_df_pat_pt_grp |> 
@@ -179,10 +183,38 @@ desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
     }) |> 
     bind_rows() |> 
     ### add total ei dataset
-    bind_rows(df_ei_total) |> 
-    ### Arrange dataframe for visualization
-    mutate(across(c("pt", "soc", "grp"), as.factor),
-           across(c("pt", "soc", "grp"), function(x) forcats::fct_relevel(x, "Total"))) |> 
+    bind_rows(df_ei_total)
+  
+  if(order_by_freq){
+    # Calculate frequency-based levels for pt and soc
+    pt_levels <- df_wide_temp %>%
+      group_by(pt) %>%
+      summarise(total_nb_pat = sum(nb_pat, na.rm = TRUE)) %>%
+      arrange(desc(total_nb_pat)) %>%
+      pull(pt)
+    
+    soc_levels <- df_wide_temp %>%
+      group_by(soc) %>%
+      summarise(total_nb_pat = sum(nb_pat, na.rm = TRUE)) %>%
+      arrange(desc(total_nb_pat)) %>%
+      pull(soc)
+    
+    # Apply factor levels to the dataframe
+    df_wide_temp_ordered <- df_wide_temp %>%
+      mutate(
+        pt = factor(pt, levels = pt_levels),
+        soc = factor(soc, levels = soc_levels),
+        grp = as.factor(grp),
+        across(c("pt", "soc", "grp"), function(x) forcats::fct_relevel(x, "Total"))
+      )
+  } else {
+    df_wide_temp_ordered <- df_wide_temp |> 
+      ### Arrange dataframe for visualization
+      mutate(across(c("pt", "soc", "grp"), as.factor),
+             across(c("pt", "soc", "grp"), function(x) forcats::fct_relevel(x, "Total")))
+  }
+  
+  df_wide <- df_wide_temp_ordered |> 
     dplyr::arrange(soc, pt, grp) |> 
     ### Go to wide format with correct names
     dplyr::group_by(grp) |> 

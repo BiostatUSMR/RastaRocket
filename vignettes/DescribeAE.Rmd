@@ -57,7 +57,7 @@ df_pat_llt <- data.frame(
   USUBJID = c("ID_1", "ID_1", "ID_2", "ID_8", "ID_9"),
   EINUM = c(1, 2, 1, 1, 1),
   EILLTN = c("llt1", "llt2", "llt1", "llt3", "llt4"),
-  EIPTN = c("Arrhythmia", "Myocardial Infarction", "Arrhythmia", "Pneumonia", "Pneumonia"),
+  EIPTN = c("Arrhythmia", "Myocardial Infarction", "Myocardial Infarction", "Pneumonia", "Pneumonia"),
   EISOCPN = c("Cardiac Disorders", "Cardiac Disorders", "Cardiac Disorders", "Infections", "Infections"),
   EIGRDM = c(1, 3, 4, 2, 4),
   EIGRAV = c("Grave", "Non grave", "Non grave", "Non grave", "Grave") 

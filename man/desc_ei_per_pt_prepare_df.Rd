@@ -4,12 +4,18 @@
 \alias{desc_ei_per_pt_prepare_df}
 \title{Prepare Data for AE Description by SOC and PT}
 \usage{
-desc_ei_per_pt_prepare_df(augmented_df_pat_grp, augmented_df_pat_pt_grp)
+desc_ei_per_pt_prepare_df(
+  augmented_df_pat_grp,
+  augmented_df_pat_pt_grp,
+  order_by_freq = TRUE
+)
 }
 \arguments{
 \item{augmented_df_pat_grp}{A dataframe containing patient IDs and group assignments, including a "Total" group.}
 
 \item{augmented_df_pat_pt_grp}{A dataframe linking patient IDs to SOC and PT, with group assignments.}
+
+\item{order_by_freq}{Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.}
 }
 \value{
 A wide-format dataframe summarizing adverse event occurrences and patient counts across groups.
