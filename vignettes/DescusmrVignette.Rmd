@@ -222,7 +222,6 @@ data %>%
                      var_group = "traitement",
                      digits = list(mean_sd = 0,
                                    median_q1_q3_min_max = 0,
-                                   n = 0,
                                    pct = 1))
 ```
 
@@ -237,7 +236,6 @@ tb1 <- data %>%
                      var_group = "traitement",
                      digits = list(mean_sd = 2,
                                    median_q1_q3_min_max = 2,
-                                   n = 0,
                                    pct = 2))
 
 tb2 <- data %>%
@@ -246,7 +244,6 @@ tb2 <- data %>%
                      var_group = "traitement",
                      digits = list(mean_sd = 0,
                                    median_q1_q3_min_max = 0,
-                                   n = 0,
                                    pct = 1))
 
 gtsummary::tbl_stack(list(tb1, tb2))
@@ -308,7 +305,6 @@ tb1 <- data %>%
                      var_group = "traitement",
                      digits = list(mean_sd = 0,
                                      median_q1_q3_min_max = 0,
-                                     n = 0,
                                      pct = 0))
 
 tb2 <- data %>%
@@ -317,7 +313,6 @@ tb2 <- data %>%
                      var_group = "traitement",
                      digits = list(mean_sd = 2,
                                    median_q1_q3_min_max = 2,
-                                   n = 0,
                                    pct = 2))
 
 gtsummary::tbl_stack(list(tb1, tb2)) %>%

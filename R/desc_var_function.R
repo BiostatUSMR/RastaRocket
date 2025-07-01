@@ -13,7 +13,7 @@
 #' @param group_title A character string specifying the title for the grouping variable. Default is `NULL` and get the label or the variable.
 #' @param digits A list, the number of decimal places to round categorical and
 #'        continuous variable. Default is list(mean_sd = 1,
-#'        median_q1_q3_min_max = 1, n = 0, pct = 1).
+#'        median_q1_q3_min_max = 1, pct = 1).
 #' @param drop_levels Boolean (default = TRUE). Drop unused levels.
 #' @param freq_relevel Boolean (default = FALSE). Reorder factors by frequency.
 #' @param tests A value in order to add p value. Default to `FALSE` OPTION :
@@ -70,7 +70,6 @@
 # group_title = NULL
 # digits = list(mean_sd = 1,
 #               median_q1_q3_min_max = 1,
-#               n = 0,
 #               pct = 1)
 # drop_levels = TRUE
 # freq_relevel = FALSE
@@ -95,7 +94,6 @@ desc_var <- ## Les arugments de la fonction
            group_title = NULL,
            digits = list(mean_sd = 1,
                          median_q1_q3_min_max = 1,
-                         n = 0,
                          pct = 1),
            drop_levels = TRUE,
            freq_relevel = FALSE,

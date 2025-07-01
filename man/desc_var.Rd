@@ -13,7 +13,7 @@ desc_var(
   var_title = "Variable",
   var_group = NULL,
   group_title = NULL,
-  digits = list(mean_sd = 1, median_q1_q3_min_max = 1, n = 0, pct = 1),
+  digits = list(mean_sd = 1, median_q1_q3_min_max = 1, pct = 1),
   drop_levels = TRUE,
   freq_relevel = FALSE,
   tests = FALSE,
@@ -40,7 +40,7 @@ desc_var(
 
 \item{digits}{A list, the number of decimal places to round categorical and
 continuous variable. Default is list(mean_sd = 1,
-median_q1_q3_min_max = 1, n = 0, pct = 1).}
+median_q1_q3_min_max = 1, pct = 1).}
 
 \item{drop_levels}{Boolean (default = TRUE). Drop unused levels.}
 
