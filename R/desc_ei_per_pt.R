@@ -39,6 +39,8 @@ desc_ei_per_pt <- function(df_pat_grp,
                            language = "fr",
                            order_by_freq = TRUE){
   
+  unknown_ei <- " Unknown"
+  
   ##### Check column names and remove duplicates
   
   if(any(!c("USUBJID", "RDGRPNAME") %in% colnames(df_pat_grp))){
@@ -73,7 +75,7 @@ desc_ei_per_pt <- function(df_pat_grp,
     warning("Missing data removed from df_pat_llt please be careful !")
     df_pat_llt <- df_pat_llt |> 
       dplyr::mutate_at(.vars = c("soc", "pt"),
-                       .funs = function(x) if_else(is.na(x), " Unknown", x)) |> 
+                       .funs = function(x) if_else(is.na(x), unknown_ei, x)) |> 
       na.omit()
   }
   
@@ -122,6 +124,7 @@ desc_ei_per_pt <- function(df_pat_grp,
 #' @param augmented_df_pat_grp A dataframe containing patient IDs and group assignments, including a "Total" group.
 #' @param augmented_df_pat_pt_grp A dataframe linking patient IDs to SOC and PT, with group assignments.
 #' @param order_by_freq Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.
+#' @param unknwon_ei How the unknown adverse event is labelled.
 #'
 #' @return A wide-format dataframe summarizing adverse event occurrences and patient counts across groups.
 #' @importFrom purrr reduce
@@ -133,7 +136,8 @@ desc_ei_per_pt <- function(df_pat_grp,
 #' }
 desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
                                       augmented_df_pat_pt_grp,
-                                      order_by_freq = TRUE){
+                                      order_by_freq = TRUE,
+                                      unknown_ei = " Unknown"){
   
   ##### compute summary statistics per group
   
@@ -226,7 +230,9 @@ desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
         dplyr::rename_with(.cols = c("nb_ei", "pct_ei", "nb_pat", "pct_pat"),
                            .fn = function(x) paste0(grp_i, "_", x))
     }) |> 
-    purrr::reduce(full_join, by = c("pt", "soc"))
+    purrr::reduce(full_join, by = c("pt", "soc")) |> 
+    ## remove duplicate total and unknown for unknow ae
+    filter(!(soc == unknown_ei & pt == unknown_ei))
   
   return(df_wide)
   
