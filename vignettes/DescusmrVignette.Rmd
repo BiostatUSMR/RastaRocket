@@ -210,18 +210,20 @@ Descusmr::intermediate_header(tbls = list(tb1, tb2),
 
 # Number of Digits in Quantitative and Qualitative Features
 
-You can specify the number of digits for quantitative and qualitative features using the `round_quanti` and `round_quali` arguments, respectively.
+You can specify the number of digits for quantitative and qualitative features using the `digits` argument.
 
 ## Specify Number of Digits
 
-In the example below, quantitative values are rounded to 0 decimal places, while qualitative values are rounded to 1 decimal place.
+In the example below, quantitative values are rounded to 0 decimal places, while qualitative values percentage are rounded to 1 decimal place.
 
 ```{r}
 data %>%
   Descusmr::desc_var(table_title = "test",
                      var_group = "traitement",
-                     round_quanti = 0,
-                     round_quali = 1)
+                     digits = list(mean_sd = 0,
+                                   median_q1_q3_min_max = 0,
+                                   n = 0,
+                                   pct = 1))
 ```
 
 ## Combine Subtables with Different Rounding
@@ -233,15 +235,19 @@ tb1 <- data %>%
   dplyr::select(Age, sexe, traitement) %>%
   Descusmr::desc_var(table_title = "test",
                      var_group = "traitement",
-                     round_quanti = 0,
-                     round_quali = 0)
+                     digits = list(mean_sd = 2,
+                                   median_q1_q3_min_max = 2,
+                                   n = 0,
+                                   pct = 2))
 
 tb2 <- data %>%
   dplyr::select(quatre_modalites, traitement) %>%
   Descusmr::desc_var(table_title = "test",
                      var_group = "traitement",
-                     round_quanti = 2,
-                     round_quali = 2)
+                     digits = list(mean_sd = 0,
+                                   median_q1_q3_min_max = 0,
+                                   n = 0,
+                                   pct = 1))
 
 gtsummary::tbl_stack(list(tb1, tb2))
 
@@ -300,15 +306,19 @@ tb1 <- data %>%
   dplyr::select(Age, sexe, traitement) %>%
   Descusmr::desc_var(table_title = "test",
                      var_group = "traitement",
-                     round_quanti = 0,
-                     round_quali = 0)
+                     digits = list(mean_sd = 0,
+                                     median_q1_q3_min_max = 0,
+                                     n = 0,
+                                     pct = 0))
 
 tb2 <- data %>%
   dplyr::select(quatre_modalites, traitement) %>%
   Descusmr::desc_var(table_title = "test",
                      var_group = "traitement",
-                     round_quanti = 2,
-                     round_quali = 2)
+                     digits = list(mean_sd = 2,
+                                   median_q1_q3_min_max = 2,
+                                   n = 0,
+                                   pct = 2))
 
 gtsummary::tbl_stack(list(tb1, tb2)) %>%
   custom_format()

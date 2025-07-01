@@ -13,8 +13,7 @@ desc_var(
   var_title = "Variable",
   var_group = NULL,
   group_title = NULL,
-  round_quanti = 1,
-  round_quali = c(0, 1),
+  digits = list(mean_sd = 1, median_q1_q3_min_max = 1, n = 0, pct = 1),
   drop_levels = TRUE,
   freq_relevel = FALSE,
   tests = FALSE,
@@ -39,9 +38,9 @@ desc_var(
 
 \item{group_title}{A character string specifying the title for the grouping variable. Default is \code{NULL} and get the label or the variable.}
 
-\item{round_quanti}{An integer vector specifying the number of decimal places for quantitative variables. Defaults to \code{1}.}
-
-\item{round_quali}{An integer vector specifying the number of decimal places for qualitative variables. Defaults to \code{c(0, 1)} (0 for 'n' and 1 for 'percentage'.}
+\item{digits}{A list, the number of decimal places to round categorical and
+continuous variable. Default is list(mean_sd = 1,
+median_q1_q3_min_max = 1, n = 0, pct = 1).}
 
 \item{drop_levels}{Boolean (default = TRUE). Drop unused levels.}
 

@@ -11,8 +11,9 @@
 #' @param var_title A character string for the title of the variable column in the table. Defaults to `"Variable"`.
 #' @param var_group A variable used for grouping (if applicable). Defaults to `NULL`.
 #' @param group_title A character string specifying the title for the grouping variable. Default is `NULL` and get the label or the variable.
-#' @param round_quanti An integer vector specifying the number of decimal places for quantitative variables. Defaults to `1`.
-#' @param round_quali An integer vector specifying the number of decimal places for qualitative variables. Defaults to `c(0, 1)` (0 for 'n' and 1 for 'percentage'.
+#' @param digits A list, the number of decimal places to round categorical and
+#'        continuous variable. Default is list(mean_sd = 1,
+#'        median_q1_q3_min_max = 1, n = 0, pct = 1).
 #' @param drop_levels Boolean (default = TRUE). Drop unused levels.
 #' @param freq_relevel Boolean (default = FALSE). Reorder factors by frequency.
 #' @param tests A value in order to add p value. Default to `FALSE` OPTION :
@@ -67,8 +68,10 @@
 # var_title = "Variable"
 # var_group = "Species" ## Variable de groupe (dégroupée les tables)
 # group_title = NULL
-# round_quanti = c(1)
-# round_quali = c(0,1)
+# digits = list(mean_sd = 1,
+#               median_q1_q3_min_max = 1,
+#               n = 0,
+#               pct = 1)
 # drop_levels = TRUE
 # freq_relevel = FALSE
 # tests = FALSE
@@ -90,8 +93,10 @@ desc_var <- ## Les arugments de la fonction
            ## booléen pour préciser s'il faut degroupé ou pas les tables.
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
            group_title = NULL,
-           round_quanti = 1,
-           round_quali = c(0, 1),
+           digits = list(mean_sd = 1,
+                         median_q1_q3_min_max = 1,
+                         n = 0,
+                         pct = 1),
            drop_levels = TRUE,
            freq_relevel = FALSE,
            tests = FALSE,
@@ -113,8 +118,7 @@ desc_var <- ## Les arugments de la fonction
                              var_group = var_group,
                              quali = quali,
                              quanti = quanti,
-                             round_quanti = round_quanti,
-                             round_quali = round_quali)
+                             digits = digits)
     
     res <- customize_table(base_table = base_table,
                            var_group = var_group,

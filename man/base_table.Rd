@@ -9,8 +9,7 @@ base_table(
   var_group,
   quali = NULL,
   quanti = NULL,
-  round_quanti = 1,
-  round_quali = c(0, 1)
+  digits = list(mean_sd = 1, median_q1_q3_min_max = 1, n = 0, pct = 1)
 )
 }
 \arguments{
@@ -25,11 +24,9 @@ treat as categorical in the summary table.}
 \item{quanti}{A character vector, the names of continuous variables to
 treat as continuous in the summary table.}
 
-\item{round_quanti}{An integer, the number of decimal places to round
-continuous variables (quantitative) in the summary table.}
-
-\item{round_quali}{An integer, the number of decimal places to round
-categorical variables (qualitative) in the summary table.}
+\item{digits}{A list, the number of decimal places to round categorical and
+continuous variable. Default is list(mean_sd = 1,
+median_q1_q3_min_max = 1, n = 0, pct = 1).}
 }
 \value{
 A \code{gtsummary} table summarizing the specified variables,

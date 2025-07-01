@@ -12,11 +12,9 @@
 #'        treat as categorical in the summary table.
 #' @param quanti A character vector, the names of continuous variables to 
 #'        treat as continuous in the summary table.
-#' @param round_quanti An integer, the number of decimal places to round 
-#'        continuous variables (quantitative) in the summary table.
-#' @param round_quali An integer, the number of decimal places to round 
-#'        categorical variables (qualitative) in the summary table.
-#'
+#' @param digits A list, the number of decimal places to round categorical and
+#'        continuous variable. Default is list(mean_sd = 1,
+#'        median_q1_q3_min_max = 1, n = 0, pct = 1).
 #' @return A `gtsummary` table summarizing the specified variables, 
 #'         grouped by `var_group` if provided, with customizable statistics 
 #'         and rounding options.
@@ -33,8 +31,23 @@ base_table <- function(data1,
                        var_group,
                        quali = NULL,
                        quanti = NULL,
-                       round_quanti = 1,
-                       round_quali = c(0, 1)){
+                       digits = list(mean_sd = 1,
+                                     median_q1_q3_min_max = 1,
+                                     n = 0,
+                                     pct = 1)){
+  
+  ##### check digits list
+  if(!is.list(digits)) stop("digits argument must be a list")
+  
+  vec_check <- c("mean_sd", "median_q1_q3_min_max", "n", "pct")
+  string_check <- paste(vec_check, collapse = " ")
+  if(!dplyr::setequal(names(digits), vec_check)) stop(glue::glue("digits names must be {string_check}"))
+  
+  ##### clean formating
+  
+  vec_round_quanti <- c(rep(digits$mean_sd, 2),
+                        rep(digits$median_q1_q3_min_max, 5))
+  vec_round_quali <- c(digits$n, digits$pct)
   
   if(is.null(var_group)){
     col_1 <- NULL
@@ -61,7 +74,8 @@ base_table <- function(data1,
         ## Stat à afficher pour les VAR (quantitatives)
         gtsummary::all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
       ),
-      digits = list(gtsummary::all_continuous() ~ round_quanti, gtsummary::all_categorical() ~ round_quali) ## le nbre de décimale pour les variables.
+      digits = list(all_continuous() ~ vec_round_quanti,
+                    all_categorical() ~ vec_round_quali) ## le nbre de décimale pour les variables.
     ) %>%
     gtsummary::bold_labels()  ## Variables en gras.
   
