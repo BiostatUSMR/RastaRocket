@@ -49,8 +49,6 @@
 
 
 add_by_n <- function(data, variable, by, tbl, ...) {
-  # Calcul du nombre total de lignes dans le jeu de données
-  n_all = nrow(data)
 
   data %>%
     # Sélection des colonnes pertinentes : la variable cible et la colonne de regroupement
@@ -64,7 +62,7 @@ add_by_n <- function(data, variable, by, tbl, ...) {
       list(
         nb = ~ sum(!is.na(.)),           # Nombre de valeurs non manquantes
         nb_NA = ~ sum(is.na(.)),        # Nombre de valeurs manquantes
-        nb_percent = ~ round(sum(is.na(.)) / n_all * 100) # Pourcentage de valeurs manquantes
+        nb_percent = ~ round(sum(is.na(.)) / n() * 100) # Pourcentage de valeurs manquantes
       ), 1 # Marginalisation pour appliquer les fonctions
     ) %>%
 
