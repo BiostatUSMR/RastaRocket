@@ -226,7 +226,9 @@ desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
         dplyr::rename_with(.cols = c("nb_ei", "pct_ei", "nb_pat", "pct_pat"),
                            .fn = function(x) paste0(grp_i, "_", x))
     }) |> 
-    purrr::reduce(full_join, by = c("pt", "soc"))
+    purrr::reduce(full_join, by = c("pt", "soc")) |> 
+    ## remove duplicate total and unknown for unknow ae
+    filter(!(soc == " Unknown" & pt == " Unknown"))
   
   return(df_wide)
   
