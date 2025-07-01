@@ -7,7 +7,8 @@
 desc_ei_per_pt_prepare_df(
   augmented_df_pat_grp,
   augmented_df_pat_pt_grp,
-  order_by_freq = TRUE
+  order_by_freq = TRUE,
+  unknown_ei = " Unknown"
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ desc_ei_per_pt_prepare_df(
 \item{augmented_df_pat_pt_grp}{A dataframe linking patient IDs to SOC and PT, with group assignments.}
 
 \item{order_by_freq}{Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.}
+
+\item{unknwon_ei}{How the unknown adverse event is labelled.}
 }
 \value{
 A wide-format dataframe summarizing adverse event occurrences and patient counts across groups.
