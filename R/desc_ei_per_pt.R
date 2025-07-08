@@ -8,6 +8,7 @@
 #' @param df_pat_llt A dataframe with two columns: id_pat (patient id), num_ae (AE id), llt (AE LLT), pt (AE PT), soc (AE)
 #' @param language 'fr' default or 'en'
 #' @param order_by_freq Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.
+#' @param digits Number of digits for percentages
 #' 
 #' @return A gt table
 #' @export
@@ -37,7 +38,8 @@
 desc_ei_per_pt <- function(df_pat_grp,
                            df_pat_llt,
                            language = "fr",
-                           order_by_freq = TRUE){
+                           order_by_freq = TRUE,
+                           digits = 1){
   
   unknown_ei <- " Unknown"
   
@@ -102,7 +104,9 @@ desc_ei_per_pt <- function(df_pat_grp,
   ##### Build wide dataframe
   
   df_wide <- desc_ei_per_pt_prepare_df(augmented_df_pat_grp = augmented_df_pat_grp,
-                                       augmented_df_pat_pt_grp = augmented_df_pat_pt_grp)
+                                       augmented_df_pat_pt_grp = augmented_df_pat_pt_grp,
+                                       unknown_ei = unknown_ei,
+                                       digits = digits)
   
   ##### gt part
   
@@ -124,7 +128,8 @@ desc_ei_per_pt <- function(df_pat_grp,
 #' @param augmented_df_pat_grp A dataframe containing patient IDs and group assignments, including a "Total" group.
 #' @param augmented_df_pat_pt_grp A dataframe linking patient IDs to SOC and PT, with group assignments.
 #' @param order_by_freq Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.
-#' @param unknwon_ei How the unknown adverse event is labelled.
+#' @param unknown_ei How the unknown adverse event is labelled.
+#' @param digits Number of digits for percentages
 #'
 #' @return A wide-format dataframe summarizing adverse event occurrences and patient counts across groups.
 #' @importFrom purrr reduce
@@ -137,7 +142,8 @@ desc_ei_per_pt <- function(df_pat_grp,
 desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
                                       augmented_df_pat_pt_grp,
                                       order_by_freq = TRUE,
-                                      unknown_ei = " Unknown"){
+                                      unknown_ei = " Unknown",
+                                      digits = 1){
   
   ##### compute summary statistics per group
   
@@ -219,8 +225,8 @@ desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
   }
   
   df_wide <- df_wide_temp_ordered |>
-    mutate(EI = paste0(nb_ei, " (", round(pct_ei),"%)"),
-           PAT = paste0(nb_pat, " (", round(pct_pat),"%)"),
+    mutate(EI = paste0(nb_ei, " (", custom_round(pct_ei, digits = digits),")"),
+           PAT = paste0(nb_pat, " (", custom_round(pct_pat, digits = digits),")"),
            .keep = "unused") |> 
     dplyr::arrange(soc, pt, grp) |> 
     ### Go to wide format with correct names

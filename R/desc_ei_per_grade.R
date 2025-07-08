@@ -7,6 +7,7 @@
 #' @param df_pat_grp A dataframe with two columns: USUBJID and RDGRPNAME (the RCT arm).
 #' @param df_pat_grade A dataframe with three columns: USUBJID, EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").
 #' @param severity A boolean to show severe adverse event line or not.
+#' @param digits Number of digits for percentages
 #'
 #' @return A gt table summarizing the AE by grade.
 #' @export
@@ -37,7 +38,8 @@
 #' 
 desc_ei_per_grade <- function(df_pat_grp,
                               df_pat_grade,
-                              severity = TRUE){
+                              severity = TRUE,
+                              digits = 1){
   
   ##### Check column names and remove duplicates
   if(any(!c("USUBJID", "RDGRPNAME") %in% colnames(df_pat_grp))){
@@ -125,7 +127,8 @@ desc_ei_per_grade <- function(df_pat_grp,
   ##### Prepare df_wide
   
   df_wide <- desc_ei_per_grade_prepare_df(augmented_df_pat_grp = augmented_df_pat_grp,
-                                          augmented_df_pat_grade_grp = augmented_df_pat_grade_grp)
+                                          augmented_df_pat_grade_grp = augmented_df_pat_grade_grp,
+                                          digits = digits)
   
   ##### gt part
   
@@ -145,11 +148,13 @@ desc_ei_per_grade <- function(df_pat_grp,
 #'
 #' @param augmented_df_pat_grp A dataframe with patient IDs and groups, including a "Any grade" group.
 #' @param augmented_df_pat_grade_grp A dataframe with patient IDs, grades, and groups.
-#'
+#' @param digits Number of digits for percentages
+#' 
 #' @return A dataframe in wide format with AE counts and percentages by grade and group.
 #' @keywords internal
 desc_ei_per_grade_prepare_df <- function(augmented_df_pat_grp,
-                                         augmented_df_pat_grade_grp){
+                                         augmented_df_pat_grade_grp,
+                                         digits = 1){
   ##### Build wide dataframe
   
   df_nb_pat_per_grp <- augmented_df_pat_grp |> 
@@ -192,8 +197,8 @@ desc_ei_per_grade_prepare_df <- function(augmented_df_pat_grp,
            grp = as.factor(grp),
            grp = forcats::fct_relevel(grp, "Total")) |>
     ### merge n and pct
-    mutate(EI = paste0(nb_ei, " (", round(pct_ei), "%)"),
-           PAT = paste0(nb_pat, " (", round(pct_pat), "%)"),
+    mutate(EI = paste0(nb_ei, " (", custom_round(pct_ei, digits = digits), ")"),
+           PAT = paste0(nb_pat, " (", custom_round(pct_pat, digits = digits), ")"),
            .keep = "unused") |> 
     dplyr::arrange(grade, grp) |> 
     ### Go to wide format with correct names

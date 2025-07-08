@@ -4,12 +4,18 @@
 \alias{desc_ei_per_grade_prepare_df}
 \title{desc_ei_per_grade_prepare_df}
 \usage{
-desc_ei_per_grade_prepare_df(augmented_df_pat_grp, augmented_df_pat_grade_grp)
+desc_ei_per_grade_prepare_df(
+  augmented_df_pat_grp,
+  augmented_df_pat_grade_grp,
+  digits = 1
+)
 }
 \arguments{
 \item{augmented_df_pat_grp}{A dataframe with patient IDs and groups, including a "Any grade" group.}
 
 \item{augmented_df_pat_grade_grp}{A dataframe with patient IDs, grades, and groups.}
+
+\item{digits}{Number of digits for percentages}
 }
 \value{
 A dataframe in wide format with AE counts and percentages by grade and group.

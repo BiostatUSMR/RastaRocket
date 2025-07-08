@@ -4,7 +4,13 @@
 \alias{desc_ei_per_pt}
 \title{desc_ei_per_pt}
 \usage{
-desc_ei_per_pt(df_pat_grp, df_pat_llt, language = "fr", order_by_freq = TRUE)
+desc_ei_per_pt(
+  df_pat_grp,
+  df_pat_llt,
+  language = "fr",
+  order_by_freq = TRUE,
+  digits = 1
+)
 }
 \arguments{
 \item{df_pat_grp}{A dataframe with two columns: id_pat and grp (the rct arm)}
@@ -14,6 +20,8 @@ desc_ei_per_pt(df_pat_grp, df_pat_llt, language = "fr", order_by_freq = TRUE)
 \item{language}{'fr' default or 'en'}
 
 \item{order_by_freq}{Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.}
+
+\item{digits}{Number of digits for percentages}
 }
 \value{
 A gt table
