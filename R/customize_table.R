@@ -17,6 +17,7 @@
 #' @param group_title A string specifying the title for the group column in the table.
 #' @param table_title A string specifying the title of the entire table.
 #' @param var_title A string specifying the title for the variable column in the table.
+#' @param var_tot A string specifying the name of total column.
 #'
 #' @return A customized `gtsummary` table object with added columns, headers, captions, 
 #'         and modifications based on the provided arguments.
@@ -45,7 +46,8 @@
 #'   show_n_per_group = FALSE,
 #'   group_title = "Treatment Group",
 #'   table_title = "Summary Statistics",
-#'   var_title = "Variables"
+#'   var_title = "Variables",
+#'   var_tot = "Total"
 #' )
 #'
 #' @import gtsummary
@@ -58,11 +60,12 @@ customize_table <- function(base_table,
                             show_n_per_group,
                             group_title,
                             table_title,
-                            var_title){
+                            var_title, 
+                            var_tot){
   ### Add Overall column if specified
   if(!is.null(var_group) & add_total){
     base_table <- base_table %>%
-      gtsummary::add_overall(col_label = "**Total**")
+      gtsummary::add_overall(col_label = var_tot)
   }
   
   ### Add missing values
@@ -92,9 +95,9 @@ customize_table <- function(base_table,
   )
   
   if(show_missing_data){
-    ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  "**Total (**dm** ; **%dm**)**" ## labels des Stat des NA.
+    ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  paste0("**", var_tot, " (**dm** ; **%dm**)**") ## labels des Stat des NA.
   } else {
-    ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  "**Total**" ## labels des Stat des NA.
+    ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  paste0("**", var_tot, "**") ## labels des Stat des NA.
   }
   
   if(!show_n_per_group){
