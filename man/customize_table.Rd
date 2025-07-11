@@ -12,7 +12,8 @@ customize_table(
   show_n_per_group,
   group_title,
   table_title,
-  var_title
+  var_title,
+  var_tot
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ each level of the grouping variable.}
 \item{table_title}{A string specifying the title of the entire table.}
 
 \item{var_title}{A string specifying the title for the variable column in the table.}
+
+\item{var_tot}{A string specifying the name of total column.}
 }
 \value{
 A customized \code{gtsummary} table object with added columns, headers, captions,
@@ -74,7 +77,8 @@ customize_table(
   show_n_per_group = FALSE,
   group_title = "Treatment Group",
   table_title = "Summary Statistics",
-  var_title = "Variables"
+  var_title = "Variables",
+  var_tot = "Total"
 )
 
 }

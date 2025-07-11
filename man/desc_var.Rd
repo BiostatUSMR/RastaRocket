@@ -18,7 +18,8 @@ desc_var(
   freq_relevel = FALSE,
   tests = FALSE,
   show_n_per_group = FALSE,
-  show_missing_data = NULL
+  show_missing_data = NULL,
+  var_tot = "Total"
 )
 }
 \arguments{
@@ -65,6 +66,8 @@ median_q1_q3_min_max = 1, pct = 1).}
 \item \code{TRUE}: Missing data displayed
 \item \code{NULL} (default): will be switch to \code{anyNA(data1)} value.
 }}
+
+\item{var_tot}{A character string for the title of the total column. Defaults to \code{"Total"}.}
 }
 \value{
 A gtsummary table object containing the descriptive statistics.
