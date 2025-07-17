@@ -19,7 +19,8 @@ desc_var(
   tests = FALSE,
   show_n_per_group = FALSE,
   show_missing_data = NULL,
-  var_tot = "Total"
+  var_tot = NULL,
+  var_characteristic = NULL
 )
 }
 \arguments{
@@ -67,7 +68,9 @@ median_q1_q3_min_max = 1, pct = 1).}
 \item \code{NULL} (default): will be switch to \code{anyNA(data1)} value.
 }}
 
-\item{var_tot}{A character string for the title of the total column. Defaults to \code{"Total"}.}
+\item{var_tot}{A string specifying the name of total column. Default is \code{NULL} and will guess from \code{theme_gtsummary_language()}.}
+
+\item{var_characteristic}{A string specifying the name of characteristic column. Default is \code{NULL} and will guess from \code{theme_gtsummary_language()}.}
 }
 \value{
 A gtsummary table object containing the descriptive statistics.

@@ -2,10 +2,13 @@
 
 export(add_by_n)
 export(add_by_n_noNA)
+export(add_missing_info)
+export(add_pvalues)
 export(ajouter_label_ndm)
 export(base_table)
 export(css_generator)
 export(custom_format)
+export(custom_headers)
 export(custom_round)
 export(customize_table)
 export(customize_table_body)

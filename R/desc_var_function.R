@@ -27,7 +27,8 @@
 #'   - `FALSE`: No missing data displayed
 #'   - `TRUE`: Missing data displayed
 #'   - `NULL` (default): will be switch to `anyNA(data1)` value.
-#' @param var_tot A character string for the title of the total column. Defaults to `"Total"`.
+#' @param var_tot A string specifying the name of total column. Default is `NULL` and will guess from `theme_gtsummary_language()`.
+#' @param var_characteristic A string specifying the name of characteristic column. Default is `NULL` and will guess from `theme_gtsummary_language()`.
 #'
 #' @details
 #' The function processes the dataset according to the specified parameters and generates descriptive tables.
@@ -102,9 +103,10 @@ desc_var <- ## Les arguments de la fonction
            tests = FALSE,
            show_n_per_group = FALSE,
            show_missing_data = NULL,
-           var_tot = "Total") {
+           var_tot = NULL,
+           var_characteristic = NULL) {
     
-    ### Add labels
+    ### get missing data
     bool_missing_data <- anyNA(data1)
     
     if(is.null(show_missing_data)){
@@ -115,17 +117,20 @@ desc_var <- ## Les arguments de la fonction
       warning("show_missing_data is set to FALSE but there are missing data in the dataset.") 
     }
     
+    ### Prepare table
     data1 <- prepare_table(data1 = data1,
                            var_group = var_group,
                            drop_levels = drop_levels,
                            freq_relevel = freq_relevel)
     
+    ### Basic gtsummary
     base_table <- base_table(data1 = data1,
                              var_group = var_group,
                              quali = quali,
                              quanti = quanti,
                              digits = digits)
     
+    ### Customize output
     res <- customize_table(base_table = base_table,
                            var_group = var_group,
                            add_total = add_total,
@@ -134,19 +139,12 @@ desc_var <- ## Les arguments de la fonction
                            group_title = group_title,
                            table_title = table_title,
                            var_title = var_title,
-                           var_tot = var_tot)
+                           var_tot = var_tot,
+                           var_characteristic = var_characteristic)
     
-    # Add tests tests 
-    if (is.list(tests)) {
-      res <- res %>%
-        gtsummary::add_p(test = tests) %>%
-        gtsummary::separate_p_footnotes()
-    } else if (isTRUE(tests)) {
-      res <- res %>%
-        gtsummary::add_p() %>%
-        gtsummary::separate_p_footnotes()
-    }
-
+    # Add p-values
+    res <- add_pvalues(res = res, tests = tests)
+    
     return(res)
     
   }

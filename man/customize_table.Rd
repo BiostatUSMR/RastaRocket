@@ -13,7 +13,8 @@ customize_table(
   group_title,
   table_title,
   var_title,
-  var_tot
+  var_tot = NULL,
+  var_characteristic = NULL
 )
 }
 \arguments{
@@ -37,7 +38,9 @@ each level of the grouping variable.}
 
 \item{var_title}{A string specifying the title for the variable column in the table.}
 
-\item{var_tot}{A string specifying the name of total column.}
+\item{var_tot}{A string specifying the name of total column. Default is \code{NULL} and will guess from \code{theme_gtsummary_language()}.}
+
+\item{var_characteristic}{A string specifying the name of characteristic column. Default is \code{NULL} and will guess from \code{theme_gtsummary_language()}.}
 }
 \value{
 A customized \code{gtsummary} table object with added columns, headers, captions,

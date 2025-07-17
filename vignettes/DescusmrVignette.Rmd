@@ -89,9 +89,9 @@ The dataset is passed to the `desc_var` function for analysis.
 
 ```{r}
 data %>% Descusmr::desc_var(table_title = "test",
-             var_group = "traitement",
-             group_title = "Traitement",
-             add_total = TRUE)
+                            var_group = "traitement",
+                            group_title = "Traitement",
+                            add_total = TRUE)
 ```
 
 # Quantitative and qualitative feature
