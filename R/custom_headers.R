@@ -29,7 +29,7 @@ custom_headers <- function(base_table_missing,
   
   # Define missing suffix
   if (show_missing_data) {
-    missing_suffix <- " <br> n (dm ; %dm)"
+    missing_suffix <- " <br><span style='font-size:80%'>n (dm ; %dm)</span>"
   } else {
     missing_suffix <- ""
   }
