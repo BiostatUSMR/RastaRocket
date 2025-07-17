@@ -12,7 +12,10 @@
 #' @return A data frame that has been prepared based on the `show_missing_data` and `DM` arguments. 
 #'         The function modifies the input data frame by applying labels, ordering factor variables, 
 #'         and potentially dropping unused levels.
-#'
+#' @param show_missing_data Should the missing data be displayed. Can be either :
+#'   - `FALSE`: No missing data displayed
+#'   - `TRUE`(default): Missing data displayed
+#'   
 #' @details
 #' - The `DM` option defines the data manipulation to be applied to factor variables:
 #'   - `"tout"`: Both order factor levels and drop unused levels.
@@ -30,7 +33,18 @@
 prepare_table <- function(data1,
                           var_group = NULL,
                           drop_levels = TRUE,
-                          freq_relevel = FALSE){
+                          freq_relevel = FALSE,
+                          show_missing_data = TRUE){
+  
+  ### Deal with missing data
+  if(show_missing_data){
+    data1 <- data1 %>% Descusmr::ajouter_label_ndm(col_to_skip = var_group)
+  } else {
+    if(anyNA(data1)){
+      warning("You ask not to show missing data but some are present in data1, be careful")
+    }
+  }
+  
   ### Apply DM option
   if(freq_relevel){
     data1 <- ordonner_variables_qualitatives(data1)

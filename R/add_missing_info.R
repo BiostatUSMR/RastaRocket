@@ -16,7 +16,7 @@ add_missing_info <- function(base_table,
   # Add missing data summary
   if (show_missing_data) {
     base_table_missing <- base_table %>%
-      gtsummary::add_n("{N_nonmiss} ({N_miss} ; {p_miss}%)")
+      gtsummary::add_n("{N_nonmiss} ({N_miss})")
   } else {
     base_table_missing <- base_table %>%
       gtsummary::add_n("{N_nonmiss}")

@@ -62,8 +62,8 @@ ajouter_label_ndm <- function(data,
     if(colname_actuel %in% col_to_skip){
       nouveau_label <- label_actuel
     } else {
-      # Créer un nouveau label en ajoutant "n (dm ; %dm)" au label existant
-      nouveau_label <- paste0(label_actuel, " ", "n (dm ; %dm)")
+      # Créer un nouveau label en ajoutant "n (d.m.)" au label existant
+      nouveau_label <- paste0(label_actuel, " ", "n (d.m.)")
     }
 
     # Appliquer le nouveau label à la variable en utilisant la fonction set_variable_labels

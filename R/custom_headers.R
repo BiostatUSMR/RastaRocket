@@ -27,21 +27,14 @@ custom_headers <- function(base_table_missing,
       gtsummary::modify_header(label = paste0("**", var_characteristic, "**"))
   }
   
-  # Define missing suffix
-  if (show_missing_data) {
-    missing_suffix <- " <br><span style='font-size:80%'>n (dm ; %dm)</span>"
-  } else {
-    missing_suffix <- ""
-  }
-  
   # Set stats columns header
   base_table_missing <- base_table_missing |>
-    gtsummary::modify_header(gtsummary::all_stat_cols() ~ paste0("**{level}**", missing_suffix))
+    gtsummary::modify_header(gtsummary::all_stat_cols() ~ paste0("**{level}**"))
   
   # Set total column header
   if (!is.null(var_tot)) {
     base_table_missing <- base_table_missing |>
-      gtsummary::modify_header(stat_0 = paste0("**", var_tot, "**", missing_suffix))
+      gtsummary::modify_header(stat_0 = paste0("**", var_tot, "**"))
   }
   
   # Add spanning header if grouping variable is provided

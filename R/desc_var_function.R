@@ -118,13 +118,14 @@ desc_var <- ## Les arguments de la fonction
     }
     
     ### Prepare table
-    data1 <- prepare_table(data1 = data1,
+    data2 <- prepare_table(data1 = data1,
                            var_group = var_group,
                            drop_levels = drop_levels,
-                           freq_relevel = freq_relevel)
+                           freq_relevel = freq_relevel,
+                           show_missing_data = show_missing_data)
     
     ### Basic gtsummary
-    base_table <- base_table(data1 = data1,
+    base_table <- base_table(data1 = data2,
                              var_group = var_group,
                              quali = quali,
                              quanti = quanti,

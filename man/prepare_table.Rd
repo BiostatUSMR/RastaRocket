@@ -8,7 +8,8 @@ prepare_table(
   data1,
   var_group = NULL,
   drop_levels = TRUE,
-  freq_relevel = FALSE
+  freq_relevel = FALSE,
+  show_missing_data = TRUE
 )
 }
 \arguments{
@@ -19,6 +20,12 @@ prepare_table(
 \item{drop_levels}{Boolean (default = TRUE). Drop unused levels.}
 
 \item{freq_relevel}{Boolean  (default = FALSE). Reorder factors by frequency.}
+
+\item{show_missing_data}{Should the missing data be displayed. Can be either :
+\itemize{
+\item \code{FALSE}: No missing data displayed
+\item \code{TRUE}(default): Missing data displayed
+}}
 }
 \value{
 A data frame that has been prepared based on the \code{show_missing_data} and \code{DM} arguments.
