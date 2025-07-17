@@ -6,7 +6,6 @@
 \usage{
 prepare_table(
   data1,
-  show_missing_data,
   var_group = NULL,
   drop_levels = TRUE,
   freq_relevel = FALSE
@@ -14,10 +13,6 @@ prepare_table(
 }
 \arguments{
 \item{data1}{A data frame containing the data to be prepared.}
-
-\item{show_missing_data}{A boolean indicating whether missing data should be shown in the table.
-If \code{NULL}, it will be automatically determined based on the presence of missing data in \code{data1}.
-Defaults to \code{TRUE} if any missing values are detected.}
 
 \item{var_group}{The group variable (used to correctly update the label if needed).}
 
@@ -38,9 +33,6 @@ before summarizing with functions like \code{gtsummary}.
 }
 \details{
 \itemize{
-\item If \code{show_missing_data} is set to \code{TRUE} or \code{NULL} (default behavior), the function will apply labels
-for missing data to the variables in the data.
-\item If \code{show_missing_data} is set to \code{FALSE}, the function will display a warning if missing data is present.
 \item The \code{DM} option defines the data manipulation to be applied to factor variables:
 \itemize{
 \item \code{"tout"}: Both order factor levels and drop unused levels.
@@ -51,6 +43,6 @@ for missing data to the variables in the data.
 }
 \examples{
 # Example usage with the iris dataset
-prepare_table(iris, show_missing_data = TRUE)
+prepare_table(iris)
 
 }

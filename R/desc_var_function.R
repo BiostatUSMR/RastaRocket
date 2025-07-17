@@ -105,13 +105,18 @@ desc_var <- ## Les arguments de la fonction
            var_tot = "Total") {
     
     ### Add labels
+    bool_missing_data <- anyNA(data1)
+    
     if(is.null(show_missing_data)){
-      show_missing_data <- anyNA(data1)
+      show_missing_data <- bool_missing_data
+    }
+    
+    if(!show_missing_data & bool_missing_data){
+      warning("show_missing_data is set to FALSE but there are missing data in the dataset.") 
     }
     
     data1 <- prepare_table(data1 = data1,
                            var_group = var_group,
-                           show_missing_data = show_missing_data,
                            drop_levels = drop_levels,
                            freq_relevel = freq_relevel)
     

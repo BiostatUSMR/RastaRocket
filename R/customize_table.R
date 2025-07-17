@@ -85,31 +85,24 @@ customize_table <- function(base_table,
       base_table_missing <- base_table_missing %>%
         gtsummary::add_stat(fns = everything() ~ add_by_n_noNA) ## Stat en colonnes (Total et données manquantes)
     }
-    
   }
   
-  ls_modify_header <- list(
-    label ~ paste0("**",var_title,"**"),
-    ## Titre des variables du tableau.
-    starts_with("add_n_stat") ~ ""
-  )
-  
-  if(show_missing_data){
-    ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  paste0("**", var_tot, " (**dm** ; **%dm**)**") ## labels des Stat des NA.
-  } else {
-    ls_modify_header[[length(ls_modify_header) + 1]] <- n ~  paste0("**", var_tot, "**") ## labels des Stat des NA.
-  }
-  
-  if(!show_n_per_group){
-    ls_modify_header[[length(ls_modify_header) + 1]] <- gtsummary::all_stat_cols() ~ "**{level}**"
-    # ls_modify_header[[length(ls_modify_header) + 1]] <- stat_0 ~ ""
-  }
-  
-  base_table_missing <- base_table_missing %>%
-    gtsummary::modify_header(ls_modify_header) %>%
+  base_table_missing_2 <- base_table_missing %>%
     gtsummary::modify_table_body(~ modify_table_body_func(.)) %>%  ## Appel de la fonction externe pour modifier le corps du tableau
     gtsummary::modify_footnote(everything() ~ NA) ## Note de page.
+
+  ### header
+  if(show_missing_data){
+    base_table_missing_3 <- base_table_missing_2 |> 
+      gtsummary::modify_header(all_stat_cols() ~ "**{level}** <br> n (dm ; %dm)",
+                               label = "**Variable**" )
+  } else {
+    base_table_missing_3 <- base_table_missing_2 |> 
+      gtsummary::modify_header(all_stat_cols() ~ "**{level}**",
+                               label = "**Variable**" )
+  }
   
+  ### spanning header
   if(!is.null(var_group)){
     
     if(is.null(group_title)){
@@ -120,11 +113,11 @@ customize_table <- function(base_table,
       }
     }
     
-    base_table_missing <- base_table_missing %>%
+    base_table_missing_3 <- base_table_missing_3 %>%
       gtsummary::modify_spanning_header(c(gtsummary::all_stat_cols(F) ~ paste0("**",group_title,"**")))
   }
   
-  res <- base_table_missing %>%
+  res <- base_table_missing_3 %>%
     gtsummary::modify_caption(paste0("**",table_title,"**")) %>%
     gtsummary::bold_labels() ## Titre pour la table.
   
