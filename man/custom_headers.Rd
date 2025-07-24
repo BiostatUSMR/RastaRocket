@@ -8,6 +8,7 @@ custom_headers(
   base_table_missing,
   var_characteristic = NULL,
   show_missing_data = TRUE,
+  show_n_per_group = TRUE,
   var_tot = NULL,
   var_group = NULL,
   group_title = NULL,
@@ -20,6 +21,9 @@ custom_headers(
 \item{var_characteristic}{Optional. A string to label the features column.}
 
 \item{show_missing_data}{Logical. If \code{TRUE}, adds missing data info to column headers.}
+
+\item{show_n_per_group}{A boolean indicating whether to display group sizes (n) for
+each level of the grouping variable.}
 
 \item{var_tot}{Optional. A string to label the total column.}
 

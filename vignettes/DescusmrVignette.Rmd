@@ -91,7 +91,8 @@ The dataset is passed to the `desc_var` function for analysis.
 data %>% Descusmr::desc_var(table_title = "test",
                             var_group = "traitement",
                             group_title = "Traitement",
-                            add_total = TRUE)
+                            add_total = TRUE,
+                            show_n_per_group = TRUE)
 ```
 
 # Quantitative and qualitative feature
