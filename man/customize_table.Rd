@@ -6,6 +6,7 @@
 \usage{
 customize_table(
   base_table,
+  by_group = FALSE,
   var_group,
   add_total,
   show_missing_data,
@@ -20,6 +21,8 @@ customize_table(
 \arguments{
 \item{base_table}{A \code{gtsummary} table object, typically generated using functions
 like \code{gtsummary::tbl_summary}.}
+
+\item{by_group}{A boolean (default is FALSE) to analyse by group.}
 
 \item{var_group}{A string or NULL, specifying the variable used for grouping in the
 table. If \code{NULL}, no group-specific modifications are applied.}

@@ -4,7 +4,12 @@
 \alias{add_missing_info}
 \title{Add missing value information to a gtsummary table}
 \usage{
-add_missing_info(base_table, show_missing_data, var_group = NULL)
+add_missing_info(
+  base_table,
+  show_missing_data,
+  var_group = NULL,
+  by_group = FALSE
+)
 }
 \arguments{
 \item{base_table}{A \code{gtsummary} table object.}
@@ -13,6 +18,8 @@ add_missing_info(base_table, show_missing_data, var_group = NULL)
 If \code{FALSE}, shows only non-missing values.}
 
 \item{var_group}{Optional. A grouping variable name. If not \code{NULL}, additional stats are added by group.}
+
+\item{by_group}{A boolean (default is FALSE) to analyse by group.}
 }
 \value{
 A \code{gtsummary} table object with missing value information and modifications applied.

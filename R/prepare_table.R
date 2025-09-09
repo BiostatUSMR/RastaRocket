@@ -8,6 +8,7 @@
 #' @param data1 A data frame containing the data to be prepared.
 #' @param drop_levels Boolean (default = TRUE). Drop unused levels.
 #' @param freq_relevel Boolean  (default = FALSE). Reorder factors by frequency.
+#' @param by_group A boolean (default is FALSE) to analyse by group.
 #' @param var_group The group variable (used to correctly update the label if needed).
 #' @return A data frame that has been prepared based on the `show_missing_data` and `DM` arguments. 
 #'         The function modifies the input data frame by applying labels, ordering factor variables, 
@@ -31,14 +32,25 @@
 #' @import forcats
 #' @export
 prepare_table <- function(data1,
+                          by_group = FALSE,
                           var_group = NULL,
                           drop_levels = TRUE,
                           freq_relevel = FALSE,
                           show_missing_data = TRUE){
   
+  
+  ### Remove grouping variable if not used
+  if (!by_group && !is.null(var_group) && var_group %in% names(data1)) {
+    data1 <- data1 %>% dplyr::select(-all_of(var_group))
+  }
+  
   ### Deal with missing data
   if(show_missing_data){
-    data1 <- data1 %>% Descusmr::ajouter_label_ndm(col_to_skip = var_group)
+    if(by_group){
+      data1 <- data1 %>% Descusmr::ajouter_label_ndm(col_to_skip = var_group)
+    } else {
+      data1 <- data1 %>% Descusmr::ajouter_label_ndm()
+    }
   } else {
     if(anyNA(data1)){
       warning("You ask not to show missing data but some are present in data1, be careful")

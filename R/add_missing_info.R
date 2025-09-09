@@ -7,12 +7,15 @@
 #' @param show_missing_data Logical. If `TRUE`, shows the number of non-missing and missing values with percentages.
 #' If `FALSE`, shows only non-missing values.
 #' @param var_group Optional. A grouping variable name. If not `NULL`, additional stats are added by group.
-#'
+#' @param by_group A boolean (default is FALSE) to analyse by group.
 #' @return A `gtsummary` table object with missing value information and modifications applied.
 #' @export
+
 add_missing_info <- function(base_table,
                              show_missing_data,
-                             var_group = NULL) {
+                             var_group = NULL,
+                             by_group = FALSE) {
+  
   # Add missing data summary
   if (show_missing_data) {
     base_table_missing <- base_table %>%
@@ -23,7 +26,7 @@ add_missing_info <- function(base_table,
   }
   
   # Add grouped stats if applicable
-  if (!is.null(var_group)) {
+  if (by_group) {
     if (show_missing_data) {
       base_table_missing <- base_table_missing %>%
         gtsummary::add_stat(fns = everything() ~ add_by_n)
@@ -34,9 +37,14 @@ add_missing_info <- function(base_table,
   }
   
   # Modify table body and footnotes
-  base_table_missing_2 <- base_table_missing %>%
-    gtsummary::modify_table_body(~ modify_table_body_func(.)) %>%
-    gtsummary::modify_footnote(everything() ~ NA)
+  if(by_group){
+    base_table_missing_2 <- base_table_missing %>%
+      gtsummary::modify_table_body(~ modify_table_body_func(.)) %>%
+      gtsummary::modify_footnote(everything() ~ NA)
+  } else {
+    base_table_missing_2 <- base_table_missing %>%
+      gtsummary::modify_footnote(everything() ~ NA)
+  }
   
   return(base_table_missing_2)
 }

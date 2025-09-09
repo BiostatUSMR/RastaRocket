@@ -6,6 +6,7 @@
 #' options for customizing the rounding and labels.
 #'
 #' @param data1 A data frame containing the data to summarize.
+#' @param by_group A boolean (default is FALSE) to analyse by group.
 #' @param var_group A string or NULL, the variable to group by (optional). 
 #'        If NULL, no grouping will be applied.
 #' @param quali A character vector, the names of categorical variables to 
@@ -28,6 +29,7 @@
 #' @import rlang
 #' @export
 base_table <- function(data1,
+                       by_group = FALSE,
                        var_group,
                        quali = NULL,
                        quanti = NULL,
@@ -48,10 +50,10 @@ base_table <- function(data1,
                         rep(digits$median_q1_q3_min_max, 5))
   vec_round_quali <- c(0, digits$pct)
   
-  if(is.null(var_group)){
-    col_1 <- NULL
+  if(by_group){
+    col_1 <- rlang::ensym(var_group)  
   } else {
-    col_1 <- rlang::ensym(var_group)
+    col_1 <- NULL
   }
   
   base_table <- data1 %>%

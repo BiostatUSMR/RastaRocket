@@ -9,6 +9,7 @@
 #' @param quanti A vector of quantitative variables to be described. Defaults to `NULL`.
 #' @param add_total A boolean (default is TRUE) to add total column or not when var_group is specified.
 #' @param var_title A character string for the title of the variable column in the table. Defaults to `"Variable"`.
+#' @param by_group A boolean (default is FALSE) to analyse by group.
 #' @param var_group A variable used for grouping (if applicable). Defaults to `NULL`.
 #' @param group_title A character string specifying the title for the grouping variable. Default is `NULL` and get the label or the variable.
 #' @param digits A list, the number of decimal places to round categorical and
@@ -92,7 +93,7 @@ desc_var <- ## Les arguments de la fonction
            ## Vecteur des variables quantitatives mal decrites
            add_total = TRUE,
            var_title = "Variable",
-           ## booléen pour préciser s'il faut degroupé ou pas les tables.
+           by_group = FALSE, ## booléen pour préciser s'il faut degroupé ou pas les tables.
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
            group_title = NULL,
            digits = list(mean_sd = 1,
@@ -105,6 +106,19 @@ desc_var <- ## Les arguments de la fonction
            show_missing_data = NULL,
            var_tot = NULL,
            var_characteristic = NULL) {
+    
+    # Check consistency between by_group and var_group
+    if(by_group && is.null(var_group)){
+      stop("If 'by_group = TRUE', you must provide a 'var_group'.")
+    }
+    if(!by_group && !is.null(var_group)){
+      message("Note: 'var_group' is provided but 'by_group = FALSE'. The grouping variable will be ignored.")
+    }
+    
+    # Check that statistical tests are not requested in ungrouped mode
+    if(!by_group && isTRUE(tests)){
+      stop("Cannot perform statistical tests when 'by_group = FALSE'. Please set 'by_group = TRUE' to enable tests.")
+    }
     
     ### get missing data
     bool_missing_data <- anyNA(data1)
@@ -119,6 +133,7 @@ desc_var <- ## Les arguments de la fonction
     
     ### Prepare table
     data2 <- prepare_table(data1 = data1,
+                           by_group = by_group,
                            var_group = var_group,
                            drop_levels = drop_levels,
                            freq_relevel = freq_relevel,
@@ -126,6 +141,7 @@ desc_var <- ## Les arguments de la fonction
     
     ### Basic gtsummary
     base_table <- base_table(data1 = data2,
+                             by_group = by_group,
                              var_group = var_group,
                              quali = quali,
                              quanti = quanti,
@@ -133,6 +149,7 @@ desc_var <- ## Les arguments de la fonction
     
     ### Customize output
     res <- customize_table(base_table = base_table,
+                           by_group = by_group,
                            var_group = var_group,
                            add_total = add_total,
                            show_missing_data = show_missing_data,

@@ -7,6 +7,7 @@
 #'
 #' @param base_table A `gtsummary` table object, typically generated using functions 
 #'        like `gtsummary::tbl_summary`.
+#' @param by_group A boolean (default is FALSE) to analyse by group.
 #' @param var_group A string or NULL, specifying the variable used for grouping in the 
 #'        table. If `NULL`, no group-specific modifications are applied.
 #' @param add_total A boolean to add total column or not when var_group is specified.
@@ -55,6 +56,7 @@
 #' @import dplyr
 #' @export
 customize_table <- function(base_table,
+                            by_group = FALSE,
                             var_group,
                             add_total,
                             show_missing_data,
@@ -66,7 +68,7 @@ customize_table <- function(base_table,
                             var_characteristic = NULL){
   
   ### Add Overall column if specified
-  if(!is.null(var_group) & add_total){
+  if(by_group & add_total){
     base_table <- base_table %>%
       gtsummary::add_overall()
   }
@@ -74,7 +76,8 @@ customize_table <- function(base_table,
   ### Add missing values
   base_table_missing <- add_missing_info(base_table = base_table,
                                          show_missing_data = show_missing_data,
-                                         var_group = var_group)
+                                         var_group = if(by_group) var_group else NULL,
+                                         by_group = by_group)
   
   ### header
   res <- custom_headers(base_table_missing = base_table_missing,
@@ -82,8 +85,8 @@ customize_table <- function(base_table,
                         show_missing_data = show_missing_data,
                         show_n_per_group = show_n_per_group,
                         var_tot = var_tot,
-                        var_group = var_group,
-                        group_title = group_title,
+                        var_group = if(by_group) var_group else NULL,
+                        group_title = if(by_group) group_title else NULL,
                         table_title = table_title)
     
   return(res)

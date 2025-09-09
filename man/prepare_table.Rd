@@ -6,6 +6,7 @@
 \usage{
 prepare_table(
   data1,
+  by_group = FALSE,
   var_group = NULL,
   drop_levels = TRUE,
   freq_relevel = FALSE,
@@ -14,6 +15,8 @@ prepare_table(
 }
 \arguments{
 \item{data1}{A data frame containing the data to be prepared.}
+
+\item{by_group}{A boolean (default is FALSE) to analyse by group.}
 
 \item{var_group}{The group variable (used to correctly update the label if needed).}
 

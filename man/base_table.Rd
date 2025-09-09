@@ -6,6 +6,7 @@
 \usage{
 base_table(
   data1,
+  by_group = FALSE,
   var_group,
   quali = NULL,
   quanti = NULL,
@@ -14,6 +15,8 @@ base_table(
 }
 \arguments{
 \item{data1}{A data frame containing the data to summarize.}
+
+\item{by_group}{A boolean (default is FALSE) to analyse by group.}
 
 \item{var_group}{A string or NULL, the variable to group by (optional).
 If NULL, no grouping will be applied.}

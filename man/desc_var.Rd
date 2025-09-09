@@ -11,6 +11,7 @@ desc_var(
   quanti = NULL,
   add_total = TRUE,
   var_title = "Variable",
+  by_group = FALSE,
   var_group = NULL,
   group_title = NULL,
   digits = list(mean_sd = 1, median_q1_q3_min_max = 1, pct = 1),
@@ -35,6 +36,8 @@ desc_var(
 \item{add_total}{A boolean (default is TRUE) to add total column or not when var_group is specified.}
 
 \item{var_title}{A character string for the title of the variable column in the table. Defaults to \code{"Variable"}.}
+
+\item{by_group}{A boolean (default is FALSE) to analyse by group.}
 
 \item{var_group}{A variable used for grouping (if applicable). Defaults to \code{NULL}.}
 
