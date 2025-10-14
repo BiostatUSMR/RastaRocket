@@ -7,6 +7,7 @@
 #' @return None. The function writes a CSS file to the specified file path.
 #'
 #' @export
+#' @importFrom utils write.table
 write_css <- function(path){
   css_string <- ".custom-table table {
     width: 100% !important;

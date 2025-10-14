@@ -1,3 +1,5 @@
+utils::globalVariables(c("."))
+
 #' Convert a Name to an Email Address
 #'
 #' This function transforms a given name into an email address following the format `firstname.lastname@chu-bordeaux.fr`.

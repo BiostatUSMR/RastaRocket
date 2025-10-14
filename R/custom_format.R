@@ -1,3 +1,5 @@
+utils::globalVariables(c("row_type"))
+
 #' Custom formatting for `gtsummary` tables
 #'
 #' This function takes a `gt` table and applies custom formatting. It allows you to align columns,

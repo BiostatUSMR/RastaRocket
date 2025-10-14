@@ -1,3 +1,5 @@
+utils::globalVariables(c("nb_pat_per_group", "freq_ei"))
+
 #' Butterfly Stacked Bar Plot for Adverse Event Grades
 #'
 #' Creates a butterfly stacked bar plot to visualize the frequency of adverse event (AE) grades 

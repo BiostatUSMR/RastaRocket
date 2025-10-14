@@ -1,3 +1,5 @@
+utils::globalVariables(c("facet", "grp_num"))
+
 #' Plot a Dumbbell Chart for Adverse Events Analysis
 #' 
 #' This function creates a dumbbell plot comparing the occurrence of adverse events 

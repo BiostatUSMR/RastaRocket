@@ -1,3 +1,5 @@
+utils::globalVariables(c("start", "end", "rando_date", "treatment_date"))
+
 #' Plot a Patient Span Chart (Panchart)
 #'
 #' This function visualizes the timeline of adverse events (AEs), treatments, and randomization 

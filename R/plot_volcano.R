@@ -1,3 +1,5 @@
+utils::globalVariables(c("minus_log10_pval", "increased_risk"))
+
 #' Volcano Plot for Adverse Event Analysis
 #'
 #' Generates a volcano plot to visualize the association between adverse events and patient groups.
@@ -46,6 +48,7 @@
 #'   EIGRDM = c(1, 3, 4, 2, 4)
 #' )
 #' 
+
 #' plot_volcano(df_pat_grp, df_pat_llt)
 #'
 #' @importFrom ggplot2 ggplot aes geom_point geom_hline geom_label scale_color_manual theme_bw labs

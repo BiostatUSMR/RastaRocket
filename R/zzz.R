@@ -1,4 +1,4 @@
-.onLoad <- function(libname, pkgname){
+.onAttach <- function(libname, pkgname){
   packageStartupMessage("Welcome dear user, check vignette('SetupProject') and vignette('DescusmrVignette') for some help. May the force be with you and make your analysis swift and smooth.")
   vec_citation <- c("On est exhaustifs dans la bouse ! 04/04/2023",
                     "Toute pand\u00e9mie est une synd\u00e9mie en fait non ? 11/09/2023",

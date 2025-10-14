@@ -14,6 +14,7 @@
 #'
 #' @export
 #' @return A list with the results
+#' @importFrom stats pnorm qnorm
 riskdifference <- function(a, b, N1, N0, CRC=FALSE, conf.level=0.95) {
   .M <- a+b
   .T <- N1+N0

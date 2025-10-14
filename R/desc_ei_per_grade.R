@@ -1,4 +1,20 @@
 # main function -----------------------------------------------------------
+utils::globalVariables(c(
+  "USUBJID",
+  "RDGRPNAME",
+  "id_pat",
+  "grp",
+  "EIGRDM",
+  "EINUM",
+  "EIGRAV",
+  "grade",
+  "nb_pat",
+  "nb_pat_per_grp",
+  "nb_ei",
+  "pct_ei",
+  "pct_pat",
+  "nb_ei_denom"
+))
 
 #' desc_ei_per_grade
 #' 
@@ -12,6 +28,8 @@
 #' @return A gt table summarizing the AE by grade.
 #' @export
 #'
+#' @importFrom stats na.omit
+#' 
 #' @examples
 #' df_pat_grp <- data.frame(USUBJID = paste0("ID_", 1:10),
 #'                          RDGRPNAME = c(rep("A", 3), rep("B", 3), rep("C", 4)))
