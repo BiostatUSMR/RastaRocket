@@ -54,7 +54,7 @@ add_by_n <- function(data, variable, by, tbl, ...) {
     dplyr::select(all_of(c(variable, by))) %>%
 
     # Regrouper les données en fonction de la colonne spécifiée par "by"
-    dplyr::group_by(.data[[by]]) %>%
+    dplyr::group_by(.data[[by]], .drop = FALSE) %>%
 
     # Calcul des statistiques pour chaque groupe
     dplyr::summarise_all(

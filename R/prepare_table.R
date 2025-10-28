@@ -64,7 +64,8 @@ prepare_table <- function(data1,
   
   if(drop_levels){
     data1 <- data1 %>%
-      dplyr::mutate(across(where(is.factor),~ forcats::fct_drop(.)))
+      dplyr::mutate(across(where(is.factor) & !any_of(var_group),
+                           ~ forcats::fct_drop(.)))
   }
   
   return(data1)
