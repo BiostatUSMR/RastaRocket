@@ -7,3 +7,4 @@ tests/code_test.R
 tests/data_test.R
 
 
+^\.github$

@@ -41,6 +41,10 @@ vignette("DescribeAE")
 
 If everything is set up correctly, the vignettes should open, providing a detailed guide to using the package.
 
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/BiostatUSMR/RastaRocket/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/BiostatUSMR/RastaRocket/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
+
 ## Français
 
 ### Installation du package
