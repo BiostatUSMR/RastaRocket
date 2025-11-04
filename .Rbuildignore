@@ -9,3 +9,4 @@ tests/data_test.R
 
 ^\.github$
 ^docs$
+^cran-comments\.md$
