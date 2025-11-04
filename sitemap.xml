@@ -1,12 +1,12 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
-<url><loc>/LICENSE.html</loc></url>
 <url><loc>/articles/DescribeAE.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
 <url><loc>/articles/RastaRocketVignette.html</loc></url>
 <url><loc>/articles/SetupProject.html</loc></url>
-<url><loc>/articles/index.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
 <url><loc>/reference/add_by_n.html</loc></url>
 <url><loc>/reference/add_by_n_noNA.html</loc></url>
 <url><loc>/reference/add_missing_info.html</loc></url>
@@ -14,11 +14,11 @@
 <url><loc>/reference/ajouter_label_ndm.html</loc></url>
 <url><loc>/reference/base_table.html</loc></url>
 <url><loc>/reference/css_generator.html</loc></url>
+<url><loc>/reference/customize_table.html</loc></url>
+<url><loc>/reference/customize_table_body.html</loc></url>
 <url><loc>/reference/custom_format.html</loc></url>
 <url><loc>/reference/custom_headers.html</loc></url>
 <url><loc>/reference/custom_round.html</loc></url>
-<url><loc>/reference/customize_table.html</loc></url>
-<url><loc>/reference/customize_table_body.html</loc></url>
 <url><loc>/reference/desc_ei_per_grade.html</loc></url>
 <url><loc>/reference/desc_ei_per_grade_df_to_gt.html</loc></url>
 <url><loc>/reference/desc_ei_per_grade_prepare_df.html</loc></url>
