@@ -48,13 +48,13 @@ write_html_file <- function(path,
     vec_structure[1] <- "Unit\u00e9 de Soutien M\u00e9thodologique \u00e0 la Recherche clinique et \u00e9pid\u00e9miologique du CHU de Bordeaux (USMR)"
     
     if (is.null(path_logo)) {
-      path_logo <- system.file("LogoCHUBdx.jpg", package = "Descusmr")
+      path_logo <- system.file("LogoCHUBdx.jpg", package = "RastaRocket")
     }
   } else if (structure == "EUCLID") {
     vec_structure[1] <- "EUropean CLInical Trials Platform & Development (EUCLID)"
     
     if (is.null(path_logo)) {
-      path_logo <- system.file("LogoEuclid.jpg", package = "Descusmr")
+      path_logo <- system.file("LogoEuclid.jpg", package = "RastaRocket")
     }
   }
   

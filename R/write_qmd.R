@@ -52,7 +52,7 @@ We start simple
 #| tbl-cap: 'A caption'
 #| label: tbl-firsttable
 iris |>
-  Descusmr::desc_var()
+  RastaRocket::desc_var()
 ```
 
 ")

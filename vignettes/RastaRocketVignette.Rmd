@@ -1,5 +1,5 @@
 ---
-title: "DescusmrVignette"
+title: "RastaRocketVignette"
 date: "`r Sys.Date()`"
 output:
   html_vignette:
@@ -7,7 +7,7 @@ output:
     toc_depth: 2
     keep_md: true
 vignette: >
-  %\VignetteIndexEntry{DescusmrVignette}
+  %\VignetteIndexEntry{RastaRocketVignette}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 
 ```{r setup}
-library(Descusmr)
+library(RastaRocket)
 library(dplyr)
 library(tidyr)
 library(labelled)
@@ -89,7 +89,7 @@ The dataset is passed to the `desc_var` function for analysis.
 
 
 ```{r}
-data %>% Descusmr::desc_var(table_title = "test",
+data %>% RastaRocket::desc_var(table_title = "test",
                             by_group = TRUE,
                             var_group = "traitement",
                             group_title = "Traitement",
@@ -105,7 +105,7 @@ The package support the user specification of feature type as quantitative or qu
 data %>%
   dplyr::select(Age, traitement) %>%
   dplyr::mutate(Age = round(Age)) %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
                      group_title = "traitement",
@@ -115,10 +115,10 @@ data %>%
 
 # Missing data
 
-The display of missing data is controlled by the `show_missing_data` argument in the `Descusmr::desc_var` function. By default, if `anyNA(data1)` returns `TRUE`, missing data will be displayed. If no missing data is detected, it will be hidden. Users can override this behavior by explicitly setting `show_missing_data` to `TRUE` or `FALSE`.
+The display of missing data is controlled by the `show_missing_data` argument in the `RastaRocket::desc_var` function. By default, if `anyNA(data1)` returns `TRUE`, missing data will be displayed. If no missing data is detected, it will be hidden. Users can override this behavior by explicitly setting `show_missing_data` to `TRUE` or `FALSE`.
 
 ```{r}
-iris %>% Descusmr::desc_var(table_title = "test",
+iris %>% RastaRocket::desc_var(table_title = "test",
                             by_group = TRUE,
                             var_group = "Species",
                             group_title = "Species",
@@ -126,7 +126,7 @@ iris %>% Descusmr::desc_var(table_title = "test",
 ```
 
 ```{r}
-iris %>% Descusmr::desc_var(table_title = "test",
+iris %>% RastaRocket::desc_var(table_title = "test",
                             by_group = TRUE,
                             var_group = "Species",
                             group_title = "Species",
@@ -197,7 +197,7 @@ data %>% desc_var(table_title = "test",
 In this example, we generate a global description of the variables.
 
 ```{r}
-data %>% Descusmr::desc_var(table_title = "test",
+data %>% RastaRocket::desc_var(table_title = "test",
              by_group = FALSE,
              var_group = "traitement",
              group_title = "traitement")
@@ -210,13 +210,13 @@ To insert intermediate titles, you can use the `intermediate_header` function wh
 ```{r}
 tb1 <- data %>%
   dplyr::select(Age, sexe) %>%
-  Descusmr::desc_var(table_title = "test")
+  RastaRocket::desc_var(table_title = "test")
 
 tb2 <- data %>%
   dplyr::select(quatre_modalites) %>%
-  Descusmr::desc_var(table_title = "test")
+  RastaRocket::desc_var(table_title = "test")
 
-Descusmr::intermediate_header(tbls = list(tb1, tb2),
+RastaRocket::intermediate_header(tbls = list(tb1, tb2),
                               group_header = c("Title A", "Title B"))
 
 ```
@@ -231,7 +231,7 @@ In the example below, quantitative values are rounded to 0 decimal places, while
 
 ```{r}
 data %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
                      digits = list(mean_sd = 0,
@@ -246,7 +246,7 @@ To have more control over rounding, you can create subtables with different numb
 ```{r}
 tb1 <- data %>%
   dplyr::select(Age, sexe, traitement) %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
                      digits = list(mean_sd = 2,
@@ -255,7 +255,7 @@ tb1 <- data %>%
 
 tb2 <- data %>%
   dplyr::select(quatre_modalites, traitement) %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
                      digits = list(mean_sd = 0,
@@ -276,7 +276,7 @@ The following example adds statistical tests for all features, grouped by the `t
 
 ```{r}
 data %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
                      tests = TRUE)
@@ -292,7 +292,7 @@ For greater control, you can specify the test to use for each feature by passing
 
 ```{r}
 data %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
                      tests = list(Age = "t.test",
@@ -306,7 +306,7 @@ To have a nicer appearance of the table, it is possible to customize it as a `gt
 
 ```{r}
 data %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
                      tests = list(Age = "t.test",
@@ -320,7 +320,7 @@ This also works when using stacked tables.
 ```{r}
 tb1 <- data %>%
   dplyr::select(Age, sexe, traitement) %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
                      digits = list(mean_sd = 0,
@@ -329,7 +329,7 @@ tb1 <- data %>%
 
 tb2 <- data %>%
   dplyr::select(quatre_modalites, traitement) %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
                      digits = list(mean_sd = 2,
@@ -344,7 +344,7 @@ You can customize the format by specifying the column size and the alignment.
 
 ```{r}
 data %>%
-  Descusmr::desc_var(table_title = "test",
+  RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement") %>%
   custom_format(align = "left",
@@ -364,7 +364,7 @@ gtsummary::reset_gtsummary_theme()
 gtsummary::theme_gtsummary_language(language = "fr", decimal.mark = ",", big.mark = " ")
 
 iris %>%
-  Descusmr::desc_var(table_title = "test")
+  RastaRocket::desc_var(table_title = "test")
 
 # you can put several tables here, it will keep French format
 

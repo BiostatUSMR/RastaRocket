@@ -28,7 +28,7 @@
 #' prepare_table(iris)
 #'
 #' @import dplyr
-#' @import Descusmr
+#' @import RastaRocket
 #' @import forcats
 #' @export
 prepare_table <- function(data1,
@@ -47,9 +47,9 @@ prepare_table <- function(data1,
   ### Deal with missing data
   if(show_missing_data){
     if(by_group){
-      data1 <- data1 %>% Descusmr::ajouter_label_ndm(col_to_skip = var_group)
+      data1 <- data1 %>% RastaRocket::ajouter_label_ndm(col_to_skip = var_group)
     } else {
-      data1 <- data1 %>% Descusmr::ajouter_label_ndm()
+      data1 <- data1 %>% RastaRocket::ajouter_label_ndm()
     }
   } else {
     if(anyNA(data1)){

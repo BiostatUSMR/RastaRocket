@@ -27,7 +27,7 @@ apply bold text to certain rows, and adjust column widths if specified.
 }
 \examples{
 # Example usage
-tbl <- Descusmr::desc_var(iris,
+tbl <- RastaRocket::desc_var(iris,
   table_title = "test",
   group = TRUE,
   var_group = "Species")

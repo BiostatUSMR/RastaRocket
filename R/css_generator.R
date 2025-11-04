@@ -11,7 +11,7 @@
 #' 
 css_generator <- function(path_logo = NULL){
   if(is.null(path_logo)){
-    path_logo <- system.file("LogoCHUBdx.jpg", package = "Descusmr")
+    path_logo <- system.file("LogoCHUBdx.jpg", package = "RastaRocket")
   }
   
   css_style <- paste0('<style>
