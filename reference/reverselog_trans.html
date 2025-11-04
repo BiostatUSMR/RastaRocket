@@ -41,7 +41,13 @@
       <a href="../articles/SetupProject.html">SetupProject</a>
     </li>
   </ul></li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/biostatusmr/RastaRocket/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -51,7 +57,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Reverse Log Transformation</h1>
-
+    <small class="dont-index">Source: <a href="https://github.com/biostatusmr/RastaRocket/blob/HEAD/R/reverselog_trans.R" class="external-link"><code>R/reverselog_trans.R</code></a></small>
     <div class="hidden name"><code>reverselog_trans.Rd</code></div>
     </div>
 
@@ -85,7 +91,6 @@ It is useful for cases where a decreasing log scale is needed.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://scales.r-lib.org" class="external-link">scales</a></span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>package ‘scales’ was built under R version 4.4.3</span>
 <span class="r-in"><span><span class="va">rev_log</span> <span class="op">&lt;-</span> <span class="fu">reverselog_trans</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rev_log</span><span class="op">$</span><span class="fu">trans</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>  <span class="co"># -2</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2</span>

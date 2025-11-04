@@ -44,7 +44,13 @@ and customizing table titles."><!-- mathjax --><script src="https://cdnjs.cloudf
       <a href="../articles/SetupProject.html">SetupProject</a>
     </li>
   </ul></li>
-      </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
+      </ul><ul class="nav navbar-nav navbar-right"><li>
+  <a href="https://github.com/biostatusmr/RastaRocket/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+
+  </a>
+</li>
+      </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
@@ -54,7 +60,7 @@ and customizing table titles."><!-- mathjax --><script src="https://cdnjs.cloudf
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Customize a Summary Table with Grouping, Missing Data, and Custom Titles</h1>
-
+    <small class="dont-index">Source: <a href="https://github.com/biostatusmr/RastaRocket/blob/HEAD/R/customize_table.R" class="external-link"><code>R/customize_table.R</code></a></small>
     <div class="hidden name"><code>customize_table.Rd</code></div>
     </div>
 
@@ -155,7 +161,6 @@ the table body.</p></li>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example usage with a sample gtsummary table</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ddsjoberg/gtsummary" class="external-link">gtsummary</a></span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>package ‘gtsummary’ was built under R version 4.4.3</span>
 <span class="r-in"><span><span class="va">base_table</span> <span class="op">&lt;-</span> <span class="va">trial</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"trt"</span>, missing <span class="op">=</span> <span class="st">"no"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
