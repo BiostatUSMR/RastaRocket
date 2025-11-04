@@ -2,7 +2,8 @@
 
 <!-- badges: start -->
   [![R-CMD-check](https://github.com/BiostatUSMR/RastaRocket/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/BiostatUSMR/RastaRocket/actions/workflows/R-CMD-check.yaml)
-  <!-- badges: end -->
+  [![Documentation](https://img.shields.io/badge/docs-online-blue.svg)](https://biostatusmr.github.io/RastaRocket/)
+<!-- badges: end -->
 
 ## English
 
