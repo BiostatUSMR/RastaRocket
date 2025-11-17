@@ -9,11 +9,9 @@
 #' @return A `gtsummary` table object with p-values added and footnotes separated.
 #'
 #' @examples
-#' \dontrun{
 #' library(gtsummary)
 #' tbl <- trial %>% tbl_summary(by = trt)
 #' tbl <- add_pvalues(tbl, tests = TRUE)
-#' }
 #' 
 #' @export
 add_pvalues <- function(res, tests) {

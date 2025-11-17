@@ -30,9 +30,4 @@ A wide-format dataframe summarizing adverse event occurrences and patient counts
 This function processes patient and adverse event data to generate a wide-format summary dataframe,
 including total counts and percentages of events and patients per SOC (System Organ Class) and PT (Preferred Term).
 }
-\examples{
-\dontrun{
-df_wide <- desc_ei_per_pt_prepare_df(augmented_df_pat_grp, augmented_df_pat_pt_grp)
-}
-}
 \keyword{internal}

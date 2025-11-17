@@ -19,10 +19,8 @@ This function adds p-values to a gtsummary table using the specified tests
 and separates the p-value footnotes.
 }
 \examples{
-\dontrun{
 library(gtsummary)
 tbl <- trial \%>\% tbl_summary(by = trt)
 tbl <- add_pvalues(tbl, tests = TRUE)
-}
 
 }

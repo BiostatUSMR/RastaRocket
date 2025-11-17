@@ -20,9 +20,4 @@ A \code{gt} table formatted with appropriate labels, spans, and styling.
 This function takes a prepared wide-format dataframe summarizing adverse events and patients
 and converts it into a formatted \code{gt} table for easy visualization.
 }
-\examples{
-\dontrun{
-gt_table <- desc_ei_per_pt_df_to_gt(df_wide, vec_grp)
-}
-}
 \keyword{internal}
