@@ -157,11 +157,7 @@ desc_ei_per_pt <- function(df_pat_grp,
 #' @return A wide-format dataframe summarizing adverse event occurrences and patient counts across groups.
 #' @importFrom purrr reduce
 #' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#' df_wide <- desc_ei_per_pt_prepare_df(augmented_df_pat_grp, augmented_df_pat_pt_grp)
-#' }
+#' 
 desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
                                       augmented_df_pat_pt_grp,
                                       order_by_freq = TRUE,
@@ -285,10 +281,6 @@ desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
 #' @return A `gt` table formatted with appropriate labels, spans, and styling.
 #' @keywords internal
 #'
-#' @examples
-#' \dontrun{
-#' gt_table <- desc_ei_per_pt_df_to_gt(df_wide, vec_grp)
-#' }
 desc_ei_per_pt_df_to_gt <- function(df_wide,
                                     vec_grp,
                                     language = "fr"){
