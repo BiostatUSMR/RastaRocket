@@ -29,7 +29,7 @@
 #'
 #' @import dplyr
 #' @import RastaRocket
-#' @import forcats
+#' @importFrom forcats fct_infreq fct_drop
 #' @export
 prepare_table <- function(data1,
                           by_group = FALSE,
@@ -69,7 +69,7 @@ prepare_table <- function(data1,
   if(freq_relevel && by_group && !is.null(var_group)){
     data1 <- data1 %>%
       dplyr::mutate(across(where(is.factor) & !any_of(var_group),
-                           ~ forcats::fct_infreq(.)))
+                           ~ forcats::fct_infreq(.x)))
     #data1 <- ordonner_variables_qualitatives(data1)
   }
 
@@ -77,7 +77,7 @@ prepare_table <- function(data1,
   if(drop_levels){
     data1 <- data1 %>%
       dplyr::mutate(across(where(is.factor) & !any_of(var_group),
-                           ~ forcats::fct_drop(.)))
+                           ~ forcats::fct_drop(.x)))
   }
 
   return(data1)
