@@ -58,7 +58,7 @@ Installation depuis le CRAN :
 
 install.packages("RastaRocket")
 
-Ou installez la dernière version de développement disponible sur GitHub.. Notez que le package `devtools` doit être installé au préalable. Assurez-vous que l’option `build_vignettes = TRUE` est activée lors de l’installation pour accéder au tutoriel inclus sous forme de vignette :
+Ou installez la dernière version de développement disponible sur GitHub. Notez que le package `devtools` doit être installé au préalable. Assurez-vous que l’option `build_vignettes = TRUE` est activée lors de l’installation pour accéder au tutoriel inclus sous forme de vignette :
 
 ```r
 devtools::install_github("BiostatUSMR/RastaRocket", build_vignettes = TRUE)
