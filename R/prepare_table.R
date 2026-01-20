@@ -56,21 +56,11 @@ prepare_table <- function(data1,
       warning("You ask not to show missing data but some are present in data1, be careful")
     }
   }
-#
-#  ### Apply DM option
-#   if(freq_relevel && !by_group && !is.null(var_group)){
-#     da1 <- data1 %>% dplyr::select(-all_of(var_group))
-#     data1 <- ordonner_variables_qualitatives(da1)
-#     #data1 <- ordonner_variables_qualitatives(data1)
-#   }
-#
-#
-  ### Solution sans utiliser la fonction ordonner_variables_qualitatives()
+
   if(freq_relevel && by_group && !is.null(var_group)){
     data1 <- data1 %>%
       dplyr::mutate(across(where(is.factor) & !any_of(var_group),
                            ~ forcats::fct_infreq(.x)))
-    #data1 <- ordonner_variables_qualitatives(data1)
   }
 
 
