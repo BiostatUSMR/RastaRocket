@@ -59,7 +59,7 @@ ajouter_label_ndm <- function(data,
           label_actuel <- labelled::var_label(.x)
 
           # set variable name as label if NULL
-          if (is.null(label_actuel) || is.na(label_actuel)) {  ## est-ce que le label peut-être NA si oui rajouter un test
+          if (is.null(label_actuel) || is.na(label_actuel)) {
             label_actuel <- nom_col
           }
 
