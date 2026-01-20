@@ -11,3 +11,4 @@ tests/data_test.R
 ^docs$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^.*\.Rproj$
