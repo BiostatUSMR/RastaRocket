@@ -48,7 +48,7 @@ library(tidyr)
 data(mtcars)
 
 # Add  data statistics grouped by 'cyl'
-add_by_n(
+add_by_n_noNA(
   data = mtcars,
   variable = "mpg",
   by = "cyl"

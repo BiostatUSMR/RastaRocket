@@ -52,7 +52,7 @@ modify_table_body_func <- function(data) {
       dplyr::rename("add_n_stat_0" = n) %>%
       dplyr::mutate(dplyr::across(
         matches("^stat_\\d+$"),  # Utilise une expression régulière pour sélectionner 'stat_' suivi d'un ou plusieurs chiffres
-        ~ ifelse(is.na(.), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .)
+        ~ ifelse(is.na(.x), get(paste0("add_n_stat_", sub("^stat_", "", cur_column()))), .x)
       )) %>%
       dplyr::select(-starts_with("add_n_stat_"))
   } else {

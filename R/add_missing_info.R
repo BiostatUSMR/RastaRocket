@@ -15,7 +15,7 @@ add_missing_info <- function(base_table,
                              show_missing_data,
                              var_group = NULL,
                              by_group = FALSE) {
-  
+
   # Add missing data summary
   if (show_missing_data) {
     base_table_missing <- base_table %>%
@@ -24,7 +24,7 @@ add_missing_info <- function(base_table,
     base_table_missing <- base_table %>%
       gtsummary::add_n("{N_nonmiss}")
   }
-  
+
   # Add grouped stats if applicable
   if (by_group) {
     if (show_missing_data) {
@@ -35,16 +35,16 @@ add_missing_info <- function(base_table,
         gtsummary::add_stat(fns = everything() ~ add_by_n_noNA)
     }
   }
-  
+
   # Modify table body and footnotes
   if(by_group){
     base_table_missing_2 <- base_table_missing %>%
-      gtsummary::modify_table_body(~ modify_table_body_func(.)) %>%
+      gtsummary::modify_table_body(~ RastaRocket::modify_table_body_func(.)) %>%
       gtsummary::modify_footnote(everything() ~ NA)
   } else {
     base_table_missing_2 <- base_table_missing %>%
       gtsummary::modify_footnote(everything() ~ NA)
   }
-  
+
   return(base_table_missing_2)
 }
