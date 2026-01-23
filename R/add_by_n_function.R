@@ -1,4 +1,4 @@
-utils::globalVariables(c("nb_NA", "by_col"))
+#utils::globalVariables(c("nb_NA", "by_col"))
 
 #' Add Counts and Percentages of Missing Data by Group
 #'
