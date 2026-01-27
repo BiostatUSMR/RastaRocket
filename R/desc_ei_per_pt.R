@@ -1,27 +1,3 @@
-# main function -----------------------------------------------------------
-# utils::globalVariables(c("USUBJID",
-#                          "RDGRPNAME",
-#                          "id_pat",
-#                          "grp",
-#                          "EILLTN",
-#                          "EISOCPN",
-#                          "EIPTN",
-#                          "EINUM",
-#                          "soc",
-#                          "pt",
-#                          "nb_pat",
-#                          "nb_pat_per_grp",
-#                          "nb_ei",
-#                          "pct_ei",
-#                          "pct_pat",
-#                          "p_val",
-#                          "significant_bool",
-#                          "freq_pat",
-#                          "RD",
-#                          "CIinf",
-#                          "CIsup",
-#                          "significant_label",
-#                          "total_nb_pat"))
 
 #' desc_ei_per_pt
 #'

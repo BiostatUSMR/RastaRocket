@@ -1,29 +1,10 @@
-# main function -----------------------------------------------------------
-
-# utils::globalVariables(c(
-#   "USUBJID",
-#   "RDGRPNAME",
-#   "id_pat",
-#   "grp",
-#   "EIGRDM",
-#   "EINUM",
-#   "EIGRAV",
-#   "grade",
-#   "nb_pat",
-#   "nb_pat_per_grp",
-#   "nb_ei",
-#   "pct_ei",
-#   "pct_pat",
-#   "nb_ei_denom"
-# ))
-
 
 #' desc_ei_per_grade
 #'
 #' A function to describe adverse events (AE) by grade.
 #'
 #' @param df_pat_grp A dataframe with two columns: USUBJID and RDGRPNAME (the RCT arm).
-#' @param df_pat_grade A dataframe with three columns: USUBJID, EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").
+#' @param df_pat_grade A dataframe with four columns: USUBJID, EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").
 #' @param severity A boolean to show severe adverse event line or not.
 #' @param digits Number of digits for percentages
 #'

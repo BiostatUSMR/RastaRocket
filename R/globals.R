@@ -21,11 +21,7 @@ utils::globalVariables(c(
 
 
 # # desc_ei_per_pt.R
-utils::globalVariables(c("USUBJID",
-                         "RDGRPNAME",
-                         "id_pat",
-                         "grp",
-                         "EILLTN",
+utils::globalVariables(c("EILLTN",
                          "EISOCPN",
                          "EIPTN",
                          "EINUM",
@@ -44,3 +40,6 @@ utils::globalVariables(c("USUBJID",
                          "CIsup",
                          "significant_label",
                          "total_nb_pat"))
+
+# plot_dumbell.R
+utils::globalVariables(c("facet", "grp_num"))
