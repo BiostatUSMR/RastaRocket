@@ -65,8 +65,6 @@ percentages are displayed:
 }
 \item Headers for columns and spanning headers are customized using the \code{group_title},
 \code{table_title}, and \code{var_title} arguments.
-\item An external function \code{modify_table_body_func} is called to further modify
-the table body.
 }
 }
 \examples{
