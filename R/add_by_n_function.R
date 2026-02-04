@@ -1,4 +1,3 @@
-utils::globalVariables(c("nb_NA", "by_col"))
 
 #' Add Counts and Percentages of Missing Data by Group
 #'
@@ -46,7 +45,7 @@ utils::globalVariables(c("nb_NA", "by_col"))
 #' @importFrom tidyr pivot_wider
 #' @importFrom rlang .data set_names
 #' @export
-#' 
+#'
 add_by_n <- function(data, variable, by, tbl, ...) {
 
   data %>%
