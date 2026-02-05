@@ -31,15 +31,24 @@
 #'   - If `FALSE`, only non-missing data counts are displayed.
 #' - Headers for columns and spanning headers are customized using the `group_title`,
 #'   `table_title`, and `var_title` arguments.
-#' - An external function `modify_table_body_func` is called to further modify
-#'   the table body.
 #'
 #' @examples
 #' # Example usage with a sample gtsummary table
 #' library(gtsummary)
 #' base_table <- trial %>%
-#'   tbl_summary(by = "trt", missing = "no")
-#'
+#'   gtsummary::tbl_summary(
+#'     type = list(
+#'       gtsummary::all_continuous() ~ "continuous2"
+#'     ),
+#'     by = "trt",
+#'     missing = "always",
+#'     missing_stat = "{N_nonmiss} ({N_miss})",
+#'     statistic = list(
+#'       gtsummary::all_continuous2() ~ c("{mean} ({sd})",
+#'                                        "{median} ({p25} ; {p75})",
+#'                                        "{min} ; {max}")
+#'     ))
+#'  
 #' customize_table(
 #'   base_table,
 #'   var_group = "trt",
@@ -73,17 +82,9 @@ customize_table <- function(base_table,
       gtsummary::add_overall()
   }
 
-
-  # assignement of var_group and group_title based on by_group
-# var_grp <- dplyr::if_else(by_group, var_group, NULL)
-#  grp_title <- dplyr::if_else(by_group, group_title, NULL)
-
   ### Add missing values
-  base_table_missing <- add_missing_info(base_table = base_table,
-                                         show_missing_data = show_missing_data,
-                                         var_group = if(by_group) var_group else NULL,
-                                         by_group = by_group)
-
+  base_table_missing <- add_missing_info(base_table = base_table)
+  
   ### header
   res <- custom_headers(base_table_missing = base_table_missing,
                         var_characteristic = var_characteristic,

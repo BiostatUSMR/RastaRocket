@@ -1,6 +1,3 @@
-# add_by_n_function.R
-utils::globalVariables(c("nb_NA", "by_col"))
-
 # desc_ei_per_grade.R
 utils::globalVariables(c(
   "USUBJID",
