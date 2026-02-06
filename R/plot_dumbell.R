@@ -44,7 +44,7 @@ plot_dumbell <- function(df_pat_grp,
 
   ########## Prepare dataframe
 
-  df_all <- df_builder_ae(df_pat_grp = df_pat_grp,
+  df_all <- df_builder_ae_v1(df_pat_grp = df_pat_grp,
                           df_pat_llt = df_pat_llt,
                           ref_grp = ref_grp)
 
