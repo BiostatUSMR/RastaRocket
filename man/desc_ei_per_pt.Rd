@@ -7,6 +7,12 @@
 desc_ei_per_pt(
   df_pat_grp,
   df_pat_llt,
+  id_col = "USUBJID",
+  group_col = "RDGRPNAME",
+  ei_num_col = "EINUM",
+  ei_llt_col = "EILLTN",
+  ei_soc_col = "EISOCPN",
+  ei_pt_col = "EIPTN",
   language = "fr",
   order_by_freq = TRUE,
   digits = 1
@@ -16,6 +22,18 @@ desc_ei_per_pt(
 \item{df_pat_grp}{A dataframe with two columns: id_pat and grp (the rct arm)}
 
 \item{df_pat_llt}{A dataframe with two columns: id_pat (patient id), num_ae (AE id), llt (AE LLT), pt (AE PT), soc (AE)}
+
+\item{id_col}{column corresponding to "USUBJID".}
+
+\item{group_col}{column corresponding to "RDGRPNAME".}
+
+\item{ei_num_col}{column corresponding to "EINUM"}
+
+\item{ei_llt_col}{column corresponding to "EILLTN"}
+
+\item{ei_soc_col}{column corresponding to "EISOCPN"}
+
+\item{ei_pt_col}{column corresponding to "EIPTN"}
 
 \item{language}{'fr' default or 'en'}
 
