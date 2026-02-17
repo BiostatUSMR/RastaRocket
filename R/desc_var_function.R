@@ -12,6 +12,7 @@
 #' @param by_group A boolean (default is FALSE) to analyse by group.
 #' @param var_group A variable used for grouping (if applicable). Defaults to `NULL`.
 #' @param group_title A character string specifying the title for the grouping variable. Default is `NULL` and get the label or the variable.
+#' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables. Default is c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}").
 #' @param digits A list, the number of decimal places to round categorical and
 #'        continuous variable. Default is list(mean_sd = 1,
 #'        median_q1_q3_min_max = 1, pct = 1).
@@ -96,6 +97,7 @@ desc_var <- ## Les arguments de la fonction
            by_group = FALSE, ## booléen pour préciser s'il faut degroupé ou pas les tables.
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
            group_title = NULL,
+           stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
            digits = list(mean_sd = 1,
                          median_q1_q3_min_max = 1,
                          pct = 1),
@@ -145,6 +147,7 @@ desc_var <- ## Les arguments de la fonction
                              var_group = var_group,
                              quali = quali,
                              quanti = quanti,
+                             stat_var_quanti = stat_var_quanti,
                              digits = digits,
                              show_missing_data = show_missing_data)
 
