@@ -17,7 +17,7 @@ df_builder_ae <- function(df_pat_grp,
   vec_pt <- unique(df_pat_llt$EIPTN)
   vec_grp <- unique(df_pat_grp$RDGRPNAME)
 
-  ##########################
+  ################ check for missing data ##################
   if(anyNA(vec_pt)){
     warning("Missing data removed from df_pat_llt please be careful/Some AE are missing !")
     vec_pt = na.omit(vec_pt)
@@ -27,7 +27,7 @@ df_builder_ae <- function(df_pat_grp,
     warning("Missing data removed from df_pat_grp please be careful/Some the RCT arm are missing !")
     vec_grp = na.omit(vec_grp)
   }
-  ## ################################################
+
 
   if(is.null(ref_grp)){
     ref_grp <- vec_grp[1]
