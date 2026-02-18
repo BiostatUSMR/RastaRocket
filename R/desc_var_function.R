@@ -12,7 +12,7 @@
 #' @param by_group A boolean (default is FALSE) to analyse by group.
 #' @param var_group A variable used for grouping (if applicable). Defaults to `NULL`.
 #' @param group_title A character string specifying the title for the grouping variable. Default is `NULL` and get the label or the variable.
-#' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables. Default is c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}").
+#' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables. Default is c("mean (sd)", "median (p25; p75)", "min; max").
 #' @param digits A list, the number of decimal places to round categorical and
 #'        continuous variable. Default is list(mean_sd = 1,
 #'        median_q1_q3_min_max = 1, pct = 1).

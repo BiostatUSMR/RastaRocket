@@ -14,7 +14,7 @@
 #' @param quanti A character vector, the names of continuous variables to
 #'        treat as continuous in the summary table.
 #'
-#' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables. Default is c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}").
+#' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables.
 #' @param digits A list, the number of decimal places to round categorical and
 #'        continuous variable. Default is list(mean_sd = 1,
 #'        median_q1_q3_min_max = 1, pct = 1).
@@ -55,7 +55,7 @@ base_table <- function(data1,
   ####### check stat_var_quanti vector ##########
   vec_stat <- c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}")
   if(any(!stat_var_quanti %in% vec_stat)){
-    stop(glue::glue("stat_var_quanti names must be {vec_stat[1]} for mean (SD); {vec_stat[2]} for median (Q1, Q3); {vec_stat[3] for range}"  ))
+    stop(glue::glue("stat_var_quanti names must be `{vec_stat[1]}` for mean (SD); `{vec_stat[2]}` for median (Q1, Q3) or `{vec_stat[3]}` for range"  ))
   }
   ##### clean formating
 
