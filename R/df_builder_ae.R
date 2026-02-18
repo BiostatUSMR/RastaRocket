@@ -21,11 +21,14 @@ df_builder_ae <- function(df_pat_grp,
   if(anyNA(vec_pt)){
     warning("Missing data removed from df_pat_llt please be careful/Some AE are missing !")
     vec_pt = na.omit(vec_pt)
+    df_pat_llt <- na.omit(df_pat_llt)
+
   }
 
   if(anyNA(vec_grp)){
     warning("Missing data removed from df_pat_grp please be careful/Some the RCT arm are missing !")
     vec_grp = na.omit(vec_grp)
+    df_pat_grp <- na.omit(df_pat_grp)
   }
 
 
