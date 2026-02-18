@@ -14,23 +14,22 @@ df_builder_ae <- function(df_pat_grp,
                           df_pat_llt,
                           ref_grp = NULL){
 
-  vec_pt <- unique(df_pat_llt$EIPTN)
-  vec_grp <- unique(df_pat_grp$RDGRPNAME)
+
 
   ################ check for missing data ##################
-  if(anyNA(vec_pt)){
+  if(anyNA(df_pat_llt)){
     warning("Missing data removed from df_pat_llt please be careful/Some AE are missing !")
-    vec_pt = na.omit(vec_pt)
     df_pat_llt <- na.omit(df_pat_llt)
 
   }
 
-  if(anyNA(vec_grp)){
+  if(anyNA(df_pat_grp)){
     warning("Missing data removed from df_pat_grp please be careful/Some the RCT arm are missing !")
-    vec_grp = na.omit(vec_grp)
     df_pat_grp <- na.omit(df_pat_grp)
   }
 
+  vec_pt <- unique(df_pat_llt$EIPTN)
+  vec_grp <- unique(df_pat_grp$RDGRPNAME)
 
   if(is.null(ref_grp)){
     ref_grp <- vec_grp[1]
