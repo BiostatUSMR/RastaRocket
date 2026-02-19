@@ -17,19 +17,19 @@ desc_ei_per_grade(
 )
 }
 \arguments{
-\item{df_pat_grp}{A dataframe with two columns: USUBJID and RDGRPNAME (the RCT arm).}
+\item{df_pat_grp}{A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).}
 
-\item{df_pat_grade}{A dataframe with four columns: USUBJID, EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").}
+\item{df_pat_grade}{A dataframe with four columns: USUBJID (Patient id), EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").}
 
-\item{id_col}{column corresponding to USUBJID.}
+\item{id_col}{Patient id column (default: "USUBJID").}
 
-\item{group_col}{column corresponding to RDGRPNAME.}
+\item{group_col}{group column, the rct arm (default: "RDGRPNAME").}
 
-\item{ei_num_col}{column corresponding to EINUM.}
+\item{ei_num_col}{AE id column (default: "EINUM").}
 
-\item{ei_grdm_col}{column corresponding to EIGRDM.}
+\item{ei_grdm_col}{AE grade column (default: "EIGRDM").}
 
-\item{ei_grav_col}{column corresponding to EIGRAV.}
+\item{ei_grav_col}{AE severity column (default: "EIGRAV").}
 
 \item{severity}{A boolean to show severe adverse event line or not.}
 

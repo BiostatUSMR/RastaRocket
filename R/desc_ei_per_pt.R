@@ -8,12 +8,12 @@
 #' @param language 'fr' default or 'en'
 #' @param order_by_freq Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.
 #' @param digits Number of digits for percentages
-#' @param id_col column corresponding to "USUBJID".
-#' @param group_col column corresponding to "RDGRPNAME".
-#' @param ei_num_col column corresponding to "EINUM"
-#' @param ei_llt_col column corresponding to "EILLTN"
-#' @param ei_soc_col column corresponding to "EISOCPN"
-#' @param ei_pt_col column corresponding to "EIPTN"
+#' @param id_col Patient id column (default: "USUBJID").
+#' @param group_col group column, the rct arm (default: "RDGRPNAME").
+#' @param ei_num_col AE id column (default: "EINUM").
+#' @param ei_llt_col AE LLT column (default: "EILLTN").
+#' @param ei_soc_col AE SOC column (default: "EISOCPN").
+#' @param ei_pt_col AE PT column (default: "EIPTN")
 #'
 #' @return A gt table
 #' @export
@@ -64,14 +64,6 @@ desc_ei_per_pt <- function(df_pat_grp,
 
   ##### Check column names and remove duplicates
 
-  # if(any(!c("USUBJID", "RDGRPNAME") %in% colnames(df_pat_grp))){
-  #   stop("df_pat_grp should contain 'USUBJID' = the patient id and 'RDGRPNAME' = the randomization group")
-  # }
-  #
-  # if(any(!c("USUBJID", "EILLTN", "EISOCPN", "EIPTN", "EINUM") %in% colnames(df_pat_llt))){
-  #   stop("df_pat_grp should contain 'USUBJID' = the patient id and 'EINUM' = the AE event number and 'EILLTN' = the AE LLT and 'EISOCPN' = the AE SOC and 'EIPTN' = the AE PT")
-  # }
-
   if(any(!c(rlang::as_string(id_col), rlang::as_string(group_col)) %in% colnames(df_pat_grp))){
     stop(glue::glue("df_pat_grp should contain '{rlang::as_string(id_col)}' = the patient id and '{rlang::as_string(group_col)}' = the randomization group"))
   }
@@ -82,18 +74,6 @@ desc_ei_per_pt <- function(df_pat_grp,
 
 
   ##### clean type and df
-
-  # df_pat_grp <- df_pat_grp |>
-  #   dplyr::mutate(id_pat = as.character(USUBJID),
-  #                 grp = as.character(RDGRPNAME)) |>
-  #   dplyr::distinct(id_pat, grp)
-  #
-  # df_pat_llt <- df_pat_llt |>
-  #   distinct(USUBJID, EILLTN, EISOCPN, EIPTN, EINUM) |>
-  #   dplyr::select(id_pat = USUBJID,
-  #                 soc = EISOCPN,
-  #                 pt = EIPTN) |>
-  #   dplyr::mutate(id_pat = as.character(id_pat))
 
   df_pat_grp <- df_pat_grp |>
     dplyr::mutate(id_pat = as.character(!!id_col),

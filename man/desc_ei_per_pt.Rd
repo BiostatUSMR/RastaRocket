@@ -23,17 +23,17 @@ desc_ei_per_pt(
 
 \item{df_pat_llt}{A dataframe with two columns: id_pat (patient id), num_ae (AE id), llt (AE LLT), pt (AE PT), soc (AE)}
 
-\item{id_col}{column corresponding to "USUBJID".}
+\item{id_col}{Patient id column (default: "USUBJID").}
 
-\item{group_col}{column corresponding to "RDGRPNAME".}
+\item{group_col}{group column, the rct arm (default: "RDGRPNAME").}
 
-\item{ei_num_col}{column corresponding to "EINUM"}
+\item{ei_num_col}{AE id column (default: "EINUM").}
 
-\item{ei_llt_col}{column corresponding to "EILLTN"}
+\item{ei_llt_col}{AE LLT column (default: "EILLTN").}
 
-\item{ei_soc_col}{column corresponding to "EISOCPN"}
+\item{ei_soc_col}{AE SOC column (default: "EISOCPN").}
 
-\item{ei_pt_col}{column corresponding to "EIPTN"}
+\item{ei_pt_col}{AE PT column (default: "EIPTN")}
 
 \item{language}{'fr' default or 'en'}
 
