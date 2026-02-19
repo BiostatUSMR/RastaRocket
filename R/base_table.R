@@ -16,8 +16,7 @@
 #'
 #' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables. Default is `c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}")`.
 #' @param digits A list, the number of decimal places to round categorical and
-#'        continuous variable. Default is list(mean_sd = 1,
-#'        median_q1_q3_min_max = 1, pct = 1).
+#'        continuous variable. Default is list(r_quanti = 1, r_quali = 1)
 #' @param show_missing_data Should the missing data be displayed. Can be either :
 #'   - `FALSE`: No missing data displayed
 #'   - `TRUE`(default): Missing data displayed
@@ -41,27 +40,26 @@ base_table <- function(data1,
                        quali = NULL,
                        quanti = NULL,
                        stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
-                       digits = list(mean_sd = 1,
-                                     median_q1_q3_min_max = 1,
-                                     pct = 1)){
+                       digits = list(r_quanti = 1, r_quali = 1)){
 
   ##### check digits list
   if(!is.list(digits)) stop("digits argument must be a list")
 
-  vec_check <- c("mean_sd", "median_q1_q3_min_max", "pct")
+  #vec_check <- c("mean_sd", "median_q1_q3_min_max", "pct")
+  vec_check <- c("r_quanti", "r_quali")
   string_check <- paste(vec_check, collapse = " ")
   if(!dplyr::setequal(names(digits), vec_check)) stop(glue::glue("digits names must be {string_check}"))
 
   ####### check stat_var_quanti vector ##########
-  vec_stat <- c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}")
+  vec_stat <- c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}", "{sum}")
   if(any(!stat_var_quanti %in% vec_stat)){
-    stop(glue::glue("stat_var_quanti names must be `{vec_stat[1]}` for mean (SD); `{vec_stat[2]}` for median (Q1, Q3) or `{vec_stat[3]}` for range"  ))
+    stop(glue::glue("stat_var_quanti names must be `{vec_stat[1]}` for mean (SD); `{vec_stat[2]}` for median (Q1, Q3);  `{vec_stat[3]}` for range or `{vec_stat[4]}` for Sum"))
   }
   ##### clean formating
 
-  vec_round_quanti <- c(rep(digits$mean_sd, 2),
-                        rep(digits$median_q1_q3_min_max, 5))
-  vec_round_quali <- c(0, digits$pct)
+  # vec_round_quanti <- c(rep(digits$mean_sd, 2),
+  #                       rep(digits$median_q1_q3_min_max, 5))
+  # vec_round_quali <- c(0, digits$pct)
 
   if(by_group){
     col_1 <- rlang::ensym(var_group)
@@ -95,8 +93,8 @@ base_table <- function(data1,
         ## Stat à afficher pour les VAR (quantitatives)
         gtsummary::all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
       ),
-      digits = list(all_continuous() ~ vec_round_quanti,
-                    all_categorical() ~ vec_round_quali) ## le nbre de décimale pour les variables.
+      digits = list(all_continuous() ~ digits$r_quanti |> as.integer(),
+                    all_categorical() ~ digits$r_quali |> as.integer()) ## le nbre de décimale pour les variables.
     ) %>%
     gtsummary::bold_labels()  ## Variables en gras.
 

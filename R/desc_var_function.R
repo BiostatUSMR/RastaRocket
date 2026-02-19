@@ -13,9 +13,7 @@
 #' @param var_group A variable used for grouping (if applicable). Defaults to `NULL`.
 #' @param group_title A character string specifying the title for the grouping variable. Default is `NULL` and get the label or the variable.
 #' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables. Default is `c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}")`.
-#' @param digits A list, the number of decimal places to round categorical and
-#'        continuous variable. Default is list(mean_sd = 1,
-#'        median_q1_q3_min_max = 1, pct = 1).
+#' @param digits A list, the number of decimal places to round categorical and continuous variable. Default is list(r_quanti = 1, r_quali = 1)
 #' @param drop_levels Boolean (default = TRUE). Drop unused levels.
 #' @param freq_relevel Boolean (default = FALSE). Reorder factors by frequency except for the group variable.
 #' @param tests A value in order to add p value. Default to `FALSE` OPTION :
@@ -98,9 +96,7 @@ desc_var <- ## Les arguments de la fonction
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
            group_title = NULL,
            stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
-           digits = list(mean_sd = 1,
-                         median_q1_q3_min_max = 1,
-                         pct = 1),
+           digits = list(r_quanti = 1, r_quali = 1),
            drop_levels = TRUE,
            freq_relevel = FALSE,
            tests = FALSE,
