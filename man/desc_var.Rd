@@ -44,7 +44,7 @@ desc_var(
 
 \item{group_title}{A character string specifying the title for the grouping variable. Default is \code{NULL} and get the label or the variable.}
 
-\item{stat_var_quanti}{A character vector specifying the statistics to display for continuous variables. Default is c("mean (sd)", "median (p25; p75)", "min; max").}
+\item{stat_var_quanti}{A character vector specifying the statistics to display for continuous variables. Default is \code{c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}")}.}
 
 \item{digits}{A list, the number of decimal places to round categorical and
 continuous variable. Default is list(mean_sd = 1,
