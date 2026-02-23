@@ -181,7 +181,7 @@ desc_ei_per_pt_prepare_df <- function(augmented_df_pat_grp,
                   soc = "Total") |>
     dplyr::select(pt, soc, grp, nb_ei, pct_ei, nb_pat, pct_pat)
 
-  ##### compute summary statisticsby SOC and PT
+  ##### compute summary statistics by SOC and PT
   df_wide_temp <- list(pt = c("grp", "soc", "pt"),
                   soc = c("grp", "soc")) |>
     lapply(function(vec_grp_by){
@@ -284,8 +284,11 @@ desc_ei_per_pt_df_to_gt <- function(df_wide,
   ### language
   if (language == 'fr'){
     label_pt <- "**Ev\u00e9nements ind\u00e9sirables**"
+    ###### MS
+    lable_ae <- "EI"
   } else if (language == 'en'){
     label_pt <- "**Adverse events**"
+    lable_ae <- "AE"
   } else {
     label_pt <- language
   }
@@ -298,7 +301,8 @@ desc_ei_per_pt_df_to_gt <- function(df_wide,
     gt::cols_label(
       pt = gt::md(label_pt),
       soc = "soc",
-      dplyr::ends_with("EI") ~ gt::md("**AE <br> N (%)**"),
+      #dplyr::ends_with("EI") ~ gt::md("**AE <br> N (%)**"),
+      dplyr::ends_with("EI") ~ gt::md("**label_ae <br> N (%)**"),
       dplyr::ends_with("PAT") ~ gt::md("**Patient <br> N (%)**")
     )
 
