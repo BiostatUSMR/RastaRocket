@@ -62,24 +62,7 @@
 #' @import cardx
 #' @export
 
-# data1 = iris
-# table_title = ""
-# quali = NULL
-# quanti = NULL
-# group = FALSE
-# var_title = "Variable"
-# var_group = "Species" ## Variable de groupe (dégroupée les tables)
-# group_title = NULL
-# digits = list(mean_sd = 1,
-#               median_q1_q3_min_max = 1,
-#               pct = 1)
-# drop_levels = TRUE
-# freq_relevel = FALSE
-# tests = FALSE
-# show_missing_data = FALSE
-# show_n_per_group = TRUE
-# add_total = TRUE
-# var_tot = "Total"
+
 
 desc_var <- ## Les arguments de la fonction
   function(data1,

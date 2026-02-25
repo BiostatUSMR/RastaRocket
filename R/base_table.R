@@ -45,7 +45,6 @@ base_table <- function(data1,
   ##### check digits list
   if(!is.list(digits)) stop("digits argument must be a list")
 
-  #vec_check <- c("mean_sd", "median_q1_q3_min_max", "pct")
   vec_check <- c("r_quanti", "r_quali")
   string_check <- paste(vec_check, collapse = " ")
   if(!dplyr::setequal(names(digits), vec_check)) stop(glue::glue("digits names must be {string_check}"))
@@ -55,11 +54,6 @@ base_table <- function(data1,
   if(any(!stat_var_quanti %in% vec_stat)){
     stop(glue::glue("stat_var_quanti names must be `{vec_stat[1]}` for mean (SD); `{vec_stat[2]}` for median (Q1, Q3);  `{vec_stat[3]}` for range or `{vec_stat[4]}` for Sum"))
   }
-  ##### clean formating
-
-  # vec_round_quanti <- c(rep(digits$mean_sd, 2),
-  #                       rep(digits$median_q1_q3_min_max, 5))
-  # vec_round_quali <- c(0, digits$pct)
 
   if(by_group){
     col_1 <- rlang::ensym(var_group)
