@@ -31,7 +31,7 @@ desc_ei_per_grade(
 
 \item{ei_grav_col}{AE severity column (default: "EIGRAV").}
 
-\item{severity}{A boolean to show severe adverse event line or not.}
+\item{severity}{A boolean to show severe adverse event line or not (default: TRUE).}
 
 \item{digits}{Number of digits for percentages}
 }
