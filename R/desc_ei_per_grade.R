@@ -10,7 +10,7 @@
 #' @param ei_num_col AE id column (default: "EINUM").
 #' @param ei_grdm_col AE grade column (default: "EIGRDM").
 #' @param ei_grav_col AE severity column (default: "EIGRAV").
-#' @param severity A boolean to show severe adverse event line or not.
+#' @param severity A boolean to show severe adverse event line or not (default: TRUE).
 #' @param digits Number of digits for percentages
 #'
 #' @return A gt table summarizing the AE by grade.
