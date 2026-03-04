@@ -143,14 +143,14 @@ In the previous example, no specific data management operations were applied.
 
 ### Order by frequency
 
-In this example, we add `freq_relevel = TRUE`, which orders the categories of categorical variables in descending order based on their counts.
+In this example, we add `sort = TRUE`, which orders the categories of categorical variables in descending order based on their counts.
 
 ```{r second example}
 data %>% desc_var(table_title = "test",
              by_group = TRUE,
              var_group = "traitement",
              group_title = "traitement",
-             freq_relevel = TRUE)
+             sort = TRUE)
 ```
 
 ### Custom order

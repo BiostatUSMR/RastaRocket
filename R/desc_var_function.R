@@ -15,7 +15,7 @@
 #' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables. Default is `c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}")`.
 #' @param digits A list, the number of decimal places to round categorical and continuous variable. Default is list(r_quanti = 1, r_quali = 1)
 #' @param drop_levels Boolean (default = TRUE). Drop unused levels.
-#' @param freq_relevel Boolean (default = FALSE). Reorder factors by frequency except for the group variable.
+#' @param sort Boolean (default = FALSE). If TRUE, reorder factors by frequency (most to least frequent) using gtsummary.
 #' @param tests A value in order to add p value. Default to `FALSE` OPTION :
 #'   - `FALSE`: No p-value add
 #'   - `TRUE`: Add p-value made by default by gtsummary. See gtsummary add_p() options.
@@ -81,7 +81,7 @@ desc_var <- ## Les arguments de la fonction
            stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
            digits = list(r_quanti = 1, r_quali = 1),
            drop_levels = TRUE,
-           freq_relevel = FALSE,
+           sort = FALSE,
            tests = FALSE,
            show_n_per_group = FALSE,
            show_missing_data = NULL,
@@ -117,7 +117,6 @@ desc_var <- ## Les arguments de la fonction
                            by_group = by_group,
                            var_group = var_group,
                            drop_levels = drop_levels,
-                           freq_relevel = freq_relevel,
                            show_missing_data = show_missing_data)
 
     ### Basic gtsummary
@@ -128,6 +127,7 @@ desc_var <- ## Les arguments de la fonction
                              quanti = quanti,
                              stat_var_quanti = stat_var_quanti,
                              digits = digits,
+                             sort = sort,
                              show_missing_data = show_missing_data)
 
     ### Customize output

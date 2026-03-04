@@ -17,6 +17,8 @@
 #' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables. Default is `c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}")`.
 #' @param digits A list, the number of decimal places to round categorical and
 #'        continuous variable. Default is list(r_quanti = 1, r_quali = 1)
+#'
+#' @param sort Boolean (default = FALSE). If TRUE, sort categorical levels by frequency (most to least frequent).
 #' @param show_missing_data Should the missing data be displayed. Can be either :
 #'   - `FALSE`: No missing data displayed
 #'   - `TRUE`(default): Missing data displayed
@@ -40,7 +42,8 @@ base_table <- function(data1,
                        quali = NULL,
                        quanti = NULL,
                        stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
-                       digits = list(r_quanti = 1, r_quali = 1)){
+                       digits = list(r_quanti = 1, r_quali = 1),
+                       sort = FALSE){
 
   ##### check digits list
   if(!is.list(digits)) stop("digits argument must be a list")
@@ -87,6 +90,7 @@ base_table <- function(data1,
         ## Stat à afficher pour les VAR (quantitatives)
         gtsummary::all_categorical() ~ "{n} ({p}%)" ## Stat à afficher pour les VAR (categorielles)
       ),
+      sort = if(sort) list(gtsummary::all_categorical() ~ "frequency") else NULL,
       digits = list(all_continuous() ~ digits$r_quanti |> as.integer(),
                     all_categorical() ~ digits$r_quali |> as.integer()) ## le nbre de décimale pour les variables.
     ) %>%

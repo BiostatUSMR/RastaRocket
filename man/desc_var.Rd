@@ -17,7 +17,7 @@ desc_var(
   stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
   digits = list(r_quanti = 1, r_quali = 1),
   drop_levels = TRUE,
-  freq_relevel = FALSE,
+  sort = FALSE,
   tests = FALSE,
   show_n_per_group = FALSE,
   show_missing_data = NULL,
@@ -50,7 +50,7 @@ desc_var(
 
 \item{drop_levels}{Boolean (default = TRUE). Drop unused levels.}
 
-\item{freq_relevel}{Boolean (default = FALSE). Reorder factors by frequency except for the group variable.}
+\item{sort}{Boolean (default = FALSE). If TRUE, reorder factors by frequency (most to least frequent) using gtsummary.}
 
 \item{tests}{A value in order to add p value. Default to \code{FALSE} OPTION :
 \itemize{
