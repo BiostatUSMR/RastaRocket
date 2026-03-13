@@ -226,7 +226,7 @@ RastaRocket::intermediate_header(tbls = list(tb1, tb2),
 # Number of Digits in Quantitative and Qualitative Features
 
 You can specify the number of digits for quantitative and qualitative features using `r_quanti` and `r_quali` in the `digits` argument. It specifies the number of digits statistics are rounded to.  
-The values passed can be a single integer or a vector of integers. If a single integer or a vector is passed, it recycled to the length of the number of statistics presented.
+The values passed can be a single integer or a vector of integers. If a single integer or a vector is passed, it rearranged to the length of the number of statistics presented.
 
 ## Specify Number of Digits
 
