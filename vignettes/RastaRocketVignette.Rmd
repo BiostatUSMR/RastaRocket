@@ -54,7 +54,7 @@ set.seed(123)  # Pour garantir la reproductibilité
 # Création du data frame
 data <- data.frame(
   Age = c(rnorm(45, mean = 50, sd = 10), rep(NA, 5)),  # Renommée Age
-  sexe = sample(c(0, 1), 50, replace = TRUE, prob = c(0.6, 0.4)),  # Renommée sexe
+  sexe = sample(c(0, 1), 50, replace = TRUE, prob = c(0.4, 0.6)),  # Renommée sexe
   quatre_modalites = sample(c("A", "B", "C"), 50, replace = TRUE, prob = c(0.2, 0.5, 0.3)),  # Modalités sans "D"
   traitement = sample(c("BRAS-A", "BRAS-B"), 50, replace = TRUE, prob = c(0.55, 0.45)),  # Nouvelle variable traitement
   echelle = sample(0:5, 50, replace = TRUE)  # Nouvelle variable entière de 0 à 5
@@ -143,14 +143,14 @@ In the previous example, no specific data management operations were applied.
 
 ### Order by frequency
 
-In this example, we add `sort = TRUE`, which orders the categories of categorical variables in descending order based on their counts.
+In this example, we add `freq_relevel = TRUE`, which orders the categories of categorical variables in descending order based on their counts.
 
 ```{r second example}
 data |>  desc_var(table_title = "test",
              by_group = TRUE,
              var_group = "traitement",
              group_title = "traitement",
-             sort = TRUE)
+             freq_relevel = TRUE)
 ```
 
 ### Custom order
