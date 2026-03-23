@@ -15,7 +15,7 @@
 #' @param stat_var_quanti A character vector specifying the statistics to display for continuous variables. Default is `c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}")`.
 #' @param digits A list, the number of decimal places to round categorical and continuous variable. r_quanti and r_quali can be a single integer or a vector of integer. Default is list(r_quanti = 1, r_quali = 1)
 #' @param drop_levels Boolean (default = TRUE). Drop unused levels.
-#' @param sort Boolean (default = FALSE). If TRUE, reorder factors by frequency (most to least frequent) using gtsummary.
+#' @param freq_relevel Boolean (default = FALSE). If TRUE, reorder factors by frequency (most to least frequent) using gtsummary.
 #' @param tests A value in order to add p value. Default to `FALSE` OPTION :
 #'   - `FALSE`: No p-value add
 #'   - `TRUE`: Add p-value made by default by gtsummary. See gtsummary add_p() options.
@@ -61,7 +61,7 @@
 #'   data1 = data1,
 #'   table_title = "Descriptive Table",
 #'   quanti = "var1",
-#'   sort = TRUE)
+#'   freq_relevel = TRUE)
 #'
 #'   # Round quantitative and qualitative features using  a vector of integer
 #'   table2 <- desc_var(
@@ -97,7 +97,7 @@ desc_var <- ## Les arguments de la fonction
            stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
            digits = list(r_quanti = 1, r_quali = 1),
            drop_levels = TRUE,
-           sort = FALSE,
+           freq_relevel = FALSE,
            tests = FALSE,
            show_n_per_group = FALSE,
            show_missing_data = NULL,
@@ -143,7 +143,7 @@ desc_var <- ## Les arguments de la fonction
                              quanti = quanti,
                              stat_var_quanti = stat_var_quanti,
                              digits = digits,
-                             sort = sort,
+                             freq_relevel = freq_relevel,
                              show_missing_data = show_missing_data)
 
     ### Customize output

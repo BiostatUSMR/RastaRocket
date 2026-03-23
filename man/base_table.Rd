@@ -13,7 +13,7 @@ base_table(
   quanti = NULL,
   stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
   digits = list(r_quanti = 1, r_quali = 1),
-  sort = FALSE
+  freq_relevel = FALSE
 )
 }
 \arguments{
@@ -41,7 +41,7 @@ treat as continuous in the summary table.}
 \item{digits}{A list, the number of decimal places to round categorical and
 continuous variable. Default is list(r_quanti = 1, r_quali = 1)}
 
-\item{sort}{Boolean (default = FALSE). If TRUE, sort categorical levels by frequency (most to least frequent).}
+\item{freq_relevel}{Boolean (default = FALSE). If TRUE, reorder categorical levels by frequency (most to least frequent).}
 }
 \value{
 A \code{gtsummary} table summarizing the specified variables,

@@ -17,7 +17,7 @@ desc_var(
   stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
   digits = list(r_quanti = 1, r_quali = 1),
   drop_levels = TRUE,
-  sort = FALSE,
+  freq_relevel = FALSE,
   tests = FALSE,
   show_n_per_group = FALSE,
   show_missing_data = NULL,
@@ -50,7 +50,7 @@ desc_var(
 
 \item{drop_levels}{Boolean (default = TRUE). Drop unused levels.}
 
-\item{sort}{Boolean (default = FALSE). If TRUE, reorder factors by frequency (most to least frequent) using gtsummary.}
+\item{freq_relevel}{Boolean (default = FALSE). If TRUE, reorder factors by frequency (most to least frequent) using gtsummary.}
 
 \item{tests}{A value in order to add p value. Default to \code{FALSE} OPTION :
 \itemize{
@@ -113,7 +113,7 @@ table1 <- desc_var(
   data1 = data1,
   table_title = "Descriptive Table",
   quanti = "var1",
-  sort = TRUE)
+  freq_relevel = TRUE)
 
   # Round quantitative and qualitative features using  a vector of integer
   table2 <- desc_var(
