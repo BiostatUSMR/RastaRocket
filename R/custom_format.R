@@ -38,11 +38,11 @@ custom_format <- function(gt_table,
 
 
   cols_names <- names(gt_table[["_data"]])
-  # Colonnes à exclure
+  # Colonnes a exclure
   cols_a_exclure <- c("variable", "row_type", "label", "grade", "pt")
   cols_align <- setdiff(cols_names, cols_a_exclure)
 
-  # aligne les colonnes sélectionnées
+  # aligne les colonnes selectionnees
   res <- gt_table %>%
     gt::cols_align(
       align = align,
