@@ -41,5 +41,9 @@ utils::globalVariables(c("EILLTN",
 # plot_dumbell.R
 utils::globalVariables(c("facet", "grp_num"))
 
+
 # custom_format.R
 utils::globalVariables(c("row_type"))
+
+# indent_table.R
+utils::globalVariables(c("label"))
