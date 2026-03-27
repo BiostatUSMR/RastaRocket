@@ -42,14 +42,14 @@ custom_format <- function(gt_table,
   cols_a_exclure <- c("variable", "row_type", "label", "grade", "pt")
   cols_align <- setdiff(cols_names, cols_a_exclure)
 
-  # aligne les colonnes selectionnees
+  # aligns the selected columns
   res <- gt_table %>%
     gt::cols_align(
       align = align,
       columns = dplyr::all_of(cols_align)
     )
 
-  # Mettre en gras les lignes « label » (tables gtsummary)
+  # Bold the “label” rows (gtsummary tables)
   if ("row_type" %in% names(res[["_data"]])) {
     res <- res %>%
       gt::tab_style(
