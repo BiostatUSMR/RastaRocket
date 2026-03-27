@@ -360,10 +360,10 @@ gtsummary::tbl_stack(list(tb1, tb2)) %>%
 You can customize the format by specifying the column size and the alignment.
 
 ```{r}
-data %>%
+data |> 
   RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
-                     var_group = "traitement") %>%
+                     var_group = "traitement") |> 
   custom_format(align = "left",
                 column_size = list(label ~ gt::pct(50),
                                    gt::starts_with("stat") ~ gt::pct(25)))
