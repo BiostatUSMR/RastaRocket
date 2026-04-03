@@ -9,7 +9,7 @@ indent_table(g_table, indent = 0)
 \arguments{
 \item{g_table}{A \code{gt} table object}
 
-\item{indent}{A numeric value corresponding to value as pixels, specifying text indentation (default = 0). Value can be 0, 1 or 2 (0 ~ px(0); 1 ~ px(30); 2 ~ px(60))}
+\item{indent}{A numerical value corresponding to the pixel value, which defines the text indentation (default = 0 corresponding to px(0)). 30 ~ px(30) should be a good compromise.}
 }
 \value{
 A \code{gt} table object with indentation applied.
@@ -23,7 +23,7 @@ iris,
 table_title = "test",
 quali = "Species")
 
-tbl_bis |> indent_table(indent = 1)
-tbl_bis |> indent_table(indent = 2)
+tbl_bis |> indent_table(indent = 30)
+tbl_bis |> indent_table(indent = 60)
 
 }
