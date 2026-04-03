@@ -58,7 +58,7 @@ prepare_table <- function(data1,
     }
   }
 
-  ### Deal with factors with missing level
+  ### Deal with factors with missing levels
   bool_all_na <- data1 |> summarise(across(everything(), ~ all(is.na(.x)))) |> any()
   na_col_names <- data1 |> summarise(across(everything(), ~ all(is.na(.x)))) |> select(where(~isTRUE(.x))) |> names() |> dput()
 
