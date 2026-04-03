@@ -9,7 +9,8 @@ prepare_table(
   by_group = FALSE,
   var_group = NULL,
   drop_levels = TRUE,
-  show_missing_data = TRUE
+  show_missing_data = TRUE,
+  include_all_na_cat = TRUE
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ prepare_table(
 \item \code{FALSE}: No missing data displayed
 \item \code{TRUE}(default): Missing data displayed
 }}
+
+\item{include_all_na_cat}{Should the categorical variable with a missing levels (all values are NA) be displayed. Default to \code{TRUE}}
 }
 \value{
 A data frame that has been prepared based on the \code{show_missing_data} and \code{DM} arguments.
