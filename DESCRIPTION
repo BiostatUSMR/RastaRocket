@@ -1,6 +1,6 @@
 Package: RastaRocket
 Title: Rocket-Fast Clinical Research Reporting
-Version: 1.1.3
+Version: 1.1.4
 Authors@R: 
     c(person(given = "USMR",
            family = "CHU de Bordeaux",
@@ -51,7 +51,8 @@ Imports:
     ggplot2,
     ggrepel,
     scales,
-    viridis
+    viridis,
+    here
 Suggests:
     testthat (>= 3.0.0),
     knitr,
