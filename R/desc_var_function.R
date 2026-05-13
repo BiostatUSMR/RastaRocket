@@ -96,7 +96,7 @@ desc_var <- ## Les arguments de la fonction
            var_group = NULL, ## Variable de groupe (dégroupée les tables)
            group_title = NULL,
            stat_var_quanti = c("{mean} ({sd})", "{median} ({p25}; {p75})", "{min}; {max}"),
-           digits = list(r_quanti = 1, r_quali = 1),
+           digits = list(r_quanti = 1, r_quali = 0),
            drop_levels = TRUE,
            freq_relevel = FALSE,
            tests = FALSE,
