@@ -230,7 +230,7 @@ The values passed can be a single integer or a vector of integers. If a single i
 
 ## Specify Number of Digits
 
-- In the example below, quantitative values are rounded to 0 decimal places, while qualitative values percentage are rounded to 1 decimal place.
+- In the example below, quantitative values are rounded to 1 decimal places, while qualitative values percentage are rounded to 0 decimal place.
 
 
 
@@ -239,7 +239,7 @@ data |>
   RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
-                     digits = list(r_quanti = 0, r_quali = 1))
+                     digits = list(r_quanti = 1, r_quali = 0))
 ```
 
 
@@ -276,7 +276,7 @@ tb2 <- data %>%
   RastaRocket::desc_var(table_title = "test",
                      by_group = TRUE,
                      var_group = "traitement",
-                     digits = list(r_quanti = 0, r_quali = 1))
+                     digits = list(r_quanti = 1, r_quali = 0))
 
 gtsummary::tbl_stack(list(tb1, tb2))
 ```
@@ -356,7 +356,7 @@ tb2 <- data %>%
      RastaRocket::desc_var(table_title = "tb2 test",
                            by_group = TRUE,
                            var_group = "traitement",
-                           digits = list(r_quanti = 2, r_quali = 1)) |> RastaRocket::indent_gtsummary_table(indent = 8)  
+                           digits = list(r_quanti = 2, r_quali = 0)) |> RastaRocket::indent_gtsummary_table(indent = 8)  
 
 tb3 <- data %>%
      dplyr::select(quatre_modalites, traitement) %>%
