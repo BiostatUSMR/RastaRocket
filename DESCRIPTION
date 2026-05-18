@@ -1,6 +1,6 @@
 Package: RastaRocket
 Title: Rocket-Fast Clinical Research Reporting
-Version: 1.1.4
+Version: 1.1.5
 Authors@R: 
     c(person(given = "USMR",
            family = "CHU de Bordeaux",
