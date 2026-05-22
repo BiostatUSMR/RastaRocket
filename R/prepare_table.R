@@ -19,7 +19,7 @@
 #'
 #' @import dplyr
 #' @import RastaRocket
-#' @importFrom forcats fct_drop
+#' @importFrom forcats fct_drop fct_na_value_to_level
 #' @export
 prepare_table <- function(data1,
                           by_group = FALSE,
@@ -49,15 +49,16 @@ prepare_table <- function(data1,
 
   ### Deal with factors with missing levels
   bool_all_na <- data1 |> dplyr::summarise(across(everything(), ~ all(is.na(.x)))) |> any()
+  na_col_names <- data1 |> dplyr::summarise(across(everything(), ~ all(is.na(.x)))) |> dplyr::select(where(~isTRUE(.x))) |> names()
 
   if(include_all_na_cat & bool_all_na){
 
     data1 <- data1 |> dplyr::mutate(
       dplyr::across(
         where(~ is.factor(.x) && length(levels(.x)) == 0),
-        ~ forcats::fct_explicit_na(.x, na_level = "(d.m.)"))
+        ~ forcats::fct_na_value_to_level(.x, level = "(d.m.)"))
     )
-
+    rlang::warn(glue::glue("The {na_col_names} is factor with missing level (all values are NA) and is displayed. "))
   }
 
 
