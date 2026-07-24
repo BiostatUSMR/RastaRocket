@@ -4,8 +4,15 @@ utils::globalVariables(c("minus_log10_pval", "increased_risk"))
 #'
 #' Generates a volcano plot to visualize the association between adverse events and patient groups.
 #'
-#' @param df_pat_llt A dataframe with columns: USUBJID (patient id), EINUM (AE id), llt (AE LLT), pt (AE PT), soc (AE SOC) and EIGRDM (severity grade)
+#' @param df_pat_llt A data frame with USUBJID (subject ID), EINUM (AE ID), EINUM (AE id),
+#' EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and EIGRDM (severity grade)
 #' @param df_pat_grp A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).
+#' @param id_col Name of the patient ID column (default: "USUBJID").
+#' @param group_col Name of the randomization group column (default: "RDGRPNAME").
+#' @param ei_num_col Name of the AE id column (default: "EINUM").
+#' @param ei_llt_col Name of the AE LLT column (default: "EILLTN").
+#' @param ei_soc_col Name of the AE SOC column (default: "EISOCPN").
+#' @param ei_pt_col Name of the AE PT column (default: "EIPTN").
 #' @param colors_arm A character vector of length two specifying the colors for the two patient groups in the plot.
 #'   Default is \code{c("#1b9e77", "#7570b3")}.
 #' @param ref_grp (Optional) A reference group for comparisons. Defaults to the first group in `df_pat_grp`.
@@ -55,6 +62,12 @@ utils::globalVariables(c("minus_log10_pval", "increased_risk"))
 #' @export
 plot_volcano <- function(df_pat_grp,
                          df_pat_llt,
+                         id_col = "USUBJID",
+                         group_col = "RDGRPNAME",
+                         ei_num_col = "EINUM",
+                         ei_llt_col = "EILLTN",
+                         ei_soc_col = "EISOCPN",
+                         ei_pt_col = "EIPTN",
                          ref_grp = NULL,
                          colors_arm = c("#1b9e77", "#7570b3"),
                          size = "nb_pat") {
@@ -62,8 +75,25 @@ plot_volcano <- function(df_pat_grp,
   vec_label_point_size = list(nb_pat = "Nb of patients",
                               nb_ei = "Nb of AE")
 
+  id_col <- rlang::ensym(id_col)
+  group_col <- rlang::ensym(group_col)
+  ei_num_col <- rlang::ensym(ei_num_col)
+  ei_llt_col <- rlang::ensym(ei_llt_col)
+  ei_soc_col <- rlang::ensym(ei_soc_col)
+  ei_pt_col <- rlang::ensym(ei_pt_col)
+#
+#   df_all <- df_builder_ae(df_pat_grp = df_pat_grp,
+#                           df_pat_llt = df_pat_llt,
+#                           ref_grp = ref_grp)
+
   df_all <- df_builder_ae(df_pat_grp = df_pat_grp,
                           df_pat_llt = df_pat_llt,
+                          id_col = rlang::as_string(id_col),
+                          group_col = rlang::as_string(group_col),
+                          ei_num_col = rlang::as_string(ei_num_col),
+                          ei_llt_col = rlang::as_string(ei_llt_col),
+                          ei_soc_col = rlang::as_string(ei_soc_col),
+                          ei_pt_col = rlang::as_string(ei_pt_col),
                           ref_grp = ref_grp)
 
   grp_levels <- levels(df_all$grp)
