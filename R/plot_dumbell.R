@@ -5,11 +5,14 @@
 #' across different patient groups. The plot includes the total number of adverse events,
 #' the proportion of patients affected, and the risk difference with confidence intervals.
 #'
-#' @param df_pat_llt A data frame with USUBJID (subject ID), EINUM (AE ID),
-#' EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
-#' EIGRDM (severity grade)
-#' @param df_pat_grp A data frame of patient groups. Must contain columns `USUBJID ` (patient ID)
-#' and `RDGRPNAME` (group assignment).
+#' @param df_pat_llt A dataframe with columns: USUBJID (patient id), EINUM (AE id), llt (AE LLT), pt (AE PT), soc (AE SOC)
+#' @param df_pat_grp A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).
+#' @param id_col Name of the patient ID column (default: "USUBJID").
+#' @param group_col Name of the randomization group column (default: "RDGRPNAME").
+#' @param ei_num_col Name of the AE id column (default: "EINUM").
+#' @param ei_llt_col Name of the AE LLT column (default: "EILLTN").
+#' @param ei_soc_col Name of the AE SOC column (default: "EISOCPN").
+#' @param ei_pt_col Name of the AE PT column (default: "EIPTN").
 #' @param ref_grp (Optional) A reference group for comparisons. Defaults to the first group in `df_pat_grp`.
 #' @param colors_arm A vector of colors for the patient groups. Defaults to `c("#1b9e77", "#7570b3")`.
 #' @param color_label A string specifying the legend label for the groups. Defaults to `"Arm"`.
@@ -38,39 +41,106 @@
 #' @export
 plot_dumbell <- function(df_pat_grp,
                          df_pat_llt,
+                         id_col = "USUBJID",
+                         group_col = "RDGRPNAME",
+                         ei_num_col = "EINUM",
+                         ei_llt_col = "EILLTN",
+                         ei_soc_col = "EISOCPN",
+                         ei_pt_col = "EIPTN",
                          ref_grp = NULL,
                          colors_arm = c("#1b9e77", "#7570b3"),
                          color_label = "Arm"){
 
+
+  id_col <- rlang::ensym(id_col)
+  group_col <- rlang::ensym(group_col)
+  ei_num_col <- rlang::ensym(ei_num_col)
+  ei_llt_col <- rlang::ensym(ei_llt_col)
+  ei_soc_col <- rlang::ensym(ei_soc_col)
+  ei_pt_col <- rlang::ensym(ei_pt_col)
+
   ########## Prepare dataframe
+#
+#   df_all <- df_builder_ae(df_pat_grp = df_pat_grp,
+#                           df_pat_llt = df_pat_llt,
+#                           ref_grp = ref_grp)
 
   df_all <- df_builder_ae(df_pat_grp = df_pat_grp,
                           df_pat_llt = df_pat_llt,
+                          id_col = rlang::as_string(id_col),
+                          group_col = rlang::as_string(group_col),
+                          ei_num_col = rlang::as_string(ei_num_col),
+                          ei_llt_col = rlang::as_string(ei_llt_col),
+                          ei_soc_col = rlang::as_string(ei_soc_col),
+                          ei_pt_col = rlang::as_string(ei_pt_col),
                           ref_grp = ref_grp)
+
 
   df_vline <- data.frame(xintercept = 0,
                          facet = "Risk difference with 95% CI")
 
   ########## Plot
 
-  p <- ggplot(mapping = aes(y = EIPTN)) +
-    geom_point(df_all |> filter(facet == "Prop. of patients"),
-               mapping = aes(x = freq_pat, color = RDGRPNAME, shape = RDGRPNAME)) +
-    geom_text(df_all |> filter(facet == "Total nb of AE"),
+  # p <- ggplot(mapping = aes(y = EIPTN)) +
+  #   geom_point(df_all |> filter(facet == "Prop. of patients"),
+  #              mapping = aes(x = freq_pat, color = RDGRPNAME, shape = RDGRPNAME)) +
+  #   geom_text(df_all |> filter(facet == "Total nb of AE"),
+  #             mapping = aes(label = nb_ei, x = grp_num,
+  #                           color = RDGRPNAME)) +
+  #   geom_point(df_all |> filter(facet == "Risk difference with 95% CI"),
+  #              mapping = aes(x = RD)) +
+  #   geom_vline(data = df_vline, mapping = aes(xintercept = 0),
+  #              color = "red", lty = 2) +
+  #   geom_text(df_all |> filter(facet == "Risk difference with 95% CI"),
+  #             mapping = aes(x = CIsup, label = significant_label),
+  #             color = "red", nudge_x = 0.1) +
+  #   geom_errorbarh(df_all |> filter(facet == "Risk difference with 95% CI"),
+  #                  mapping = aes(xmin = CIinf, xmax = CIsup),
+  #                  height = 0) +
+  #   scale_color_manual(values = colors_arm) +
+  #   facet_grid(EISOCPN ~ facet, scales = "free", space = "free", switch = "both") +
+  #   theme_bw() +
+  #   theme(legend.position="bottom",
+  #         legend.text = element_text(size=10),
+  #         axis.line.x = element_line(color = "black", linetype = 1),
+  #         axis.line.y = element_line(color = "black", linetype = 1),
+  #         axis.ticks.y = element_blank(),
+  #         axis.text = element_text(size = 10),
+  #         axis.title.x = element_text(size=12),
+  #         strip.text.y.left = element_text(angle = 0, size = 10, face = "bold"),
+  #         strip.text.x.bottom = element_text(angle = 0, size = 10, face = "bold"),
+  #         strip.placement = "outside",
+  #         strip.background = element_rect(fill = "#F5F5F5", color = "white"),
+  #         panel.spacing = unit(10,"pt"),
+  #         panel.border = element_rect(color = "lightgrey", fill = NA)) +
+  #   ggh4x::facetted_pos_scales(x = list(scale_x_continuous(labels = scales::label_percent()),
+  #                                       scale_x_continuous(),
+  #                                       scale_x_continuous(limits = c(-0.5, 1.5),
+  #                                                          minor_breaks = NULL,
+  #                                                          breaks = c(0, 1),
+  #                                                          labels = levels(df_all$RDGRPNAME)))) +
+  #   ggh4x::force_panelsizes(rows = c(1, 1),
+  #                           cols = c(2, 2, 1)) +
+  #   labs(x = "", y = "", color = color_label, shape = color_label)
+
+  p <- ggplot(mapping = aes(y = pt)) +
+    geom_point(df_all |> dplyr::filter(facet == "Prop. of patients"),
+               mapping = aes(x = freq_pat, color = grp, shape = grp)) +
+    geom_text(df_all |> dplyr::filter(facet == "Total nb of AE"),
               mapping = aes(label = nb_ei, x = grp_num,
-                            color = RDGRPNAME)) +
-    geom_point(df_all |> filter(facet == "Risk difference with 95% CI"),
+                            color = grp)) +
+    geom_point(df_all |> dplyr::filter(facet == "Risk difference with 95% CI"),
                mapping = aes(x = RD)) +
     geom_vline(data = df_vline, mapping = aes(xintercept = 0),
                color = "red", lty = 2) +
-    geom_text(df_all |> filter(facet == "Risk difference with 95% CI"),
+    geom_text(df_all |> dplyr::filter(facet == "Risk difference with 95% CI"),
               mapping = aes(x = CIsup, label = significant_label),
               color = "red", nudge_x = 0.1) +
-    geom_errorbarh(df_all |> filter(facet == "Risk difference with 95% CI"),
+    geom_errorbarh(df_all |> dplyr::filter(facet == "Risk difference with 95% CI"),
                    mapping = aes(xmin = CIinf, xmax = CIsup),
                    height = 0) +
     scale_color_manual(values = colors_arm) +
-    facet_grid(EISOCPN ~ facet, scales = "free", space = "free", switch = "both") +
+    facet_grid(soc ~ facet, scales = "free", space = "free", switch = "both") +
     theme_bw() +
     theme(legend.position="bottom",
           legend.text = element_text(size=10),
@@ -90,10 +160,11 @@ plot_dumbell <- function(df_pat_grp,
                                         scale_x_continuous(limits = c(-0.5, 1.5),
                                                            minor_breaks = NULL,
                                                            breaks = c(0, 1),
-                                                           labels = levels(df_all$RDGRPNAME)))) +
+                                                           labels = levels(df_all$grp)))) +
     ggh4x::force_panelsizes(rows = c(1, 1),
                             cols = c(2, 2, 1)) +
     labs(x = "", y = "", color = color_label, shape = color_label)
+
 
   return(p)
 

@@ -7,18 +7,33 @@
 plot_dumbell(
   df_pat_grp,
   df_pat_llt,
+  id_col = "USUBJID",
+  group_col = "RDGRPNAME",
+  ei_num_col = "EINUM",
+  ei_llt_col = "EILLTN",
+  ei_soc_col = "EISOCPN",
+  ei_pt_col = "EIPTN",
   ref_grp = NULL,
   colors_arm = c("#1b9e77", "#7570b3"),
   color_label = "Arm"
 )
 }
 \arguments{
-\item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{USUBJID } (patient ID)
-and \code{RDGRPNAME} (group assignment).}
+\item{df_pat_grp}{A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).}
 
-\item{df_pat_llt}{A data frame with USUBJID (subject ID), EINUM (AE ID),
-EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
-EIGRDM (severity grade)}
+\item{df_pat_llt}{A dataframe with columns: USUBJID (patient id), EINUM (AE id), llt (AE LLT), pt (AE PT), soc (AE SOC)}
+
+\item{id_col}{Name of the patient ID column (default: "USUBJID").}
+
+\item{group_col}{Name of the randomization group column (default: "RDGRPNAME").}
+
+\item{ei_num_col}{Name of the AE id column (default: "EINUM").}
+
+\item{ei_llt_col}{Name of the AE LLT column (default: "EILLTN").}
+
+\item{ei_soc_col}{Name of the AE SOC column (default: "EISOCPN").}
+
+\item{ei_pt_col}{Name of the AE PT column (default: "EIPTN").}
 
 \item{ref_grp}{(Optional) A reference group for comparisons. Defaults to the first group in \code{df_pat_grp}.}
 

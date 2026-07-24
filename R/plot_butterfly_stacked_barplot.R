@@ -2,25 +2,22 @@ utils::globalVariables(c("nb_pat_per_group", "freq_ei"))
 
 #' Butterfly Stacked Bar Plot for Adverse Event Grades
 #'
-#' Creates a butterfly stacked bar plot to visualize the frequency of adverse event (AE) grades 
+#' Creates a butterfly stacked bar plot to visualize the frequency of adverse event (AE) grades
 #' across patient groups, with system organ class (SOC) and preferred terms (PT) as labels.
 #'
-#' @param df_pat_llt A data frame with USUBJID (subject ID), EINUM (AE ID),
-#' EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
-#' EIGRDM (severity grade)
-#' @param df_pat_grp A data frame of patient groups. Must contain columns `USUBJID ` (patient ID) 
-#' and `RDGRPNAME` (group assignment).
-#' @param ref_grp A character string specifying the reference group (used for alignment in the plot). 
+#' @param df_pat_llt A dataframe with columns: USUBJID (patient id), EINUM (AE id), llt (AE LLT), pt (AE PT), soc (AE SOC) and EIGRDM (severity grade)
+#' @param df_pat_grp A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).
+#' @param ref_grp A character string specifying the reference group (used for alignment in the plot).
 #'   If NULL (default), the first level of `df_pat_grp$grp` is used.
-#' @param max_text_width An integer specifying the maximum width (in characters) for SOC labels 
+#' @param max_text_width An integer specifying the maximum width (in characters) for SOC labels
 #'   before wrapping to the next line. Default is 9.
-#' @param vec_fill_color A vector of colors used for filling the AE grade bars. Default is 
+#' @param vec_fill_color A vector of colors used for filling the AE grade bars. Default is
 #'   `viridis::viridis(n = 4)`.
 #'
 #' @return A ggplot2 object representing the butterfly stacked bar plot.
 #'
-#' @details 
-#' The function processes input data to calculate the frequency of adverse events per patient 
+#' @details
+#' The function processes input data to calculate the frequency of adverse events per patient
 #' group and AE grade. It then generates a stacked bar plot where:
 #' \itemize{
 #'   \item The x-axis represents the percentage of patients experiencing an AE.
@@ -30,16 +27,16 @@ utils::globalVariables(c("nb_pat_per_group", "freq_ei"))
 #'   \item The left and right panels correspond to different patient groups.
 #' }
 #'
-#' The function utilizes the `ggh4x` package to adjust panel sizes and axes for a symmetrical 
+#' The function utilizes the `ggh4x` package to adjust panel sizes and axes for a symmetrical
 #' butterfly plot.
 #'
 #' @examples
-#' 
+#'
 #' df_pat_grp <- data.frame(
 #'  USUBJID = paste0("ID_", 1:10),
 #'  RDGRPNAME = c(rep("A", 5), rep("B", 5))
 #' )
-#' 
+#'
 #' df_pat_llt <- data.frame(
 #'   USUBJID = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
 #'   EINUM = c(1, 2, 1, 1, 1),
@@ -63,34 +60,34 @@ plot_butterfly_stacked_barplot <- function(df_pat_grp,
                                            ref_grp = NULL,
                                            max_text_width = 9,
                                            vec_fill_color = viridis::viridis(n = 4)) {
-  
+
   if (is.null(ref_grp)) {
     ref_grp <- levels(df_pat_grp$RDGRPNAME)[1]
     if (is.null(ref_grp)) {
       ref_grp <- df_pat_grp$RDGRPNAME[1]
     }
   }
-  
-  df_nb_pat_per_group <- df_pat_grp |> 
-    group_by(RDGRPNAME) |> 
+
+  df_nb_pat_per_group <- df_pat_grp |>
+    group_by(RDGRPNAME) |>
     summarise(nb_pat_per_group = n())
-  
+
   df_label_pt_pt <- df_pat_llt |>
-    distinct(EISOCPN, EIPTN) |> 
+    distinct(EISOCPN, EIPTN) |>
     mutate(RDGRPNAME = "PT")
-  
-  df_plot <- df_pat_llt |> 
-    left_join(df_pat_grp, by = "USUBJID") |> 
-    group_by(RDGRPNAME, EIPTN, EISOCPN, EIGRDM) |> 
-    summarise(nb_ei = n_distinct(USUBJID, EINUM), .groups = "drop") |> 
-    left_join(df_nb_pat_per_group, by = "RDGRPNAME") |> 
-    bind_rows(df_label_pt_pt) |> 
+
+  df_plot <- df_pat_llt |>
+    left_join(df_pat_grp, by = "USUBJID") |>
+    group_by(RDGRPNAME, EIPTN, EISOCPN, EIGRDM) |>
+    summarise(nb_ei = n_distinct(USUBJID, EINUM), .groups = "drop") |>
+    left_join(df_nb_pat_per_group, by = "RDGRPNAME") |>
+    bind_rows(df_label_pt_pt) |>
     mutate(freq_ei = nb_ei / nb_pat_per_group,
            EIGRDM = as.factor(EIGRDM),
            RDGRPNAME = as.factor(RDGRPNAME),
            RDGRPNAME = forcats::fct_relevel(RDGRPNAME, ref_grp, "PT"),
            EIPTN = purrr::map_chr(EIPTN, ~ paste(strwrap(.x, width = max_text_width), collapse = "\n")))
-  
+
   p <- ggplot(data = df_plot |> filter(RDGRPNAME != 'PT'),
               mapping = aes(x = freq_ei, y = EIPTN, fill = EIGRDM)) +
     geom_bar(position = position_stack(), stat = "identity") +
@@ -125,6 +122,6 @@ plot_butterfly_stacked_barplot <- function(df_pat_grp,
           panel.spacing = unit(10, "pt"),
           panel.border = element_rect(color = "lightgrey", fill = NA)) +
     labs(x = "Percent of patients", y = "", fill = "Grade")
-  
+
   return(p)
 }

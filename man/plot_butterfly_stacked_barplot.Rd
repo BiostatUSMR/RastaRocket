@@ -13,12 +13,9 @@ plot_butterfly_stacked_barplot(
 )
 }
 \arguments{
-\item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{USUBJID } (patient ID)
-and \code{RDGRPNAME} (group assignment).}
+\item{df_pat_grp}{A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).}
 
-\item{df_pat_llt}{A data frame with USUBJID (subject ID), EINUM (AE ID),
-EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
-EIGRDM (severity grade)}
+\item{df_pat_llt}{A dataframe with columns: USUBJID (patient id), EINUM (AE id), llt (AE LLT), pt (AE PT), soc (AE SOC) and EIGRDM (severity grade)}
 
 \item{ref_grp}{A character string specifying the reference group (used for alignment in the plot).
 If NULL (default), the first level of \code{df_pat_grp$grp} is used.}
