@@ -3,8 +3,8 @@
 #'
 #' A function to describe AE by soc and pt
 #'
-#' @param df_pat_grp A dataframe with two columns: id_pat and grp (the rct arm)
-#' @param df_pat_llt A dataframe with two columns: id_pat (patient id), num_ae (AE id), llt (AE LLT), pt (AE PT), soc (AE)
+#' @param df_pat_grp A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).
+#' @param df_pat_llt A dataframe with columns: USUBJID (patient id), EINUM (AE id), llt (AE LLT), pt (AE PT), soc (AE SOC)
 #' @param language 'fr' default or 'en'
 #' @param order_by_freq Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.
 #' @param digits Number of digits for percentages

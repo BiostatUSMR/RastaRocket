@@ -19,9 +19,9 @@ desc_ei_per_pt(
 )
 }
 \arguments{
-\item{df_pat_grp}{A dataframe with two columns: id_pat and grp (the rct arm)}
+\item{df_pat_grp}{A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).}
 
-\item{df_pat_llt}{A dataframe with two columns: id_pat (patient id), num_ae (AE id), llt (AE LLT), pt (AE PT), soc (AE)}
+\item{df_pat_llt}{A dataframe with columns: USUBJID (patient id), EINUM (AE id), llt (AE LLT), pt (AE PT), soc (AE SOC)}
 
 \item{id_col}{Patient id column (default: "USUBJID").}
 

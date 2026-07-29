@@ -7,18 +7,36 @@
 plot_butterfly_stacked_barplot(
   df_pat_grp,
   df_pat_llt,
+  id_col = "USUBJID",
+  group_col = "RDGRPNAME",
+  ei_num_col = "EINUM",
+  ei_pt_col = "EIPTN",
+  ei_soc_col = "EISOCPN",
+  ei_grdm_col = "EIGRDM",
+  ei_llt_col = "EILLTN",
   ref_grp = NULL,
   max_text_width = 9,
   vec_fill_color = viridis::viridis(n = 4)
 )
 }
 \arguments{
-\item{df_pat_grp}{A data frame of patient groups. Must contain columns \code{USUBJID } (patient ID)
-and \code{RDGRPNAME} (group assignment).}
+\item{df_pat_grp}{A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).}
 
-\item{df_pat_llt}{A data frame with USUBJID (subject ID), EINUM (AE ID),
-EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
-EIGRDM (severity grade)}
+\item{df_pat_llt}{A dataframe with columns: USUBJID (patient id), EINUM (AE id), llt (AE LLT), pt (AE PT), soc (AE SOC) and EIGRDM (severity grade)}
+
+\item{id_col}{Name of the patient ID column (default: "USUBJID").}
+
+\item{group_col}{Name of the randomization group column (default: "RDGRPNAME").}
+
+\item{ei_num_col}{Name of the AE id column (default: "EINUM").}
+
+\item{ei_pt_col}{Name of the AE PT column (default: "EIPTN").}
+
+\item{ei_soc_col}{Name of the AE SOC column (default: "EISOCPN").}
+
+\item{ei_grdm_col}{AE grade column (default: "EIGRDM").}
+
+\item{ei_llt_col}{Name of the AE LLT column (default: "EILLTN").}
 
 \item{ref_grp}{A character string specifying the reference group (used for alignment in the plot).
 If NULL (default), the first level of \code{df_pat_grp$grp} is used.}

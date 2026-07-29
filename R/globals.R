@@ -40,6 +40,8 @@ utils::globalVariables(c("EILLTN",
 
 # plot_dumbell.R
 utils::globalVariables(c("facet", "grp_num"))
+#df_builder_ae.R
+utils::globalVariables(c("ei_num"))
 
 
 # custom_format.R

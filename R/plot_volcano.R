@@ -4,15 +4,19 @@ utils::globalVariables(c("minus_log10_pval", "increased_risk"))
 #'
 #' Generates a volcano plot to visualize the association between adverse events and patient groups.
 #'
-#' @param df_pat_llt A data frame with USUBJID (subject ID), EINUM (AE ID),
-#' EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and
-#' EIGRDM (severity grade)
-#' @param df_pat_grp A data frame of patient groups. Must contain columns `USUBJID ` (patient ID) 
-#' and `RDGRPNAME` (group assignment).
-#' @param colors_arm A character vector of length two specifying the colors for the two patient groups in the plot. 
+#' @param df_pat_llt A data frame with USUBJID (subject ID), EINUM (AE ID), EINUM (AE id),
+#' EILLTN (LLT identifier), EIPTN (PT identifier), EISOCPN (soc identifier) and EIGRDM (severity grade)
+#' @param df_pat_grp A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).
+#' @param id_col Name of the patient ID column (default: "USUBJID").
+#' @param group_col Name of the randomization group column (default: "RDGRPNAME").
+#' @param ei_num_col Name of the AE id column (default: "EINUM").
+#' @param ei_llt_col Name of the AE LLT column (default: "EILLTN").
+#' @param ei_soc_col Name of the AE SOC column (default: "EISOCPN").
+#' @param ei_pt_col Name of the AE PT column (default: "EIPTN").
+#' @param colors_arm A character vector of length two specifying the colors for the two patient groups in the plot.
 #'   Default is \code{c("#1b9e77", "#7570b3")}.
 #' @param ref_grp (Optional) A reference group for comparisons. Defaults to the first group in `df_pat_grp`.
-#' @param size A character string specifying the metric used for point sizes in the plot. 
+#' @param size A character string specifying the metric used for point sizes in the plot.
 #'   Options are:
 #'   \itemize{
 #'     \item \code{"nb_pat"}: Number of patients (default).
@@ -21,8 +25,8 @@ utils::globalVariables(c("minus_log10_pval", "increased_risk"))
 #'
 #' @return A ggplot2 object representing the volcano plot.
 #'
-#' @details 
-#' The function first processes input data using `df_builder_ae()`, then calculates relevant statistics 
+#' @details
+#' The function first processes input data using `df_builder_ae()`, then calculates relevant statistics
 #' such as risk difference (\code{RD}) and p-values. The volcano plot displays:
 #' \itemize{
 #'   \item \code{RD} on the x-axis (risk difference between groups).
@@ -37,7 +41,7 @@ utils::globalVariables(c("minus_log10_pval", "increased_risk"))
 #'  USUBJID = paste0("ID_", 1:10),
 #'  RDGRPNAME = c(rep("A", 5), rep("B", 5))
 #' )
-#' 
+#'
 #' df_pat_llt <- data.frame(
 #'   USUBJID = c("ID_1", "ID_1", "ID_2", "ID_4", "ID_9"),
 #'   EINUM = c(1, 2, 1, 1, 1),
@@ -47,7 +51,7 @@ utils::globalVariables(c("minus_log10_pval", "increased_risk"))
 #'   "Infections", "Infections"),
 #'   EIGRDM = c(1, 3, 4, 2, 4)
 #' )
-#' 
+#'
 
 #' plot_volcano(df_pat_grp, df_pat_llt)
 #'
@@ -58,36 +62,59 @@ utils::globalVariables(c("minus_log10_pval", "increased_risk"))
 #' @export
 plot_volcano <- function(df_pat_grp,
                          df_pat_llt,
+                         id_col = "USUBJID",
+                         group_col = "RDGRPNAME",
+                         ei_num_col = "EINUM",
+                         ei_llt_col = "EILLTN",
+                         ei_soc_col = "EISOCPN",
+                         ei_pt_col = "EIPTN",
                          ref_grp = NULL,
                          colors_arm = c("#1b9e77", "#7570b3"),
                          size = "nb_pat") {
-  
+
   vec_label_point_size = list(nb_pat = "Nb of patients",
                               nb_ei = "Nb of AE")
-  
+
+  id_col <- rlang::ensym(id_col)
+  group_col <- rlang::ensym(group_col)
+  ei_num_col <- rlang::ensym(ei_num_col)
+  ei_llt_col <- rlang::ensym(ei_llt_col)
+  ei_soc_col <- rlang::ensym(ei_soc_col)
+  ei_pt_col <- rlang::ensym(ei_pt_col)
+#
+#   df_all <- df_builder_ae(df_pat_grp = df_pat_grp,
+#                           df_pat_llt = df_pat_llt,
+#                           ref_grp = ref_grp)
+
   df_all <- df_builder_ae(df_pat_grp = df_pat_grp,
                           df_pat_llt = df_pat_llt,
+                          id_col = rlang::as_string(id_col),
+                          group_col = rlang::as_string(group_col),
+                          ei_num_col = rlang::as_string(ei_num_col),
+                          ei_llt_col = rlang::as_string(ei_llt_col),
+                          ei_soc_col = rlang::as_string(ei_soc_col),
+                          ei_pt_col = rlang::as_string(ei_pt_col),
                           ref_grp = ref_grp)
-  
-  grp_levels <- levels(df_all$RDGRPNAME)
-  
-  df_volcano <- df_all |> 
-    group_by(EIPTN, EISOCPN) |> 
+
+  grp_levels <- levels(df_all$grp)
+
+  df_volcano <- df_all |>
+    group_by(pt, soc) |>
     summarise(p_val = na.omit(p_val),
               RD = na.omit(RD),
               nb_pat = sum(nb_pat, na.rm = TRUE),
               nb_ei = sum(nb_ei, na.rm = TRUE),
-              .groups = "drop") |> 
+              .groups = "drop") |>
     mutate(increased_risk = if_else(RD > 0,
                                     glue::glue("Increased risk in group {grp_levels[1]}"),
                                     glue::glue("Increased risk in group {grp_levels[2]}")),
            minus_log10_pval = -log10(p_val))
-  
-  p <- df_volcano |> 
+
+  p <- df_volcano |>
     ggplot(mapping = aes(x = RD, y = minus_log10_pval,
                          color = increased_risk,
                          size = .data[[size]],
-                         label = EIPTN)) +
+                         label = pt)) +
     geom_point(alpha = 0.4) +
     ggrepel::geom_text_repel(size = 3,
                              color = "black",
@@ -111,6 +138,6 @@ plot_volcano <- function(df_pat_grp,
     labs(x = "Risk difference", y = "-log10(p-value)",
          color = "",
          size = vec_label_point_size[[size]])
-  
+
   return(p)
 }
