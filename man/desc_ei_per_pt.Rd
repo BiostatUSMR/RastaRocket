@@ -2,7 +2,9 @@
 % Please edit documentation in R/desc_ei_per_pt.R
 \name{desc_ei_per_pt}
 \alias{desc_ei_per_pt}
-\title{desc_ei_per_pt}
+\alias{desc_ei_per_pt.default}
+\alias{desc_ei_per_pt.ae_data}
+\title{Describe adverse events by soc and pt}
 \usage{
 desc_ei_per_pt(
   df_pat_grp,
@@ -16,6 +18,34 @@ desc_ei_per_pt(
   language = "fr",
   order_by_freq = TRUE,
   digits = 1
+)
+
+\method{desc_ei_per_pt}{default}(
+  df_pat_grp,
+  df_pat_llt,
+  id_col = "USUBJID",
+  group_col = "RDGRPNAME",
+  ei_num_col = "EINUM",
+  ei_llt_col = "EILLTN",
+  ei_soc_col = "EISOCPN",
+  ei_pt_col = "EIPTN",
+  language = "fr",
+  order_by_freq = TRUE,
+  digits = 1
+)
+
+\method{desc_ei_per_pt}{ae_data}(
+  df_pat_grp,
+  df_pat_llt,
+  id_col = "USUBJID",
+  group_col = "RDGRPNAME",
+  ei_num_col = "EINUM",
+  ei_llt_col = "EILLTN",
+  ei_soc_col = "EISOCPN",
+  ei_pt_col = "EIPTN",
+  language = df_pat_grp$language,
+  order_by_freq = df_pat_grp$order_by_freq,
+  digits = df_pat_grp$digits
 )
 }
 \arguments{
@@ -68,5 +98,13 @@ df_pat_llt <- data.frame(USUBJID = c("ID_1", "ID_1",
 
 desc_ei_per_pt(df_pat_grp = df_pat_grp,
                df_pat_llt = df_pat_llt)
+
+ ####
+ ae <- ae_data(df_pat_grp, df_pat_llt,
+                id_col = USUBJID, group_col = RDGRPNAME,
+                ei_num_col = EINUM, ei_llt_col = EILLTN,
+                ei_soc_col = EISOCPN, ei_pt_col = EIPTN)
+
+ desc_ei_per_pt(ae)
 
 }

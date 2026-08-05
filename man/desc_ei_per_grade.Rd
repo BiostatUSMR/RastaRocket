@@ -2,7 +2,9 @@
 % Please edit documentation in R/desc_ei_per_grade.R
 \name{desc_ei_per_grade}
 \alias{desc_ei_per_grade}
-\title{desc_ei_per_grade}
+\alias{desc_ei_per_grade.default}
+\alias{desc_ei_per_grade.ae_grade_data}
+\title{Describe adverse events by grade}
 \usage{
 desc_ei_per_grade(
   df_pat_grp,
@@ -15,6 +17,32 @@ desc_ei_per_grade(
   severity = TRUE,
   digits = 1,
   language = "fr"
+)
+
+\method{desc_ei_per_grade}{default}(
+  df_pat_grp,
+  df_pat_grade,
+  id_col = "USUBJID",
+  group_col = "RDGRPNAME",
+  ei_num_col = "EINUM",
+  ei_grdm_col = "EIGRDM",
+  ei_grav_col = "EIGRAV",
+  severity = TRUE,
+  digits = 1,
+  language = "fr"
+)
+
+\method{desc_ei_per_grade}{ae_grade_data}(
+  df_pat_grp,
+  df_pat_grade,
+  id_col = "USUBJID",
+  group_col = "RDGRPNAME",
+  ei_num_col = "EINUM",
+  ei_grdm_col = "EIGRDM",
+  ei_grav_col = "EIGRAV",
+  severity = df_pat_grp$severity,
+  digits = df_pat_grp$digits,
+  language = df_pat_grp$language
 )
 }
 \arguments{
@@ -68,5 +96,15 @@ df_pat_grade <- data.frame(USUBJID = c("ID_1", "ID_1",
 desc_ei_per_grade(df_pat_grp = df_pat_grp,
                   df_pat_grade = df_pat_grade)
 
+####
+ae_grade <- ae_grade_data(df_pat_grp = df_pat_grp,
+                          df_pat_grade = df_pat_grade,
+                          id_col = "USUBJID",
+                          group_col = "RDGRPNAME",
+                          ei_num_col = "EINUM",
+                          ei_grdm_col = "EIGRDM",
+                          ei_grav_col = "EIGRAV")
+
+ desc_ei_per_grade(ae_grade)
 
 }

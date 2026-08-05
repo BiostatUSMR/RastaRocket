@@ -1,3 +1,30 @@
+#' Describe adverse events by grade
+#'
+#' @param df_pat_grp A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).
+#' @param df_pat_grade A dataframe with four columns: USUBJID (Patient id), EINUM (the AE id), EIGRDM (the AE grade) and EIGRAV (the AE severity which must be "Grave" and "Non grave").
+#' @param id_col  Patient id column (default: "USUBJID").
+#' @param group_col group column, the rct arm (default: "RDGRPNAME").
+#' @param ei_num_col AE id column (default: "EINUM").
+#' @param ei_grdm_col AE grade column (default: "EIGRDM").
+#' @param ei_grav_col AE severity column (default: "EIGRAV").
+#' @param severity A boolean to show severe adverse event line or not (default: TRUE).
+#' @param digits Number of digits for percentages
+#' @param language 'fr' default or 'en'
+
+#' @export
+#'
+desc_ei_per_grade <- function(df_pat_grp,
+                              df_pat_grade,
+                              id_col = "USUBJID",
+                              group_col = "RDGRPNAME",
+                              ei_num_col = "EINUM",
+                              ei_grdm_col = "EIGRDM",
+                              ei_grav_col = "EIGRAV",
+                              severity = TRUE,
+                              digits = 1,
+                              language = "fr") {
+  UseMethod("desc_ei_per_grade")
+}
 
 #' desc_ei_per_grade
 #'
@@ -15,6 +42,7 @@
 #' @param language 'fr' default or 'en'
 #'
 #' @return A gt table summarizing the AE by grade.
+#' @rdname desc_ei_per_grade
 #' @export
 #'
 #' @importFrom stats na.omit
@@ -43,10 +71,20 @@
 #' desc_ei_per_grade(df_pat_grp = df_pat_grp,
 #'                   df_pat_grade = df_pat_grade)
 #'
+#' ####
+#' ae_grade <- ae_grade_data(df_pat_grp = df_pat_grp,
+#'                           df_pat_grade = df_pat_grade,
+#'                           id_col = "USUBJID",
+#'                           group_col = "RDGRPNAME",
+#'                           ei_num_col = "EINUM",
+#'                           ei_grdm_col = "EIGRDM",
+#'                           ei_grav_col = "EIGRAV")
+#'
+#'  desc_ei_per_grade(ae_grade)
 #'
 
 
-desc_ei_per_grade <- function(df_pat_grp,
+desc_ei_per_grade.default <- function(df_pat_grp,
                               df_pat_grade,
                               id_col = "USUBJID",
                               group_col = "RDGRPNAME",
@@ -322,5 +360,80 @@ desc_ei_per_grade_df_to_gt <- function(df_wide,
     )
 
   return(res)
+}
+
+#' Create an adverse-event grade analysis data object
+#'
+#' Save the data and column required by `desc_ei_per_grade()`.
+#'
+#' @param df_pat_grp A data frame of patient IDs and treatment groups.
+#' @param df_pat_grade A data frame of adverse-event grades.
+#' @param id_col Patient identifier column in both data frames.
+#' @param group_col Treatment group column in `df_pat_grp`.
+#' @param ei_num_col Adverse-event identifier column in `df_pat_grade`.
+#' @param ei_grdm_col AE grade column in `df_pat_grade`.
+#' @param ei_grav_col AE severity column in `df_pat_grade`.
+#' @param severity Whether to include the severe-AE row.
+#' @param digits Number of digits used for percentages.
+#' @param language Output language, either `"fr"` or `"en"`.
+#'
+#' @return An object of class `ae_grade_data`.
+#' @export
+#'
+ae_grade_data <- function(df_pat_grp,
+                          df_pat_grade,
+                          id_col = "USUBJID",
+                          group_col = "RDGRPNAME",
+                          ei_num_col = "EINUM",
+                          ei_grdm_col = "EIGRDM",
+                          ei_grav_col = "EIGRAV",
+                          severity = TRUE,
+                          digits = 1,
+                          language = "fr") {
+  structure(
+    list(
+      df_pat_grp = df_pat_grp,
+      df_pat_grade = df_pat_grade,
+      id_col = rlang::as_string(rlang::ensym(id_col)),
+      group_col = rlang::as_string(rlang::ensym(group_col)),
+      ei_num_col = rlang::as_string(rlang::ensym(ei_num_col)),
+      ei_grdm_col = rlang::as_string(rlang::ensym(ei_grdm_col)),
+      ei_grav_col = rlang::as_string(rlang::ensym(ei_grav_col)),
+      severity = severity,
+      digits = digits,
+      language = language
+    ),
+    class = "ae_grade_data"
+  )
+}
+
+#' @export
+#' @rdname desc_ei_per_grade
+#'
+desc_ei_per_grade.ae_grade_data <- function(df_pat_grp,
+                                            df_pat_grade,
+                                            id_col = "USUBJID",
+                                            group_col = "RDGRPNAME",
+                                            ei_num_col = "EINUM",
+                                            ei_grdm_col = "EIGRDM",
+                                            ei_grav_col = "EIGRAV",
+                                            severity = df_pat_grp$severity,
+                                            digits = df_pat_grp$digits,
+                                            language = df_pat_grp$language) {
+  do.call(
+    desc_ei_per_grade.default,
+    list(
+      df_pat_grp = df_pat_grp$df_pat_grp,
+      df_pat_grade = df_pat_grp$df_pat_grade,
+      id_col = df_pat_grp$id_col,
+      group_col = df_pat_grp$group_col,
+      ei_num_col = df_pat_grp$ei_num_col,
+      ei_grdm_col = df_pat_grp$ei_grdm_col,
+      ei_grav_col = df_pat_grp$ei_grav_col,
+      severity = severity,
+      digits = digits,
+      language = language
+    )
+  )
 }
 

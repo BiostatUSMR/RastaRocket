@@ -1,3 +1,35 @@
+#' Describe adverse events by soc and pt
+#'
+#' @param df_pat_grp A dataframe with two columns: USUBJID (Patient id) and RDGRPNAME (the RCT arm).
+#' @param df_pat_llt A dataframe with columns: USUBJID (patient id), EINUM (AE id), llt (AE LLT), pt (AE PT), soc (AE SOC)
+#' @param language 'fr' default or 'en'
+#' @param order_by_freq Logical. Should PT and SOC be ordered by frequency? Defaults to TRUE. If FALSE, PT and SOC are ordered alphabetically.
+#' @param digits Number of digits for percentages
+#' @param id_col Patient id column (default: "USUBJID").
+#' @param group_col group column, the rct arm (default: "RDGRPNAME").
+#' @param ei_num_col AE id column (default: "EINUM").
+#' @param ei_llt_col AE LLT column (default: "EILLTN").
+#' @param ei_soc_col AE SOC column (default: "EISOCPN").
+#' @param ei_pt_col AE PT column (default: "EIPTN")
+#'
+#' @export
+#'
+
+desc_ei_per_pt <- function(
+    df_pat_grp,
+    df_pat_llt,
+    id_col = "USUBJID",
+    group_col = "RDGRPNAME",
+    ei_num_col = "EINUM",
+    ei_llt_col = "EILLTN",
+    ei_soc_col = "EISOCPN",
+    ei_pt_col = "EIPTN",
+    language = "fr",
+    order_by_freq = TRUE,
+    digits = 1
+) {
+  UseMethod("desc_ei_per_pt")
+}
 
 #' desc_ei_per_pt
 #'
@@ -16,6 +48,7 @@
 #' @param ei_pt_col AE PT column (default: "EIPTN")
 #'
 #' @return A gt table
+#' @rdname desc_ei_per_pt
 #' @export
 #'
 #' @examples
@@ -40,7 +73,15 @@
 #' desc_ei_per_pt(df_pat_grp = df_pat_grp,
 #'                df_pat_llt = df_pat_llt)
 #'
-desc_ei_per_pt <- function(df_pat_grp,
+#'  ####
+#'  ae <- ae_data(df_pat_grp, df_pat_llt,
+#'                 id_col = USUBJID, group_col = RDGRPNAME,
+#'                 ei_num_col = EINUM, ei_llt_col = EILLTN,
+#'                 ei_soc_col = EISOCPN, ei_pt_col = EIPTN)
+#'
+#'  desc_ei_per_pt(ae)
+#'
+desc_ei_per_pt.default <- function(df_pat_grp,
                            df_pat_llt,
                            id_col = "USUBJID",
                            group_col = "RDGRPNAME",
@@ -343,3 +384,88 @@ desc_ei_per_pt_df_to_gt <- function(df_wide,
   return(res)
 }
 
+
+#' Create an AE data object
+#'
+#' Save the data and column required by `desc_ei_per_pt()`.
+#'
+#' @param df_pat_grp A data frame of patient IDs and treatment groups.
+#' @param df_pat_llt A data frame of adverse events.
+#' @param id_col Patient identifier column in both data frames.
+#' @param group_col Treatment group column in `df_pat_grp`.
+#' @param ei_num_col Adverse-event identifier column in `df_pat_llt`.
+#' @param ei_llt_col Lowest-level-term column in `df_pat_llt`.
+#' @param ei_soc_col System-organ-class column in `df_pat_llt`.
+#' @param ei_pt_col Preferred-term column in `df_pat_llt`.
+#' @param language Output language, either `"fr"` or `"en"`.
+#' @param order_by_freq Whether to order SOC and PT by frequency.
+#' @param digits Number of digits used for percentages.
+#'
+#' @return An object of class `ae_data`.
+#' @export
+#'
+ae_data <- function(df_pat_grp,
+                    df_pat_llt,
+                    id_col = "USUBJID",
+                    group_col = "RDGRPNAME",
+                    ei_num_col = "EINUM",
+                    ei_llt_col = "EILLTN",
+                    ei_soc_col = "EISOCPN",
+                    ei_pt_col = "EIPTN",
+                    language = "fr",
+                    order_by_freq = TRUE,
+                    digits = 1) {
+  structure(
+    list(
+      df_pat_grp = df_pat_grp,
+      df_pat_llt = df_pat_llt,
+      id_col = rlang::as_string(rlang::ensym(id_col)),
+      group_col = rlang::as_string(rlang::ensym(group_col)),
+      ei_num_col = rlang::as_string(rlang::ensym(ei_num_col)),
+      ei_llt_col = rlang::as_string(rlang::ensym(ei_llt_col)),
+      ei_soc_col = rlang::as_string(rlang::ensym(ei_soc_col)),
+      ei_pt_col = rlang::as_string(rlang::ensym(ei_pt_col)),
+      language = language,
+      order_by_freq = order_by_freq,
+      digits = digits
+    ),
+    class = "ae_data"
+  )
+}
+
+#' @export
+#' @rdname desc_ei_per_pt
+#'
+desc_ei_per_pt.ae_data <- function(
+    df_pat_grp,
+    df_pat_llt,
+    id_col = "USUBJID",
+    group_col = "RDGRPNAME",
+    ei_num_col = "EINUM",
+    ei_llt_col = "EILLTN",
+    ei_soc_col = "EISOCPN",
+    ei_pt_col = "EIPTN",
+    language = df_pat_grp$language,
+    order_by_freq = df_pat_grp$order_by_freq,
+    digits = df_pat_grp$digits
+) {
+
+
+
+  do.call(
+    desc_ei_per_pt.default,
+    list(
+      df_pat_grp = df_pat_grp$df_pat_grp,
+      df_pat_llt = df_pat_grp$df_pat_llt,
+      id_col = df_pat_grp$id_col,
+      group_col = df_pat_grp$group_col,
+      ei_num_col = df_pat_grp$ei_num_col,
+      ei_llt_col = df_pat_grp$ei_llt_col,
+      ei_soc_col = df_pat_grp$ei_soc_col,
+      ei_pt_col = df_pat_grp$ei_pt_col,
+      language = language,
+      order_by_freq = order_by_freq,
+      digits = digits
+    )
+  )
+}
