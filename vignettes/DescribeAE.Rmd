@@ -230,6 +230,8 @@ plot_butterfly_stacked_barplot(df_pat_llt = df_pat_llt,
 <!-- - Colors differentiate the severity of adverse events (by grade). -->
 <!-- - Separate facets display treatments and adverse events categorized by Preferred Term (PT). -->
 
+N.B: All functions are flexible with respect to variable names, allowing users to specify custom column names via function arguments.  
+
 # Conclusion
 
 The `DescribeAE` package provides a structured approach to summarizing and visualizing adverse events in clinical trials. By using `desc_ei_per_soc()` and `desc_ei_per_grade()`, researchers can:
