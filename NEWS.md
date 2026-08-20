@@ -1,3 +1,32 @@
+## Improvements
+
+- `plot_dumbell()`, `df_builder_ae()`, `plot_volcano()` and `plot_butterfly_stacked_barplot()`
+  - Made more flexible regarding variable names.
+  - Users can now specify custom column names through function arguments.
+  
+  
+- branch `f_class_objet_ei`
+
+Dans cette branche, j’ai initié la transition vers une programmation orientée objet en convertissant les fonctions `desc_ei_per_pt()`  et  `desc_ei_per_grade()` en génériques basées sur le système S3.
+
+- Pour `desc_ei_per_pt()`:
+  - `ae_data()` : constructeur de l’objet
+  - `desc_ei_per_pt()` : fonction générique S3
+  - `desc_ei_per_pt.default()` : implémentation par défaut, correspondant à l’appel original avec deux data frames. 
+  - `desc_ei_per_pt.ae_data()` : méthode spécifique pour l’objet ae_data
+  
+- Pour `desc_ei_per_grade()`:
+  - `ae_grade_data()` : constructeur de l’objet
+  - `desc_ei_per_grade()` : fonction générique S3
+  - `desc_ei_per_grade.default()` : implémentation par défaut, correspondant à l’appel original avec deux data frame.
+  - `desc_ei_per_grade.ae_grade_data()` : méthode spécifique pour l’objet `ae_grade_data`.
+
+  
+- Amélioration et développements en cours:
+  - Création d'un constructeur d’objet unique, intégrant tous les arguments des différentes fonctions.
+  - Développement des méthodes S3 associées à ce nouvel objet unifié, afin de simplifier  et améliorer le package.
+  
+
 # RastaRocket 1.1.5
 
 ## Improvements
