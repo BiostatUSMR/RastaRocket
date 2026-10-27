@@ -34,6 +34,11 @@ prepare_table <- function(data1,
     data1 <- data1 %>% dplyr::select(-all_of(var_group))
   }
 
+  ## Remove labelled type
+  data1 <- data1 |> 
+    mutate(across(everything(),
+                  RastaRocket::remove_labelled_type))
+  
   ### Deal with missing data
   if(show_missing_data){
     if(by_group){
