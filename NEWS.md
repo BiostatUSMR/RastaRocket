@@ -1,3 +1,11 @@
+# RastaRocket 1.1.6
+
+## Improvement
+
+- Added `remove_labelled_type()` to convert columns of class labelled to a more standard format inside `prepare_table()`.
+
+# RastaRocket 1.1.5
+
 ## Improvements
 
 - `plot_dumbell()`, `df_builder_ae()`, `plot_volcano()` and `plot_butterfly_stacked_barplot()`
